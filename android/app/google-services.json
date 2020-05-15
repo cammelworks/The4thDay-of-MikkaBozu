@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "555322582876",
+    "firebase_url": "https://the4thday-of-mikkabozu.firebaseio.com",
+    "project_id": "the4thday-of-mikkabozu",
+    "storage_bucket": "the4thday-of-mikkabozu.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555322582876:android:6e53b8b2e2372c809e8399",
+        "android_client_info": {
+          "package_name": "com.cammel.the4thdayofmikkabozu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "555322582876-ar8li893e8844i6360bk5lpo1ngf2qrc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4SYGk9d7_AG9R3DCleEXKCZS-6V98oJ8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "555322582876-ar8li893e8844i6360bk5lpo1ngf2qrc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "555322582876-3v2evjh5csgbs4pbjn37efhg00rtjp2l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.cammel.the4thdayofmikkabozu"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
