@@ -153,6 +153,8 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
       setState(() {
         _success = true;
         _userEmail = user.email;
+        //前のページに戻る
+        Navigator.pop(context, user);
       });
     } else {
       _success = false;

@@ -44,7 +44,17 @@ class _MyHomePageState extends State<MyHomePage> {
           Container(
             child: RaisedButton(
               child: const Text('Test registration'),
-              onPressed: () => _pushPage(context, RegisterPage()),
+              onPressed: () async {
+                //移動先のページから値を受け取る
+                final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RegisterPage(),
+                    )
+                );
+                user = result;
+                print(result.email);
+              }
             ),
             padding: const EdgeInsets.all(16),
             alignment: Alignment.center,
@@ -52,11 +62,29 @@ class _MyHomePageState extends State<MyHomePage> {
           Container(
             child: RaisedButton(
               child: const Text('Test SignIn/SignOut'),
-              onPressed: () => _pushPage(context, SignInPage()),
+              onPressed: () async {
+                //移動先のページから値を受け取る
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SignInPage(),
+                  )
+                );
+                user = result;
+                print(result.email);
+              }
             ),
             padding: const EdgeInsets.all(16),
             alignment: Alignment.center,
           ),
+          Container(
+            alignment: Alignment.center,
+            child: Text(
+              user == null
+                  ? 'Please Signin or Registration'
+                  : user.email
+            ),
+          )
         ],
       ),
     );
