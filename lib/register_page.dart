@@ -49,6 +49,7 @@ class RegisterPageState extends State<RegisterPage> {
                 }
                 return null;
               },
+              obscureText: true,
             ),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -69,7 +70,7 @@ class RegisterPageState extends State<RegisterPage> {
                   : (_success
                       ? 'Successfully registered ' + _userEmail
                       : 'Registration failed')),
-            )
+            ),
           ],
         ),
       ),

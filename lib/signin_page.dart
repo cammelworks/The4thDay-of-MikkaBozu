@@ -43,7 +43,7 @@ class SignInPageState extends State<SignInPage> {
                 ));
               },
             );
-          })
+          }),
         ],
       ),
       body: Builder(builder: (BuildContext context) {
@@ -105,6 +105,7 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
               }
               return null;
             },
+            obscureText: true,
           ),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -129,7 +130,7 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
                       : 'Sign in failed'),
               style: TextStyle(color: Colors.red),
             ),
-          )
+          ),
         ],
       ),
     );
