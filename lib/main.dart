@@ -48,12 +48,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _pushPage(BuildContext context, Widget page) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => page),
-    );
-  }
-
   Widget showButton(){
     if(user == null){
         return Column(

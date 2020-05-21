@@ -2,14 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
-final GoogleSignIn _googleSignIn = GoogleSignIn();
 
 class SignInPage extends StatefulWidget {
   final String title = 'サインイン';
@@ -36,9 +32,6 @@ class SignInPageState extends State<SignInPage> {
   }
 
   // Example code for sign out.
-  void _signOut() async {
-    await _auth.signOut();
-  }
 }
 
 class _EmailPasswordForm extends StatefulWidget {
@@ -50,8 +43,6 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _success;
-  String _userEmail;
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -124,13 +115,10 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
         .user;
     if (user != null) {
       setState(() {
-        _success = true;
-        _userEmail = user.email;
         //前のページに戻る
         Navigator.pop(context, user);
       });
     } else {
-      _success = false;
     }
   }
 }

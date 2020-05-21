@@ -18,8 +18,6 @@ class RegisterPageState extends State<RegisterPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _success;
-  String _userEmail;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,13 +90,10 @@ class RegisterPageState extends State<RegisterPage> {
         .user;
     if (user != null) {
       setState(() {
-        _success = true;
-        _userEmail = user.email;
         //前のページに戻る
         Navigator.pop(context, user);
       });
     } else {
-      _success = false;
     }
   }
 }
