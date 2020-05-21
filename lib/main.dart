@@ -15,8 +15,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Firebase Auth Demo',
-      home: MyHomePage(title: 'Firebase Auth Demo'),
+      title: '三日坊主の四日目',
+      home: MyHomePage(title: '三日坊主の四日目'),
     );
   }
 }
@@ -43,7 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           Container(
             child: RaisedButton(
-                child: const Text('Test registration'),
+                child: const Text('登録'),
                 onPressed: () async {
                   //移動先のページから値を受け取る
                   final result = await Navigator.push(
@@ -59,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           Container(
             child: RaisedButton(
-                child: const Text('Test SignIn/SignOut'),
+                child: const Text('サインイン'),
                 onPressed: () async {
                   //移動先のページから値を受け取る
                   final result = await Navigator.push(
@@ -72,11 +72,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 }),
             padding: const EdgeInsets.all(16),
             alignment: Alignment.center,
-          ),
-          Container(
-            alignment: Alignment.center,
-            child: Text(
-                user == null ? 'Please Signin or Registration' : user.email),
           ),
         ],
       ),
