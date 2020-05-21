@@ -92,7 +92,7 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
               height: 50.0,
               buttonColor: Colors.white,
               child: RaisedButton(
-                  child: const Text('登録'),
+                  child: const Text('サインイン'),
                   shape: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   ),
