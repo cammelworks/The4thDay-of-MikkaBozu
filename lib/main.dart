@@ -42,37 +42,83 @@ class _MyHomePageState extends State<MyHomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            child: RaisedButton(
-                child: const Text('登録'),
-                onPressed: () async {
-                  //移動先のページから値を受け取る
-                  final result = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RegisterPage(),
-                      ));
-                  user = result;
-                  print(result.email);
-                }),
-            padding: const EdgeInsets.all(16),
-            alignment: Alignment.center,
+            margin: const EdgeInsets.fromLTRB(100.0, 16.0, 16.0, 0.0),
+            child: ButtonTheme(
+              minWidth: 200.0,
+              height: 50.0,
+              buttonColor: Colors.white,
+              child: RaisedButton(
+                  child: const Text('登録'),
+                  shape: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                  onPressed: () async {
+                    //移動先のページから値を受け取る
+                    final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RegisterPage(),
+                        ));
+                    user = result;
+                    print(result.email);
+                  }),
+            ),
           ),
           Container(
-            child: RaisedButton(
-                child: const Text('サインイン'),
-                onPressed: () async {
-                  //移動先のページから値を受け取る
-                  final result = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SignInPage(),
-                      ));
-                  user = result;
-                  print(result.email);
-                }),
-            padding: const EdgeInsets.all(16),
-            alignment: Alignment.center,
+            margin: const EdgeInsets.fromLTRB(100.0, 16.0, 16.0, 0.0),
+            child: ButtonTheme(
+              minWidth: 200.0,
+              height: 50.0,
+              buttonColor: Colors.white,
+              child: RaisedButton(
+                  child: const Text('サインイン'),
+                  shape: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                  onPressed: () async {
+                    //移動先のページから値を受け取る
+                    final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SignInPage(),
+                        ));
+                    user = result;
+                    print(result.email);
+                  }),
+            ),
           ),
+//          Container(
+//            child: RaisedButton(
+//                child: const Text('登録'),
+//                onPressed: () async {
+//                  //移動先のページから値を受け取る
+//                  final result = await Navigator.push(
+//                      context,
+//                      MaterialPageRoute(
+//                        builder: (context) => RegisterPage(),
+//                      ));
+//                  user = result;
+//                  print(result.email);
+//                }),
+//            padding: const EdgeInsets.all(16),
+//            alignment: Alignment.center,
+//          ),
+//          Container(
+//            child: RaisedButton(
+//                child: const Text('サインイン'),
+//                onPressed: () async {
+//                  //移動先のページから値を受け取る
+//                  final result = await Navigator.push(
+//                      context,
+//                      MaterialPageRoute(
+//                        builder: (context) => SignInPage(),
+//                      ));
+//                  user = result;
+//                  print(result.email);
+//                }),
+//            padding: const EdgeInsets.all(16),
+//            alignment: Alignment.center,
+//          ),
         ],
       ),
     );
