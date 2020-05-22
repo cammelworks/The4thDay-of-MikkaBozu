@@ -4,6 +4,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -108,11 +110,21 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
 
   // Example code of how to sign in with email and password.
   void _signInWithEmailAndPassword() async {
-    final FirebaseUser user = (await _auth.signInWithEmailAndPassword(
-      email: _emailController.text,
-      password: _passwordController.text,
-    ))
-        .user;
+    FirebaseUser user;
+
+    try {
+      user = (await _auth.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      ))
+          .user;
+    } on PlatformException {
+      // メールやパスの入力がおかしかったらトーストを表示
+      Fluttertoast.showToast(
+        msg: 'ご入力されたパスワードもしくはメールアドレスに誤りがあります。',
+      );
+    }
+
     if (user != null) {
       setState(() {
         //前のページに戻る
