@@ -5,6 +5,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter/services.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -83,11 +85,23 @@ class RegisterPageState extends State<RegisterPage> {
 
   // Example code for registration.
   void _register() async {
-    final FirebaseUser user = (await _auth.createUserWithEmailAndPassword(
-      email: _emailController.text,
-      password: _passwordController.text,
-    ))
-        .user;
+    FirebaseUser user;
+    try {
+      user = (await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      ))
+          .user;
+    } on PlatformException catch(e){
+      //メールアドレスが使われていた場合実行
+      if (e.code == "ERROR_EMAIL_ALREADY_IN_USE"){
+        // トーストを表示
+        Fluttertoast.showToast(
+          msg: 'ご入力されたEメールアドレスは既に使われています。',
+        );
+      }
+    }
+
     if (user != null) {
       setState(() {
         //前のページに戻る
