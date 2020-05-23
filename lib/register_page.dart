@@ -2,13 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter/services.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class RegisterPage extends StatefulWidget {
-  final String title = 'Registration';
+  final String title = 'アカウント登録';
   @override
   State<StatefulWidget> createState() => RegisterPageState();
 }
@@ -17,8 +20,6 @@ class RegisterPageState extends State<RegisterPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _success;
-  String _userEmail;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +36,7 @@ class RegisterPageState extends State<RegisterPage> {
               decoration: const InputDecoration(labelText: 'Email'),
               validator: (String value) {
                 if (value.isEmpty) {
-                  return 'Please enter some text';
+                  return 'メールアドレスを入力してください';
                 }
                 return null;
               },
@@ -45,38 +46,35 @@ class RegisterPageState extends State<RegisterPage> {
               decoration: const InputDecoration(labelText: 'Password'),
               validator: (String value) {
                 if (value.isEmpty) {
-                  return 'Please enter some text';
+                  return 'パスワードを入力してください';
                 }
                 return null;
               },
               obscureText: true,
             ),
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              alignment: Alignment.center,
-              child: RaisedButton(
-                onPressed: () async {
-                  if (_formKey.currentState.validate()) {
-                    _register();
-                  }
-                },
-                child: const Text('Submit'),
+              margin: const EdgeInsets.fromLTRB(100.0, 16.0, 16.0, 0.0),
+              child: ButtonTheme(
+                minWidth: 200.0,
+                height: 50.0,
+                buttonColor: Colors.white,
+                child: RaisedButton(
+                    child: const Text('登録'),
+                    shape: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    ),
+                    onPressed: () async {
+                      if (_formKey.currentState.validate()) {
+                        _register();
+                      }
+                    }),
               ),
-            ),
-            Container(
-              alignment: Alignment.center,
-              child: Text(_success == null
-                  ? ''
-                  : (_success
-                      ? 'Successfully registered ' + _userEmail
-                      : 'Registration failed')),
             ),
           ],
         ),
       ),
     );
   }
-
   @override
   void dispose() {
     // Clean up the controller when the Widget is disposed
@@ -87,20 +85,29 @@ class RegisterPageState extends State<RegisterPage> {
 
   // Example code for registration.
   void _register() async {
-    final FirebaseUser user = (await _auth.createUserWithEmailAndPassword(
-      email: _emailController.text,
-      password: _passwordController.text,
-    ))
-        .user;
+    FirebaseUser user;
+    try {
+      user = (await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      ))
+          .user;
+    } on PlatformException catch(e){
+      //メールアドレスが使われていた場合実行
+      if (e.code == "ERROR_EMAIL_ALREADY_IN_USE"){
+        // トーストを表示
+        Fluttertoast.showToast(
+          msg: 'ご入力されたEメールアドレスは既に使われています。',
+        );
+      }
+    }
+
     if (user != null) {
       setState(() {
-        _success = true;
-        _userEmail = user.email;
         //前のページに戻る
         Navigator.pop(context, user);
       });
     } else {
-      _success = false;
     }
   }
 }
