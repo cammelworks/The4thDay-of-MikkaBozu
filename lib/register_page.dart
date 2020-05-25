@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -75,6 +76,7 @@ class RegisterPageState extends State<RegisterPage> {
       ),
     );
   }
+
   @override
   void dispose() {
     // Clean up the controller when the Widget is disposed
@@ -92,9 +94,9 @@ class RegisterPageState extends State<RegisterPage> {
         password: _passwordController.text,
       ))
           .user;
-    } on PlatformException catch(e){
+    } on PlatformException catch (e) {
       //メールアドレスが使われていた場合実行
-      if (e.code == "ERROR_EMAIL_ALREADY_IN_USE"){
+      if (e.code == "ERROR_EMAIL_ALREADY_IN_USE") {
         // トーストを表示
         Fluttertoast.showToast(
           msg: 'ご入力されたEメールアドレスは既に使われています。',
@@ -104,10 +106,14 @@ class RegisterPageState extends State<RegisterPage> {
 
     if (user != null) {
       setState(() {
+        //Firestoreにemailをpush
+        Firestore.instance
+            .collection('user')
+            .document()
+            .setData({'email': user.email});
         //前のページに戻る
         Navigator.pop(context, user);
       });
-    } else {
-    }
+    } else {}
   }
 }
