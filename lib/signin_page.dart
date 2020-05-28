@@ -59,20 +59,20 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
           ),
           TextFormField(
             controller: _emailController,
-            decoration: const InputDecoration(labelText: 'Email'),
+            decoration: const InputDecoration(labelText: 'アドレスを入れてね'),
             validator: (String value) {
               if (value.isEmpty) {
-                return 'Please enter some text';
+                return 'アドレス入れて（怒）';
               }
               return null;
             },
           ),
           TextFormField(
             controller: _passwordController,
-            decoration: const InputDecoration(labelText: 'Password'),
+            decoration: const InputDecoration(labelText: 'パスワードを入れてね'),
             validator: (String value) {
               if (value.isEmpty) {
-                return 'Please enter some text';
+                return 'パスワード入れて（怒）';
               }
               return null;
             },
