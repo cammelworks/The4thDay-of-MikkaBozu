@@ -121,7 +121,7 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
     } on PlatformException {
       // メールやパスの入力がおかしかったらトーストを表示
       Fluttertoast.showToast(
-        msg: 'ご入力されたパスワードもしくはメールアドレスに誤りがあります。',
+        msg: 'パスワードかアドレスが間違ってるよ',
       );
     }
 

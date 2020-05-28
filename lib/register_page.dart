@@ -99,7 +99,7 @@ class RegisterPageState extends State<RegisterPage> {
       if (e.code == "ERROR_EMAIL_ALREADY_IN_USE") {
         // トーストを表示
         Fluttertoast.showToast(
-          msg: 'ご入力されたEメールアドレスは既に使われています。',
+          msg: 'そのアドレスはもう使われてるよ',
         );
       }
     }
