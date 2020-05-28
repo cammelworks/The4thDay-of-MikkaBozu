@@ -52,11 +52,6 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Container(
-            child: const Text('メールアドレスとパスワードを入力してください'),
-            padding: const EdgeInsets.all(16),
-            alignment: Alignment.center,
-          ),
           TextFormField(
             controller: _emailController,
             decoration: const InputDecoration(labelText: 'アドレスを入れてね'),
