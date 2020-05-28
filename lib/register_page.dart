@@ -49,6 +49,12 @@ class RegisterPageState extends State<RegisterPage> {
                 if (value.isEmpty) {
                   return 'パスワード入れて（怒）';
                 }
+                else if (validateIncludeNumber(value)){
+                  return '数字も混ぜてね';
+                }
+                else if (!validateLength(value)){
+                  return '8文字以上にしてね';
+                }
                 return null;
               },
               obscureText: true,
@@ -115,5 +121,17 @@ class RegisterPageState extends State<RegisterPage> {
         Navigator.pop(context, user);
       });
     } else {}
+  }
+
+  bool validateIncludeNumber(String value){
+    String  pattern = r'^\D+$';
+    RegExp regExp = new RegExp(pattern);
+    return regExp.hasMatch(value);
+  }
+
+  bool validateLength(String value){
+    String  pattern = r'^.{8,}$';
+    RegExp regExp = new RegExp(pattern);
+    return regExp.hasMatch(value);
   }
 }
