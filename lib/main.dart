@@ -150,12 +150,13 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
           Container(
+            padding: const EdgeInsets.all(6),
             alignment: Alignment.center,
             child: Text(user.email),
           ),
           Container(
             alignment: Alignment.center,
-            child: getTeamID()
+            child: getTeamID(),
           ),
         ],
       );
@@ -189,12 +190,23 @@ class _MyHomePageState extends State<MyHomePage> {
         //streamが更新されるたびに呼ばれる
         builder: (BuildContext context,
             AsyncSnapshot<QuerySnapshot> snapshot) {
-
           //データが取れていない時の処理
           if (!snapshot.hasData) return const Text('Loading...');
 
-          return Text(snapshot.data.documents[0].documentID);
-
+//          return Text(snapshot.data.documents[0].documentID);
+            return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: snapshot.data.documents.length,
+                  itemBuilder: (context, int index) {
+                    return Container(
+                      padding: const EdgeInsets.all(6),
+                      alignment: Alignment.center,
+                      child: Text(
+                        snapshot.data.documents[index].documentID,
+                      ),
+                    );
+                  },
+            );
         }
     );
   }
