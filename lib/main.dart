@@ -57,106 +57,118 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget showButton(){
     if(user == null){
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              margin: const EdgeInsets.fromLTRB(100.0, 16.0, 16.0, 0.0),
-              child: ButtonTheme(
-                minWidth: 200.0,
-                height: 50.0,
-                buttonColor: Colors.white,
-                child: RaisedButton(
-                    child: const Text('登録'),
-                    shape: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Center(
+                  child: Container(
+                    margin: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 0.0),
+                    child: ButtonTheme(
+                      minWidth: 200.0,
+                      height: 50.0,
+                      buttonColor: Colors.white,
+                      child: RaisedButton(
+                          child: const Text('登録'),
+                          shape: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          ),
+                          onPressed: () async {
+                            //移動先のページから値を受け取る
+                            final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RegisterPage(),
+                                ));
+                            user = result;
+                          }),
                     ),
-                    onPressed: () async {
-                      //移動先のページから値を受け取る
-                      final result = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RegisterPage(),
-                          ));
-                      user = result;
-                    }),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.fromLTRB(100.0, 16.0, 16.0, 0.0),
-              child: ButtonTheme(
-                minWidth: 200.0,
-                height: 50.0,
-                buttonColor: Colors.white,
-                child: RaisedButton(
-                    child: const Text('サインイン'),
-                    shape: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                ),
+                Center(
+                  child: Container(
+                    margin: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 0.0),
+                    child: ButtonTheme(
+                      minWidth: 200.0,
+                      height: 50.0,
+                      buttonColor: Colors.white,
+                      child: RaisedButton(
+                          child: const Text('サインイン'),
+                          shape: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          ),
+                          onPressed: () async {
+                            //移動先のページから値を受け取る
+                            final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SignInPage(),
+                                ));
+                            user = result;
+                          }),
                     ),
-                    onPressed: () async {
-                      //移動先のページから値を受け取る
-                      final result = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SignInPage(),
-                          ));
-                      user = result;
-                    }),
-              ),
-            ),
-          ],
+                  ),
+                ),
+              ],
         );
     }else {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Container(
-            margin: const EdgeInsets.fromLTRB(100.0, 16.0, 16.0, 0.0),
-            child: ButtonTheme(
-              minWidth: 200.0,
-              height: 50.0,
-              buttonColor: Colors.white,
-              child: RaisedButton(
-                  child: const Text('チーム作成'),
-                  shape: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  ),
-                  onPressed: () async {
-                    _createTeam(); //チームの作成
-                  }),
+          Center(
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 0.0),
+              child: ButtonTheme(
+                minWidth: 200.0,
+                height: 50.0,
+                buttonColor: Colors.white,
+                child: RaisedButton(
+                    child: const Text('チーム作成'),
+                    shape: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    ),
+                    onPressed: () async {
+                      _createTeam(); //チームの作成
+                    }),
+              ),
             ),
           ),
-          Container(
-            margin: const EdgeInsets.fromLTRB(100.0, 16.0, 16.0, 0.0),
-            child: ButtonTheme(
-              minWidth: 200.0,
-              height: 50.0,
-              buttonColor: Colors.white,
-              child: RaisedButton(
-                  child: const Text('サインアウト'),
-                  shape: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  ),
-                  onPressed: () async {
-                    _signOut();
-                    final String email = user.email;
-                    // トーストを表示
-                    Fluttertoast.showToast(
-                      msg: email + 'はサインアウトしました．',
-                    );
-                    setState(() {
-                      user = null;
-                    });
-                  }),
+          Center(
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 0.0),
+              child: ButtonTheme(
+                minWidth: 200.0,
+                height: 50.0,
+                buttonColor: Colors.white,
+                child: RaisedButton(
+                    child: const Text('サインアウト'),
+                    shape: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    ),
+                    onPressed: () async {
+                      _signOut();
+                      final String email = user.email;
+                      // トーストを表示
+                      Fluttertoast.showToast(
+                        msg: email + 'はサインアウトしました．',
+                      );
+                      setState(() {
+                        user = null;
+                      });
+                    }),
+              ),
             ),
           ),
-          Container(
-            padding: const EdgeInsets.all(6),
-            alignment: Alignment.center,
-            child: Text(user.email),
+          Center(
+            child: Container(
+              padding: const EdgeInsets.all(6),
+              alignment: Alignment.center,
+              child: Text(user.email),
+            ),
           ),
-          Container(
-            alignment: Alignment.center,
-            child: getTeamID(),
+          Center(
+            child: Container(
+              alignment: Alignment.center,
+              child: getTeamID(),
+            ),
           ),
         ],
       );
