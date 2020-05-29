@@ -34,20 +34,26 @@ class RegisterPageState extends State<RegisterPage> {
           children: <Widget>[
             TextFormField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration: const InputDecoration(labelText: 'アドレスを入れてね'),
               validator: (String value) {
                 if (value.isEmpty) {
-                  return 'メールアドレスを入力してください';
+                  return 'アドレス入れて（怒）';
                 }
                 return null;
               },
             ),
             TextFormField(
               controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
+              decoration: const InputDecoration(labelText: 'パスワードを入れてね'),
               validator: (String value) {
                 if (value.isEmpty) {
-                  return 'パスワードを入力してください';
+                  return 'パスワード入れて（怒）';
+                }
+                else if (validateIncludeNumber(value)){
+                  return '数字も混ぜてね';
+                }
+                else if (!validateLength(value)){
+                  return '8文字以上にしてね';
                 }
                 return null;
               },
@@ -99,7 +105,7 @@ class RegisterPageState extends State<RegisterPage> {
       if (e.code == "ERROR_EMAIL_ALREADY_IN_USE") {
         // トーストを表示
         Fluttertoast.showToast(
-          msg: 'ご入力されたEメールアドレスは既に使われています。',
+          msg: 'そのアドレスはもう使われてるよ',
         );
       }
     }
@@ -115,5 +121,17 @@ class RegisterPageState extends State<RegisterPage> {
         Navigator.pop(context, user);
       });
     } else {}
+  }
+
+  bool validateIncludeNumber(String value){
+    String  pattern = r'^\D+$';
+    RegExp regExp = new RegExp(pattern);
+    return regExp.hasMatch(value);
+  }
+
+  bool validateLength(String value){
+    String  pattern = r'^.{8,}$';
+    RegExp regExp = new RegExp(pattern);
+    return regExp.hasMatch(value);
   }
 }
