@@ -73,13 +73,14 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
             },
             obscureText: true,
           ),
-          Container(
-            margin: const EdgeInsets.fromLTRB(100.0, 16.0, 16.0, 0.0),
-            child: ButtonTheme(
-              minWidth: 200.0,
-              height: 50.0,
-              buttonColor: Colors.white,
-              child: RaisedButton(
+          Center(
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 0.0),
+              child: ButtonTheme(
+                minWidth: 200.0,
+                height: 50.0,
+                buttonColor: Colors.white,
+                child: RaisedButton(
                   child: const Text('サインイン'),
                   shape: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
@@ -88,7 +89,9 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
                     if (_formKey.currentState.validate()) {
                       _signInWithEmailAndPassword();
                     }
-                    },),
+                  },
+                ),
+              ),
             ),
           ),
         ],
@@ -125,7 +128,6 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
         //前のページに戻る
         Navigator.pop(context, user);
       });
-    } else {
-    }
+    } else {}
   }
 }

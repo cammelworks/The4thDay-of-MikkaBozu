@@ -48,35 +48,35 @@ class RegisterPageState extends State<RegisterPage> {
               validator: (String value) {
                 if (value.isEmpty) {
                   return 'パスワード入れて（怒）';
-                }
-                else if (validateIncludeNumber(value)){
+                } else if (validateIncludeNumber(value)) {
                   return '数字も混ぜてね';
-                }
-                else if (!validateLength(value)){
+                } else if (!validateLength(value)) {
                   return '8文字以上にしてね';
                 }
                 return null;
               },
               obscureText: true,
             ),
-            Container(
-              margin: const EdgeInsets.fromLTRB(100.0, 16.0, 16.0, 0.0),
-              child: ButtonTheme(
-                minWidth: 200.0,
-                height: 50.0,
-                buttonColor: Colors.white,
-                child: RaisedButton(
-                    child: const Text('登録'),
-                    shape: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                    ),
-                    onPressed: () async {
-                      if (_formKey.currentState.validate()) {
-                        _register();
-                      }
-                    }),
+            Center(
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 0.0),
+                child: ButtonTheme(
+                  minWidth: 200.0,
+                  height: 50.0,
+                  buttonColor: Colors.white,
+                  child: RaisedButton(
+                      child: const Text('登録'),
+                      shape: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
+                      onPressed: () async {
+                        if (_formKey.currentState.validate()) {
+                          _register();
+                        }
+                      }),
+                ),
               ),
-            ),
+            )
           ],
         ),
       ),
@@ -123,14 +123,14 @@ class RegisterPageState extends State<RegisterPage> {
     } else {}
   }
 
-  bool validateIncludeNumber(String value){
-    String  pattern = r'^\D+$';
+  bool validateIncludeNumber(String value) {
+    String pattern = r'^\D+$';
     RegExp regExp = new RegExp(pattern);
     return regExp.hasMatch(value);
   }
 
-  bool validateLength(String value){
-    String  pattern = r'^.{8,}$';
+  bool validateLength(String value) {
+    String pattern = r'^.{8,}$';
     RegExp regExp = new RegExp(pattern);
     return regExp.hasMatch(value);
   }
