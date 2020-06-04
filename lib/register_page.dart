@@ -114,7 +114,7 @@ class RegisterPageState extends State<RegisterPage> {
       setState(() {
         //Firestoreにemailをpush
         Firestore.instance
-            .collection('user')
+            .collection('users')
             .document()
             .setData({'email': user.email});
         //前のページに戻る
