@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../teamcreate_page.dart';
 
 class TeamCreateButton extends StatelessWidget {
   String _email;
-
   //コンストラクタ
   TeamCreateButton(this._email);
 
@@ -25,21 +25,17 @@ class TeamCreateButton extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   ),
                   onPressed: () async {
-                    //チームの作成
-                    createTeam();
+                    //チーム作成ページに移動
+                    final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TeamCreatePage(_email),
+                        ));
                   }),
             ),
           ),
         ),
       ],
     );
-  }
-
-  //チームを作成する関数
-  void createTeam() {
-    Firestore.instance
-        .collection('teams')
-        .document()
-        .setData({'email': _email});
   }
 }
