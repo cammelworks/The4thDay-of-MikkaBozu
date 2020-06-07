@@ -82,20 +82,17 @@ class _TeamFormState extends State<_TeamForm> {
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   ),
                   onPressed: () async {
-                    if (_formKey.currentState.validate()) {
+                    if (_formKey.currentState.validate() && await checkUniqueTeamName(_nameController.text)) {
                       createTeam(_email);
                       updateDataUserData(_email);
                       Navigator.pop(context);
                     }
+                    else {
+                      print('failed');
+                    }
                   },
                 ),
               ),
-            ),
-          ),
-          Center(
-            child: Container(
-              alignment: Alignment.center,
-              child: checkUniqueTeamName(),
             ),
           ),
         ],
@@ -110,7 +107,7 @@ class _TeamFormState extends State<_TeamForm> {
   }
 
   //チームを作成する関数
-  void createTeam (String email) {
+  void createTeam(String email) {
     Firestore.instance
         .collection('teams')
         .document(_nameController.text)
@@ -125,15 +122,18 @@ class _TeamFormState extends State<_TeamForm> {
   }
 
   //ユーザデータにチーム名を追加する関数
-  void updateDataUserData (String email) {
+  void updateDataUserData(String email) {
     //自分のEmailに紐づくドキュメントを取得
     getData() async {
-      return await Firestore.instance.collection('users')
-          .where("email", isEqualTo: _email).getDocuments();
+      return await Firestore.instance
+          .collection('users')
+          .where("email", isEqualTo: _email)
+          .getDocuments();
     }
-    getData().then((val){
+
+    getData().then((val) {
       //データの更新
-      if(val.documents.length > 0){
+      if (val.documents.length > 0) {
         String userDocId = val.documents[0].documentID;
         Firestore.instance
             .collection('users')
@@ -141,39 +141,20 @@ class _TeamFormState extends State<_TeamForm> {
             .collection('teams')
             .document()
             .setData({'team_name': _nameController.text});
-      }
-      else{
+      } else {
         print("Not Found");
       }
     });
   }
-
-  Widget checkUniqueTeamName() {
-    return StreamBuilder<QuerySnapshot>(
-
-      //表示したいFiresotreの保存先を指定
-        stream: Firestore.instance
-            .collection("teams")
-            .snapshots(),
-
-        //streamが更新されるたびに呼ばれる
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          //データが取れていない時の処理
-          if (!snapshot.hasData) return const Text('Loading...');
-
-          return ListView.builder(
-            shrinkWrap: true,
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context, int index) {
-              return Container(
-                padding: const EdgeInsets.all(6),
-                alignment: Alignment.center,
-                child: Text(
-                  snapshot.data.documents[index]['team_name'],
-                ),
-              );
-            },
-          );
-        });
+  
+  Future<bool> checkUniqueTeamName(String candidateName) async {
+    bool flag = true;
+    var docs = await Firestore.instance.collection('teams').getDocuments();
+    docs.documents.forEach((var doc){
+      if (candidateName == doc['team_name']){
+        flag = false;
+      }
+    });
+    return flag;
   }
 }
