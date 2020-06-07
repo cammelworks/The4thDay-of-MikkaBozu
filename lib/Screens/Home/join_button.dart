@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+typedef TeamJoinCallback = void Function();
+
 class JoinButton extends StatelessWidget{
 
   String _teamName;
   String _email;
+  final TeamJoinCallback callback;
 
-  JoinButton(this._teamName, this._email) : super();
+  JoinButton(this._teamName, this._email, this.callback) : super();
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +25,13 @@ class JoinButton extends StatelessWidget{
             ),
             onPressed: () async {
               //チームに参加
-              _dintduh();
+              _joinTeam();
             }),
       ),
     );
   }
 
-  void _dintduh(){
+  void _joinTeam(){
     //teamに自分の情報を追加
     Firestore.instance
         .collection('teams')
@@ -59,5 +62,8 @@ class JoinButton extends StatelessWidget{
         print("Not Found");
       }
     });
+
+    //コールバック
+    callback();
   }
 }

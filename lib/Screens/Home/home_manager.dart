@@ -52,7 +52,7 @@ class HomeManager {
           }),
         ),
         Center(
-          child: LookupTeam((String teamName){
+          child: LookupTeam(_teamName, (String teamName){
             _teamName = teamName;
             updateStateCallback();
           })
@@ -71,7 +71,10 @@ class HomeManager {
   Widget satgth(){
     if(_teamName != null){
       //登録ボタンの表示
-      return JoinButton(_teamName, _user.email);
+      return JoinButton(_teamName, _user.email, (){
+        _teamName = null;
+        updateStateCallback();
+      });
     } else{
       //何も表示しない
       return null;
