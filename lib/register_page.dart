@@ -21,6 +21,13 @@ class RegisterPageState extends State<RegisterPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isHidden = true;
+
+  void _toggleVisibility(){
+    setState(() {
+      _isHidden = !_isHidden;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,7 +51,16 @@ class RegisterPageState extends State<RegisterPage> {
             ),
             TextFormField(
               controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'パスワードを入れてね'),
+              decoration: InputDecoration(
+                  labelText: 'パスワードを入れてね',
+                  suffixIcon: _isHidden ? IconButton(
+                    onPressed: _toggleVisibility,
+                    icon: Icon(Icons.visibility),
+                  ) : IconButton(
+                    onPressed: _toggleVisibility,
+                    icon: Icon(Icons.visibility_off),
+                  )
+              ),
               validator: (String value) {
                 if (value.isEmpty) {
                   return 'パスワード入れて（怒）';
@@ -55,7 +71,7 @@ class RegisterPageState extends State<RegisterPage> {
                 }
                 return null;
               },
-              obscureText: true,
+              obscureText: _isHidden,
             ),
             Center(
               child: Container(
