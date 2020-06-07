@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TeamCreatePage extends StatefulWidget {
@@ -88,7 +89,9 @@ class _TeamFormState extends State<_TeamForm> {
                       Navigator.pop(context);
                     }
                     else {
-                      print('failed');
+                      Fluttertoast.showToast(
+                        msg: 'すでに使われているよ',
+                      );
                     }
                   },
                 ),
@@ -148,13 +151,15 @@ class _TeamFormState extends State<_TeamForm> {
   }
   
   Future<bool> checkUniqueTeamName(String candidateName) async {
-    bool flag = true;
-    var docs = await Firestore.instance.collection('teams').getDocuments();
-    docs.documents.forEach((var doc){
-      if (candidateName == doc['team_name']){
-        flag = false;
-      }
-    });
-    return flag;
+    var docs = await Firestore.instance
+        .collection("teams")
+        .where("team_name", isEqualTo: candidateName)
+        .getDocuments();
+    if(docs.documents.length == 0){
+      return true;
+    }else{
+      return false;
+    }
+
   }
 }
