@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-typedef TeamFoundCallback = void Function(bool teamFound);
+typedef TeamFoundCallback = void Function(String teamName);
 
 class LookupTeam extends StatelessWidget{
   final TeamFoundCallback callback;
@@ -19,7 +19,7 @@ class LookupTeam extends StatelessWidget{
           decoration: InputDecoration(labelText: '参加したいチーム名を入れてね',
               suffixIcon: IconButton(
                 icon: Icon(Icons.search),
-                onPressed: _sadfe,
+                onPressed: _lookup_team,
               )),
           validator: (String value) {
             if (value.isEmpty) {
@@ -32,14 +32,14 @@ class LookupTeam extends StatelessWidget{
     );
   }
 
-  void _sadfe() async{
+  void _lookup_team() async{
     var docs = await Firestore.instance
         .collection("teams")
         .where("team_name", isEqualTo: _teamName.text)
         .getDocuments();
     //入力されたチーム名があればコールバック
     if(docs.documents.length != 0){
-      callback(true);
+      callback(_teamName.text);
     }
   }
 
