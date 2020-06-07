@@ -92,6 +92,12 @@ class _TeamFormState extends State<_TeamForm> {
               ),
             ),
           ),
+          Center(
+            child: Container(
+              alignment: Alignment.center,
+              child: checkUniqueTeamName(),
+            ),
+          ),
         ],
       ),
     );
@@ -140,5 +146,34 @@ class _TeamFormState extends State<_TeamForm> {
         print("Not Found");
       }
     });
+  }
+
+  Widget checkUniqueTeamName() {
+    return StreamBuilder<QuerySnapshot>(
+
+      //表示したいFiresotreの保存先を指定
+        stream: Firestore.instance
+            .collection("teams")
+            .snapshots(),
+
+        //streamが更新されるたびに呼ばれる
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          //データが取れていない時の処理
+          if (!snapshot.hasData) return const Text('Loading...');
+
+          return ListView.builder(
+            shrinkWrap: true,
+            itemCount: snapshot.data.documents.length,
+            itemBuilder: (context, int index) {
+              return Container(
+                padding: const EdgeInsets.all(6),
+                alignment: Alignment.center,
+                child: Text(
+                  snapshot.data.documents[index]['team_name'],
+                ),
+              );
+            },
+          );
+        });
   }
 }
