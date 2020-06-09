@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:the4thdayofmikkabozu/Screens/Home/join_button.dart';
+import 'package:the4thdayofmikkabozu/Screens/Home/lookup_team.dart';
 import 'package:the4thdayofmikkabozu/Screens/Home/signout_button.dart';
 import 'package:the4thdayofmikkabozu/Screens/Home/teams_screen.dart';
 
@@ -12,6 +14,7 @@ class HomeManager {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser _user = null;
+  String _teamName = null;
 
   HomeManager({@required this.updateStateCallback}) : super();
 
@@ -49,10 +52,32 @@ class HomeManager {
           }),
         ),
         Center(
+          child: LookupTeam(_teamName, (String teamName){
+            _teamName = teamName;
+            updateStateCallback();
+          })
+        ),
+        Center(
+          child: satgth(),
+        ),
+        Center(
           //メールアドレスと参加チームIDの表示
           child: TeamsScreen(_user.email),
         ),
       ],
     );
+  }
+
+  Widget satgth(){
+    if(_teamName != null){
+      //登録ボタンの表示
+      return JoinButton(_teamName, _user.email, (){
+        _teamName = null;
+        updateStateCallback();
+      });
+    } else{
+      //何も表示しない
+      return null;
+    }
   }
 }
