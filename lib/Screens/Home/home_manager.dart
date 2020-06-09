@@ -52,13 +52,12 @@ class HomeManager {
           }),
         ),
         Center(
-          child: LookupTeam(_teamName, (String teamName){
-            _teamName = teamName;
-            updateStateCallback();
-          })
-        ),
+            child: LookupTeam(_teamName, (String teamName) {
+          _teamName = teamName;
+          updateStateCallback();
+        })),
         Center(
-          child: satgth(),
+          child: showJoinButton(),
         ),
         Center(
           //メールアドレスと参加チームIDの表示
@@ -68,14 +67,14 @@ class HomeManager {
     );
   }
 
-  Widget satgth(){
-    if(_teamName != null){
+  Widget showJoinButton() {
+    if (_teamName != null) {
       //登録ボタンの表示
-      return JoinButton(_teamName, _user.email, (){
+      return JoinButton(_teamName, _user.email, () {
         _teamName = null;
         updateStateCallback();
       });
-    } else{
+    } else {
       //何も表示しない
       return null;
     }

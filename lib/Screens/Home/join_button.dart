@@ -3,8 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 typedef TeamJoinCallback = void Function();
 
-class JoinButton extends StatelessWidget{
-
+class JoinButton extends StatelessWidget {
   String _teamName;
   String _email;
   final TeamJoinCallback callback;
@@ -31,7 +30,7 @@ class JoinButton extends StatelessWidget{
     );
   }
 
-  void _joinTeam(){
+  void _joinTeam() {
     //teamに自分の情報を追加
     Firestore.instance
         .collection('teams')
@@ -48,6 +47,7 @@ class JoinButton extends StatelessWidget{
           .where("email", isEqualTo: _email)
           .getDocuments();
     }
+
     getData().then((val) {
       //データの更新
       if (val.documents.length > 0) {
