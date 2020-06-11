@@ -66,7 +66,7 @@ class HomeManager {
         ),
         Center(
           //走った距離を入力するフォーム
-          child: RecordForm(),
+          child: RecordForm(_user.email),
         ),
       ],
     );
