@@ -6,6 +6,7 @@ import 'package:the4thdayofmikkabozu/Screens/Home/lookup_team.dart';
 import 'package:the4thdayofmikkabozu/Screens/Home/signout_button.dart';
 import 'package:the4thdayofmikkabozu/Screens/Home/teams_screen.dart';
 import 'package:the4thdayofmikkabozu/Screens/Home/record_form.dart';
+import 'package:the4thdayofmikkabozu/Screens/Home/records_screen.dart';
 
 import 'signin_screen.dart';
 import 'team_create_button.dart';
@@ -67,6 +68,10 @@ class HomeManager {
         Center(
           //走った距離を入力するフォーム
           child: RecordForm(_user.email),
+        ),
+        Center(
+          //距離のデータを表示
+          child: RecordsScreen(_user.email),
         ),
       ],
     );
