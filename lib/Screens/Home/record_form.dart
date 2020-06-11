@@ -50,7 +50,7 @@ class RecordForm extends StatelessWidget {
             .document(userDocId)
             .collection('records')
             .document()
-            .setData({'distance': _recordField.text});
+            .setData({'distance': _recordField.text, 'timestamp': Timestamp.now()});
       } else {
         print("Not Found");
       }
