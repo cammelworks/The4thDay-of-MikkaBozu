@@ -18,7 +18,7 @@ class LookupTeam extends StatelessWidget {
         TextFormField(
           controller: _teamNameField,
           decoration: InputDecoration(
-            labelText: '参加したいチーム名を入れてね',
+            labelText: '参加したいチーム名を入力してください',
             suffixIcon: IconButton(
               icon: Icon(Icons.search),
               onPressed: _lookup_team,
@@ -27,7 +27,7 @@ class LookupTeam extends StatelessWidget {
           ),
           validator: (String value) {
             if (value.isEmpty) {
-              return 'アドレス入れて（怒）';
+              return 'チーム名を入力してください';
             }
             return null;
           },
@@ -47,7 +47,7 @@ class LookupTeam extends StatelessWidget {
     } else {
       callback(null);
       Fluttertoast.showToast(
-        msg: 'そんなチームないよ',
+        msg: '存在しないチームです',
       );
     }
   }

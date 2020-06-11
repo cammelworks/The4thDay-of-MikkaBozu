@@ -31,7 +31,7 @@ class SignoutButton extends StatelessWidget {
                 final String email = _email;
                 // トーストを表示
                 Fluttertoast.showToast(
-                  msg: email + 'はサインアウトしました．',
+                  msg: email + 'はサインアウトしました',
                 );
 //                    setState(() {
 //                      user = null;

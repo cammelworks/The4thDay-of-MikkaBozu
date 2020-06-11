@@ -62,10 +62,10 @@ class _TeamFormState extends State<_TeamForm> {
         children: <Widget>[
           TextFormField(
             controller: _nameController,
-            decoration: const InputDecoration(labelText: 'チーム名を入れてね'),
+            decoration: const InputDecoration(labelText: 'チーム名を入力してください'),
             validator: (String value) {
               if (value.isEmpty) {
-                return 'チーム名を入れて（怒）';
+                return '登録にはチーム名が必要です';
               }
               return null;
             },
@@ -90,7 +90,7 @@ class _TeamFormState extends State<_TeamForm> {
                     }
                     else {
                       Fluttertoast.showToast(
-                        msg: 'すでに使われているよ',
+                        msg: 'すでに使用されています',
                       );
                     }
                   },
