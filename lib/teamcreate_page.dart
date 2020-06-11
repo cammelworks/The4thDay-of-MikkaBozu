@@ -120,7 +120,7 @@ class _TeamFormState extends State<_TeamForm> {
         .collection('teams')
         .document(_nameController.text)
         .collection('users')
-        .document()
+        .document(email)
         .setData({'email': email});
   }
 
@@ -142,7 +142,7 @@ class _TeamFormState extends State<_TeamForm> {
             .collection('users')
             .document(userDocId)
             .collection('teams')
-            .document()
+            .document(_nameController.text)
             .setData({'team_name': _nameController.text});
       } else {
         print("Not Found");

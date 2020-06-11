@@ -36,7 +36,7 @@ class JoinButton extends StatelessWidget {
         .collection('teams')
         .document(_teamName)
         .collection('users')
-        .document()
+        .document(_email)
         .setData({'email': _email});
 
     //自分の情報にチームの情報を追加
@@ -56,7 +56,7 @@ class JoinButton extends StatelessWidget {
             .collection('users')
             .document(userDocId)
             .collection('teams')
-            .document()
+            .document(_teamName)
             .setData({'team_name': _teamName});
       } else {
         print("Not Found");
