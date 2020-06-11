@@ -23,6 +23,7 @@ class RecordsScreen extends StatelessWidget {
             .collection('users')
             .document(_email)
             .collection('records')
+            .orderBy("timestamp",descending: true)
             .snapshots(),
         //streamが更新されるたびに呼ばれる
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
