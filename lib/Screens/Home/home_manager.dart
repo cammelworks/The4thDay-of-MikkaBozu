@@ -54,7 +54,7 @@ class HomeManager {
           }),
         ),
         Center(
-            child: LookupTeam(_teamName, (String teamName) {
+            child: LookupTeam(_user.email, _teamName, (String teamName) {
           _teamName = teamName;
           updateStateCallback();
         })),
