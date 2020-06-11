@@ -36,6 +36,7 @@ class LookupTeam extends StatelessWidget {
     );
   }
 
+  //チームを検索する
   void _lookup_team() async {
     var docs = await Firestore.instance
         .collection("teams")

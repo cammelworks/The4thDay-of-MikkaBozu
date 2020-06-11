@@ -83,12 +83,12 @@ class _TeamFormState extends State<_TeamForm> {
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   ),
                   onPressed: () async {
-                    if (_formKey.currentState.validate() && await checkUniqueTeamName(_nameController.text)) {
+                    if (_formKey.currentState.validate() &&
+                        await checkUniqueTeamName(_nameController.text)) {
                       createTeam(_email);
                       updateDataUserData(_email);
                       Navigator.pop(context);
-                    }
-                    else {
+                    } else {
                       Fluttertoast.showToast(
                         msg: 'すでに使われているよ',
                       );
@@ -128,16 +128,13 @@ class _TeamFormState extends State<_TeamForm> {
   void updateDataUserData(String email) {
     //自分のEmailに紐づくドキュメントを取得
     getData() async {
-      return await Firestore.instance
-          .collection('users')
-          .where("email", isEqualTo: _email)
-          .getDocuments();
+      return await Firestore.instance.collection('users').document(_email);
     }
 
     getData().then((val) {
       //データの更新
-      if (val.documents.length > 0) {
-        String userDocId = val.documents[0].documentID;
+      if (val != null) {
+        String userDocId = val.documentID;
         Firestore.instance
             .collection('users')
             .document(userDocId)
@@ -149,17 +146,16 @@ class _TeamFormState extends State<_TeamForm> {
       }
     });
   }
-  
+
   Future<bool> checkUniqueTeamName(String candidateName) async {
     var docs = await Firestore.instance
         .collection("teams")
         .where("team_name", isEqualTo: candidateName)
         .getDocuments();
-    if(docs.documents.length == 0){
+    if (docs.documents.length == 0) {
       return true;
-    }else{
+    } else {
       return false;
     }
-
   }
 }

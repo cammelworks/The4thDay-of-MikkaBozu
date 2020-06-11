@@ -44,14 +44,13 @@ class JoinButton extends StatelessWidget {
     getData() async {
       return await Firestore.instance
           .collection('users')
-          .where("email", isEqualTo: _email)
-          .getDocuments();
+          .document((_email));
     }
 
     getData().then((val) {
       //データの更新
-      if (val.documents.length > 0) {
-        String userDocId = val.documents[0].documentID;
+      if (val != null) {
+        String userDocId = val.documentID;
         Firestore.instance
             .collection('users')
             .document(userDocId)
