@@ -24,9 +24,9 @@ class RecordForm extends StatelessWidget {
                   onPressed: () async {
                     if(_formKey.currentState.validate()) {
                       _pushRecord();
-                      //キーボードを閉じる
-                      FocusScope.of(context).requestFocus(new FocusNode());
                     }
+                    //キーボードを閉じる
+                    FocusScope.of(context).requestFocus(new FocusNode());
                   },
                 ),
               ),
