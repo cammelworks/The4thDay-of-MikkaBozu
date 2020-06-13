@@ -41,10 +41,10 @@ class RegisterPageState extends State<RegisterPage> {
           children: <Widget>[
             TextFormField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: 'アドレスを入れてね'),
+              decoration: const InputDecoration(labelText: 'アドレスを入力してください'),
               validator: (String value) {
                 if (value.isEmpty) {
-                  return 'アドレス入れて（怒）';
+                  return 'アドレスが入力されていません';
                 }
                 return null;
               },
@@ -52,7 +52,7 @@ class RegisterPageState extends State<RegisterPage> {
             TextFormField(
               controller: _passwordController,
               decoration: InputDecoration(
-                  labelText: 'パスワードを入れてね',
+                  labelText: 'パスワードを入力してください',
                   suffixIcon: _isHidden ? IconButton(
                     onPressed: _toggleVisibility,
                     icon: Icon(Icons.visibility),
@@ -63,11 +63,11 @@ class RegisterPageState extends State<RegisterPage> {
               ),
               validator: (String value) {
                 if (value.isEmpty) {
-                  return 'パスワード入れて（怒）';
+                  return 'パスワードが入力されていません';
                 } else if (validateIncludeNumber(value)) {
-                  return '数字も混ぜてね';
+                  return '数字も含めてください';
                 } else if (!validateLength(value)) {
-                  return '8文字以上にしてね';
+                  return '8文字以上にしてください';
                 }
                 return null;
               },
@@ -121,7 +121,7 @@ class RegisterPageState extends State<RegisterPage> {
       if (e.code == "ERROR_EMAIL_ALREADY_IN_USE") {
         // トーストを表示
         Fluttertoast.showToast(
-          msg: 'そのアドレスはもう使われてるよ',
+          msg: 'そのアドレスはすでに使用されています',
         );
       }
     }

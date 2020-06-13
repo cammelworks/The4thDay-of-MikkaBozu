@@ -61,10 +61,10 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
         children: <Widget>[
           TextFormField(
             controller: _emailController,
-            decoration: const InputDecoration(labelText: 'アドレスを入れてね'),
+            decoration: const InputDecoration(labelText: 'アドレスを入力してください'),
             validator: (String value) {
               if (value.isEmpty) {
-                return 'アドレス入れて（怒）';
+                return 'アドレスが入力されていません';
               }
               return null;
             },
@@ -72,7 +72,7 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
           TextFormField(
             controller: _passwordController,
             decoration: InputDecoration(
-                labelText: 'パスワードを入れてね',
+                labelText: 'パスワードを入力してください',
                 suffixIcon: _isHidden ? IconButton(
                   onPressed: _toggleVisibility,
                   icon: Icon(Icons.visibility),
@@ -83,7 +83,7 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
             ),
             validator: (String value) {
               if (value.isEmpty) {
-                return 'パスワード入れて（怒）';
+                return 'パスワードが入力されていません';
               }
               return null;
             },
@@ -135,7 +135,7 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
     } on PlatformException {
       // メールやパスの入力がおかしかったらトーストを表示
       Fluttertoast.showToast(
-        msg: 'パスワードかアドレスが間違ってるよ',
+        msg: 'パスワードかアドレスが間違っています',
       );
     }
 
