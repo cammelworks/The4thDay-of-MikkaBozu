@@ -7,9 +7,10 @@ typedef TeamFoundCallback = void Function(String teamName);
 class LookupTeam extends StatelessWidget {
   final TeamFoundCallback callback;
   final TextEditingController _teamNameField = TextEditingController();
+  String _email;
   String _teamname;
 
-  LookupTeam(this._teamname, this.callback) : super();
+  LookupTeam(this._email, this._teamname, this.callback) : super();
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +37,7 @@ class LookupTeam extends StatelessWidget {
     );
   }
 
+  //チームを検索する
   void _lookup_team() async {
     var docs = await Firestore.instance
         .collection("teams")
@@ -43,12 +45,34 @@ class LookupTeam extends StatelessWidget {
         .getDocuments();
     //入力されたチーム名があればコールバック
     if (docs.documents.length != 0) {
-      callback(_teamNameField.text);
+      if (await _searchAlreadyJoin(docs.documents[0].documentID)) {
+        callback(_teamNameField.text);
+      } else {
+        //すでに自分がチームに参加している
+        Fluttertoast.showToast(
+          msg: 'すでに参加しています。',
+        );
+      }
     } else {
       callback(null);
       Fluttertoast.showToast(
         msg: '存在しないチームです',
       );
+    }
+  }
+
+  //すでに自分がチームに参加しているか調べる
+  Future<bool> _searchAlreadyJoin(String teamName) async {
+    var docs = await Firestore.instance
+        .collection("teams")
+        .document(teamName)
+        .collection('users')
+        .where("email", isEqualTo: _email)
+        .getDocuments();
+    if (docs.documents.length >= 1) {
+      return false;
+    } else {
+      return true;
     }
   }
 }

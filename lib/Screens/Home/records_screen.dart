@@ -17,29 +17,13 @@ class RecordsScreen extends StatelessWidget {
 
   //走った距離を取得する関数
   Widget getRecords() {
-    String userDocId;
-    getData() async {
-      return await Firestore.instance
-          .collection('users')
-          .where('email', isEqualTo: _email)
-          .getDocuments();
-    }
-    getData().then((val) {
-      if (val.documents.length > 0) {
-        userDocId = val.documents[0].documentID;
-        final Stream<QuerySnapshot> stream = Firestore.instance
-          .collection('users')
-          .document(userDocId)
-          .collection('records')
-          .snapshots();
-      }
-    });
     return StreamBuilder<QuerySnapshot>(
       //表示したいFiresotreの保存先を指定
         stream: Firestore.instance
             .collection('users')
-            .document(userDocId)
+            .document(_email)
             .collection('records')
+            .orderBy("timestamp",descending: true)
             .snapshots(),
         //streamが更新されるたびに呼ばれる
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -54,7 +38,7 @@ class RecordsScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(6),
                 alignment: Alignment.center,
                 child: Text(
-                  snapshot.data.documents[index].documentID,
+                  snapshot.data.documents[index]["distance"].toString(),
                 ),
               );
             },

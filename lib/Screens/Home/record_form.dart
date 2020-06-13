@@ -22,8 +22,11 @@ class RecordForm extends StatelessWidget {
                 suffixIcon: IconButton(
                   icon: Icon(Icons.directions_run),
                   onPressed: () async {
-                    if(_formKey.currentState.validate())
+                    if(_formKey.currentState.validate()) {
                       _pushRecord();
+                      //キーボードを閉じる
+                      FocusScope.of(context).requestFocus(new FocusNode());
+                    }
                   },
                 ),
               ),
@@ -67,6 +70,7 @@ class RecordForm extends StatelessWidget {
       } else {
         print("Not Found");
       }
+      _recordField.text = "";
     });
   }
 }
