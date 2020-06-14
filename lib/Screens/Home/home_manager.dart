@@ -7,6 +7,7 @@ import 'package:the4thdayofmikkabozu/Screens/Home/signout_button.dart';
 import 'package:the4thdayofmikkabozu/Screens/Home/teams_screen.dart';
 import 'package:the4thdayofmikkabozu/Screens/Home/record_form.dart';
 import 'package:the4thdayofmikkabozu/Screens/Home/records_screen.dart';
+import 'package:the4thdayofmikkabozu/Screens/Home/teams_dropdownbutton.dart';
 
 import 'signin_screen.dart';
 import 'team_create_button.dart';
@@ -64,6 +65,10 @@ class HomeManager {
         Center(
           //メールアドレスと参加チームIDの表示
           child: TeamsScreen(_user.email),
+        ),
+        Center(
+          //メールアドレ
+          child: TeamsDropdownButton(_user.email),
         ),
         Center(
           //走った距離を入力するフォーム
