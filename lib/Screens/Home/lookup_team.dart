@@ -6,6 +6,7 @@ typedef TeamFoundCallback = void Function(String teamName);
 
 class LookupTeam extends StatelessWidget {
   final TeamFoundCallback callback;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _teamNameField = TextEditingController();
   String _email;
   String _teamname;
@@ -14,31 +15,46 @@ class LookupTeam extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        TextFormField(
-          controller: _teamNameField,
-          decoration: InputDecoration(
-            labelText: '参加したいチーム名を入力してください',
-            suffixIcon: IconButton(
-              icon: Icon(Icons.search),
-              onPressed: _lookup_team,
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: <Widget>[
+          TextFormField(
+            controller: _teamNameField,
+            decoration: InputDecoration(
+              labelText: '参加したいチーム名を入力してください',
+              suffixIcon: IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () async {
+                  if(_formKey.currentState.validate()) {
+                    _lookupTeam();
+                  }
+                  //キーボードを閉じる
+                  FocusScope.of(context).requestFocus(new FocusNode());
+                },
+              ),
+              hintText: _teamname,
             ),
-            hintText: _teamname,
+            //エンターアイコンを変更
+            textInputAction: TextInputAction.search,
+            onFieldSubmitted: (String value) async {
+              if(_formKey.currentState.validate())
+                _lookupTeam();
+            },
+            validator: (String value) {
+              if (value.isEmpty) {
+                return 'チーム名を入力してください';
+              }
+              return null;
+            },
           ),
-          validator: (String value) {
-            if (value.isEmpty) {
-              return 'チーム名を入力してください';
-            }
-            return null;
-          },
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   //チームを検索する
-  void _lookup_team() async {
+  void _lookupTeam() async {
     var docs = await Firestore.instance
         .collection("teams")
         .where("team_name", isEqualTo: _teamNameField.text)

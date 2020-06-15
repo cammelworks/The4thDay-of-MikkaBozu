@@ -39,41 +39,47 @@ class HomeManager {
 
   //ログインした後の画面を表示する
   Widget getHomeScreen() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Center(
-          //チーム作成ボタンの表示
-          child: TeamCreateButton(_user.email),
+    return SingleChildScrollView(
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Center(
+              //チーム作成ボタンの表示
+              child: TeamCreateButton(_user.email),
+            ),
+            Center(
+              //サインアウトボタンの表示
+              child: SignoutButton(_auth, _user.email, (FirebaseUser user) {
+                _user = user;
+                updateStateCallback();
+              }),
+            ),
+            Center(
+                child: LookupTeam(_user.email, _teamName, (String teamName) {
+              _teamName = teamName;
+              updateStateCallback();
+            })),
+            Center(
+              child: showJoinButton(),
+            ),
+            Center(
+              //メールアドレスと参加チームIDの表示
+              child: TeamsScreen(_user.email),
+            ),
+            Center(
+              //走った距離を入力するフォーム
+              child: RecordForm(_user.email),
+            ),
+            Container(
+              child: Center(
+                //距離のデータを表示
+                child: RecordsScreen(_user.email),
+              ),
+            ),
+          ],
         ),
-        Center(
-          //サインアウトボタンの表示
-          child: SignoutButton(_auth, _user.email, (FirebaseUser user) {
-            _user = user;
-            updateStateCallback();
-          }),
-        ),
-        Center(
-            child: LookupTeam(_user.email, _teamName, (String teamName) {
-          _teamName = teamName;
-          updateStateCallback();
-        })),
-        Center(
-          child: showJoinButton(),
-        ),
-        Center(
-          //メールアドレスと参加チームIDの表示
-          child: TeamsScreen(_user.email),
-        ),
-        Center(
-          //走った距離を入力するフォーム
-          child: RecordForm(_user.email),
-        ),
-        Center(
-          //距離のデータを表示
-          child: RecordsScreen(_user.email),
-        ),
-      ],
+      ),
     );
   }
 
