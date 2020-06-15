@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:the4thdayofmikkabozu/Screens/Home/team_join_button.dart';
+import 'package:the4thdayofmikkabozu/Screens/Home/to_teampage_button.dart';
 
 class TeamsDropdownButton extends StatefulWidget {
   String _email;
@@ -60,7 +60,7 @@ class TeamsDropdownButtonState extends State<TeamsDropdownButton> {
               }),
         ),
         Center(
-          child: TeamJoinButton(_selectedTeamName),
+          child: ToTeampageButton(_selectedTeamName),
         ),
       ],
     );
