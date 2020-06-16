@@ -23,3 +23,11 @@ https://docs.google.com/presentation/d/1ZDK06Qx4u-7yiB8-y9v228KsxJjNyG_YvZ-i64Df
 - 目標：最近少し太ってきて、履けていたズボンが履けなくなったため、痩せたい。
   みんなで楽しそうなことができそうな運動アプリがあったためダウンロードした。
   なかなか続かない運動を継続させ、痩せにつなげたい。
+  
+## Mock
+### Database
+- TEAMS (Page1)
+- USERS (Page2) 
+https://app.diagrams.net/#G1CMR3LrljikwbxKwDcdyfu1eU36fBlCtx
+### Application
+https://app.diagrams.net/#G1x4mvbFxA61XcJ-GQylx98LIYyS1DM-vH
