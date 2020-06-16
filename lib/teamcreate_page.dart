@@ -83,15 +83,16 @@ class _TeamFormState extends State<_TeamForm> {
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   ),
                   onPressed: () async {
-                    if (_formKey.currentState.validate() &&
-                        await checkUniqueTeamName(_nameController.text)) {
-                      createTeam(_email);
-                      updateDataUserData(_email);
-                      Navigator.pop(context);
-                    } else {
-                      Fluttertoast.showToast(
-                        msg: 'すでに使用されています',
-                      );
+                    if(_formKey.currentState.validate()){
+                      if (await checkUniqueTeamName(_nameController.text)) {
+                        createTeam(_email);
+                        updateDataUserData(_email);
+                        Navigator.pop(context);
+                      } else {
+                        Fluttertoast.showToast(
+                          msg: 'すでに使用されています',
+                        );
+                      }
                     }
                   },
                 ),

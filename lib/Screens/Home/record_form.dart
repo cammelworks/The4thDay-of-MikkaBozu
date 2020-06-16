@@ -24,9 +24,9 @@ class RecordForm extends StatelessWidget {
                   onPressed: () async {
                     if(_formKey.currentState.validate()) {
                       _pushRecord();
-                      //キーボードを閉じる
-                      FocusScope.of(context).requestFocus(new FocusNode());
                     }
+                    //キーボードを閉じる
+                    FocusScope.of(context).requestFocus(new FocusNode());
                   },
                 ),
               ),
@@ -66,7 +66,7 @@ class RecordForm extends StatelessWidget {
             .document(userDocId)
             .collection('records')
             .document()
-            .setData({'distance': _recordField.text, 'timestamp': Timestamp.now()});
+            .setData({'distance': double.parse(_recordField.text), 'timestamp': Timestamp.now()});
       } else {
         print("Not Found");
       }

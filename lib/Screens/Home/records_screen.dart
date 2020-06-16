@@ -7,12 +7,18 @@ class RecordsScreen extends StatelessWidget {
   RecordsScreen(this._email);
   @override
   Widget build(BuildContext context) {
-    return Center(
-          child: Container(
-            alignment: Alignment.center,
-            child: getRecords(),
+    //画面サイズを取得
+    final Size size = MediaQuery.of(context).size;
+    return ConstrainedBox(
+      //表示できる最大範囲を画面の縦3分の1に指定
+      constraints: BoxConstraints(maxHeight: size.height/3),
+      child: Center(
+            child: Container(
+              alignment: Alignment.center,
+              child: getRecords(),
+            ),
           ),
-        );
+    );
   }
 
   //走った距離を取得する関数
