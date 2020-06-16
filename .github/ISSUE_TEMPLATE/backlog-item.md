@@ -1,7 +1,7 @@
 ---
 name: Backlog Item
 about: バックログアイテム用のIssue
-title: "(?pt)"
+title: ''
 labels: ''
 assignees: ''
 
@@ -17,3 +17,9 @@ assignees: ''
 ```
 モック画像
 ```
+
+## テスト
+- [ ] テストケース１
+- [ ] テストケース２
+- [ ] （例）aaa@test.com データベースに登録できる
+- [ ] （例）データベース上のaaa@test.comの情報を取得できる
