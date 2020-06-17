@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../teamcreate_page.dart';
+import '../../team_page.dart';
 
 class ToTeampageButton extends StatelessWidget {
   String _selectedTeamName;
@@ -22,7 +23,11 @@ class ToTeampageButton extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
               ),
               onPressed: () async {
-                print(_selectedTeamName);
+                final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TeamPage(this._selectedTeamName),
+                    ));
               }),
         ),
       ),
