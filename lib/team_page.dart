@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:numberpicker/numberpicker.dart';
+import 'package:flutter_picker/flutter_picker.dart';
 
 class TeamPage extends StatefulWidget {
   String _TeamName;
@@ -39,13 +39,38 @@ class TeamPageState extends State<TeamPage> {
                 ),
               ),
               Center(
-                  child: NumberPicker.integer(
-                initialValue: 50,
-                minValue: 0,
-                maxValue: 100,
-              )),
+                child: RaisedButton(
+                  child: Text('チーム目標'),
+                  onPressed: () {
+                    showPickerNumber(context);
+                  },
+                ),
+              ),
             ]),
       ),
     );
+  }
+
+  showPickerNumber(BuildContext context) {
+    Picker(
+        adapter: NumberPickerAdapter(data: [
+          NumberPickerColumn(begin: 0, end: 10, jump: 1),
+        ]),
+        delimiter: [
+//          PickerDelimiter(
+//              child: Container(
+//            width: 30.0,
+//            alignment: Alignment.center,
+//          ))
+        ],
+        hideHeader: true,
+        title: Text("チーム目標を設定してください"),
+        selectedTextStyle: TextStyle(color: Colors.blue),
+        confirmText: "決定",
+        cancelText: "キャンセル",
+        onConfirm: (Picker picker, List value) {
+          print(value.toString());
+          print(picker.getSelectedValues());
+        }).showDialog(context);
   }
 }
