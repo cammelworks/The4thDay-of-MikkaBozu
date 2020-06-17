@@ -11,7 +11,6 @@ import 'package:the4thdayofmikkabozu/Screens/Home/records_screen.dart';
 import 'package:the4thdayofmikkabozu/Screens/Home/teams_dropdownbutton.dart';
 
 import 'signin_screen.dart';
-import 'team_create_button.dart';
 import 'sidemenu.dart';
 
 class HomeManager {
@@ -48,10 +47,6 @@ class HomeManager {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Center(
-              //チーム作成ボタンの表示
-              child: TeamCreateButton(_user.email),
-            ),
-            Center(
               //サインアウトボタンの表示
               child: SignoutButton(_auth, _user.email, (FirebaseUser user) {
                 _user = user;
@@ -70,7 +65,7 @@ class HomeManager {
               //メールアドレスと参加チームIDの表示
               child: TeamsScreen(_user.email),
             ),
-             Center(
+            Center(
               //参加しているチームをドロップダウンボタンで表示
               child: TeamsDropdownButton(_user.email),
             ),

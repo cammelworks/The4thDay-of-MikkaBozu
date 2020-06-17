@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'team_create_button.dart';
+
 class Sidemenu extends StatelessWidget {
   String _email;
   Sidemenu(this._email);
@@ -18,8 +20,7 @@ class Sidemenu extends StatelessWidget {
             decoration: BoxDecoration(
                 color: Colors.pinkAccent,
                 image: DecorationImage(
-                    fit: BoxFit.fill,
-                    image: AssetImage('images/bouzu.png'))),
+                    fit: BoxFit.fill, image: AssetImage('images/bouzu.png'))),
           ),
           ListTile(
             title: Text('MYPAGE'),
@@ -29,6 +30,7 @@ class Sidemenu extends StatelessWidget {
             title: Text('TEAM'),
             onTap: () => {Navigator.of(context).pop()},
           ),
+          TeamCreateButton(_email),
         ],
       ),
     );
