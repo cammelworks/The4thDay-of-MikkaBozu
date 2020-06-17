@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'Screens/Home/join_button.dart';
 
 class LookupTeamPage extends StatefulWidget {
   String _email;
@@ -48,6 +49,7 @@ class _TeamForm extends StatefulWidget {
 
 class _TeamFormState extends State<_TeamForm> {
   String _email;
+  bool _showButton = false;
   //コンストラクタ
   _TeamFormState(this._email);
 
@@ -88,6 +90,9 @@ class _TeamFormState extends State<_TeamForm> {
               return null;
             },
           ),
+          Center(
+            child: showJoinButton(),
+          ),
         ],
       ),
     );
@@ -102,7 +107,9 @@ class _TeamFormState extends State<_TeamForm> {
     //入力されたチーム名があればコールバック
     if (docs.documents.length != 0) {
       if (await _searchAlreadyJoin(docs.documents[0].documentID)) {
-//        callback(_teamNameField.text);
+      setState(() {
+        _showButton = true;
+      });
       } else {
         //すでに自分がチームに参加している
         Fluttertoast.showToast(
@@ -110,7 +117,9 @@ class _TeamFormState extends State<_TeamForm> {
         );
       }
     } else {
-//      callback(null);
+      setState(() {
+        _showButton = false;
+      });
       Fluttertoast.showToast(
         msg: '存在しないチームです',
       );
@@ -129,6 +138,17 @@ class _TeamFormState extends State<_TeamForm> {
       return false;
     } else {
       return true;
+    }
+  }
+
+  Widget showJoinButton() {
+    if (_showButton) {
+      //登録ボタンの表示
+      return JoinButton(_teamNameField.text, _email, () {
+      });
+    } else {
+      //何も表示しない
+      return null;
     }
   }
 }
