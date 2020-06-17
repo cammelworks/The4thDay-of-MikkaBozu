@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../teamcreate_page.dart';
 import '../../team_page.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ToTeampageButton extends StatelessWidget {
   String _selectedTeamName;
@@ -23,11 +24,17 @@ class ToTeampageButton extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
               ),
               onPressed: () async {
-                final result = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TeamPage(this._selectedTeamName),
-                    ));
+                if(this._selectedTeamName != null){
+                  final result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TeamPage(this._selectedTeamName),
+                      ));
+                } else {
+                  Fluttertoast.showToast(
+                    msg: 'チームを選択してください',
+                  );
+                }
               }),
         ),
       ),
