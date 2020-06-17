@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:the4thdayofmikkabozu/Screens/Home/join_button.dart';
-import 'package:the4thdayofmikkabozu/Screens/Home/lookup_team.dart';
 import 'package:the4thdayofmikkabozu/Screens/Home/sidemenu.dart';
 import 'package:the4thdayofmikkabozu/Screens/Home/signout_button.dart';
 import 'package:the4thdayofmikkabozu/Screens/Home/teams_screen.dart';
@@ -52,14 +51,6 @@ class HomeManager {
                 _user = user;
                 updateStateCallback();
               }),
-            ),
-            Center(
-                child: LookupTeam(_user.email, _teamName, (String teamName) {
-              _teamName = teamName;
-              updateStateCallback();
-            })),
-            Center(
-              child: showJoinButton(),
             ),
             Center(
               //メールアドレスと参加チームIDの表示
