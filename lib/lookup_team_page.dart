@@ -11,7 +11,7 @@ class LookupTeamPage extends StatefulWidget {
   //コンストラクタ
   LookupTeamPage(this._email);
 
-  final String title = 'チーム作成';
+  final String title = 'チーム検索';
   @override
   State<StatefulWidget> createState() => LookupTeamPageState(_email);
 }
@@ -52,111 +52,83 @@ class _TeamFormState extends State<_TeamForm> {
   _TeamFormState(this._email);
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _teamNameField = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TextFormField(
-            controller: _nameController,
-            decoration: const InputDecoration(labelText: 'チーム名を入力してください'),
+            controller: _teamNameField,
+            decoration: InputDecoration(
+              labelText: '参加したいチーム名を入力してください',
+              suffixIcon: IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () async {
+                  if(_formKey.currentState.validate()) {
+                    _lookupTeam();
+                  }
+                  //キーボードを閉じる
+                  FocusScope.of(context).requestFocus(new FocusNode());
+                },
+              ),
+            ),
+            //エンターアイコンを変更
+            textInputAction: TextInputAction.search,
+            onFieldSubmitted: (String value) async {
+              if(_formKey.currentState.validate())
+                _lookupTeam();
+            },
             validator: (String value) {
               if (value.isEmpty) {
-                return '登録にはチーム名が必要です';
+                return 'チーム名を入力してください';
               }
               return null;
             },
-          ),
-          Center(
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 0.0),
-              child: ButtonTheme(
-                minWidth: 200.0,
-                height: 50.0,
-                buttonColor: Colors.white,
-                child: RaisedButton(
-                  child: const Text('作成'),
-                  shape: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  ),
-                  onPressed: () async {
-                    if (_formKey.currentState.validate()) {
-                      if (await checkUniqueTeamName(_nameController.text)) {
-                        createTeam(_email);
-                        updateDataUserData(_email);
-                        Navigator.pop(context);
-                      } else {
-                        Fluttertoast.showToast(
-                          msg: 'すでに使用されています',
-                        );
-                      }
-                    }
-                  },
-                ),
-              ),
-            ),
           ),
         ],
       ),
     );
   }
 
-  @override
-  void dispose() {
-    _nameController.dispose();
-    super.dispose();
-  }
-
-  //チームを作成する関数
-  void createTeam(String email) {
-    Firestore.instance
-        .collection('teams')
-        .document(_nameController.text)
-        .setData({'team_name': _nameController.text});
-
-    Firestore.instance
-        .collection('teams')
-        .document(_nameController.text)
-        .collection('users')
-        .document(email)
-        .setData({'email': email});
-  }
-
-  //ユーザデータにチーム名を追加する関数
-  void updateDataUserData(String email) {
-    //自分のEmailに紐づくドキュメントを取得
-    getData() async {
-      return await Firestore.instance.collection('users').document(_email);
-    }
-
-    getData().then((val) {
-      //データの更新
-      if (val != null) {
-        String userDocId = val.documentID;
-        Firestore.instance
-            .collection('users')
-            .document(userDocId)
-            .collection('teams')
-            .document(_nameController.text)
-            .setData({'team_name': _nameController.text});
-      } else {
-        print("Not Found");
-      }
-    });
-  }
-
-  Future<bool> checkUniqueTeamName(String candidateName) async {
+  //チームを検索する
+  void _lookupTeam() async {
     var docs = await Firestore.instance
         .collection("teams")
-        .where("team_name", isEqualTo: candidateName)
+        .where("team_name", isEqualTo: _teamNameField.text)
         .getDocuments();
-    if (docs.documents.length == 0) {
-      return true;
+    //入力されたチーム名があればコールバック
+    if (docs.documents.length != 0) {
+      if (await _searchAlreadyJoin(docs.documents[0].documentID)) {
+//        callback(_teamNameField.text);
+      } else {
+        //すでに自分がチームに参加している
+        Fluttertoast.showToast(
+          msg: 'すでに参加しています。',
+        );
+      }
     } else {
+//      callback(null);
+      Fluttertoast.showToast(
+        msg: '存在しないチームです',
+      );
+    }
+  }
+
+  //すでに自分がチームに参加しているか調べる
+  Future<bool> _searchAlreadyJoin(String teamName) async {
+    var docs = await Firestore.instance
+        .collection("teams")
+        .document(teamName)
+        .collection('users')
+        .where("email", isEqualTo: _email)
+        .getDocuments();
+    if (docs.documents.length >= 1) {
       return false;
+    } else {
+      return true;
     }
   }
 }

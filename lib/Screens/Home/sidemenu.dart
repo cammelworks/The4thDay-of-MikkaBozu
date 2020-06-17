@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'team_create_button.dart';
 
+import '../../lookup_team_page.dart';
+
 class Sidemenu extends StatelessWidget {
   String _email;
   Sidemenu(this._email);
@@ -28,7 +30,16 @@ class Sidemenu extends StatelessWidget {
           ),
           ListTile(
             title: Text('TEAM'),
-            onTap: () => {Navigator.of(context).pop()},
+            trailing:IconButton(icon: Icon(Icons.search),
+              onPressed: () async {
+                //チーム作成ページに移動
+                final result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                builder: (context) => LookupTeamPage(_email),
+                ));
+                },
+            ),
           ),
           TeamCreateButton(_email),
         ],
