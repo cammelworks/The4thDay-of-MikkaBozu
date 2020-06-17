@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'team_create_button.dart';
 
 import '../../lookup_team_page.dart';
+import '../../teamcreate_page.dart';
 
 class Sidemenu extends StatelessWidget {
   String _email;
@@ -30,20 +31,31 @@ class Sidemenu extends StatelessWidget {
           ),
           ListTile(
             title: Text('TEAM'),
-            trailing:IconButton(icon: Icon(Icons.search),
-              onPressed: () async {
-                //チーム作成ページに移動
-                final result = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                builder: (context) => LookupTeamPage(_email),
-                ));
-                },
+            trailing: Wrap(
+              spacing: -16,
+              children: <Widget>[
+                IconButton(icon: Icon(Icons.search),
+                onPressed: () async {
+                    //チーム作成ページに移動
+                  final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                  builder: (context) => LookupTeamPage(_email),
+                  ));
+                  }),
+                  IconButton(icon: Icon(Icons.add),
+                  onPressed: () async {
+                    //チーム作成ページに移動
+                    final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                    builder: (context) => TeamCreatePage(_email),
+                    ));
+                    }),
+            ]),
             ),
-          ),
-          TeamCreateButton(_email),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
   }
 }
