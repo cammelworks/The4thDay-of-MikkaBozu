@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:the4thdayofmikkabozu/Screens/Home/join_button.dart';
 import 'package:the4thdayofmikkabozu/Screens/Home/lookup_team.dart';
+import 'package:the4thdayofmikkabozu/Screens/Home/sidemenu.dart';
 import 'package:the4thdayofmikkabozu/Screens/Home/signout_button.dart';
 import 'package:the4thdayofmikkabozu/Screens/Home/teams_screen.dart';
 import 'package:the4thdayofmikkabozu/Screens/Home/record_form.dart';
@@ -11,6 +12,7 @@ import 'package:the4thdayofmikkabozu/Screens/Home/teams_dropdownbutton.dart';
 
 import 'signin_screen.dart';
 import 'team_create_button.dart';
+import 'sidemenu.dart';
 
 class HomeManager {
   final VoidCallback updateStateCallback;
@@ -95,6 +97,16 @@ class HomeManager {
         _teamName = null;
         updateStateCallback();
       });
+    } else {
+      //何も表示しない
+      return null;
+    }
+  }
+
+  Widget showSidemenu() {
+    if (_user != null) {
+      //サイドメニューの表示
+      return Sidemenu(_user.email);
     } else {
       //何も表示しない
       return null;

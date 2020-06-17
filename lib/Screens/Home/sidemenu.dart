@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
-class NavDrawer extends StatelessWidget {
+class Sidemenu extends StatelessWidget {
+  String _email;
+  Sidemenu(this._email);
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
