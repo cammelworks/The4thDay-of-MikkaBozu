@@ -1,27 +1,27 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/flutter_picker.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-class GoalManager extends StatelessWidget{
+class GoalManager extends StatelessWidget {
   String _teamName;
 
   GoalManager(this._teamName);
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: _showGoal(),
-      trailing: IconButton(icon: Icon(Icons.search),
-          onPressed: () async {
-            //目標変更
-            showPickerNumber(context);
-          }),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Center(child: _showGoal()),
+        IconButton(
+            icon: Icon(Icons.mode_edit),
+            onPressed: () async {
+              //目標変更
+              showPickerNumber(context);
+            }),
+      ],
     );
-  }
-
-  Widget _showGoal(){
-    //Firestoreから目標を取得して表示
   }
 
   showPickerNumber(BuildContext context) {
@@ -42,7 +42,7 @@ class GoalManager extends StatelessWidget{
         }).showDialog(context);
   }
 
-  void _setGoal(int goal){
+  void _setGoal(int goal) {
     //Firebaseのteamsに目標を設定する
     Firestore.instance
         .collection('teams')
@@ -50,4 +50,34 @@ class GoalManager extends StatelessWidget{
         .updateData({'goal': goal});
   }
 
+  Widget _showGoal() {
+    //Firestoreから目標を取得して表示
+    return StreamBuilder<DocumentSnapshot>(
+        //表示したいFiresotreの保存先を指定
+        stream: Firestore.instance
+            .collection('teams')
+            .document((_teamName))
+            .snapshots(),
+        //streamが更新されるたびに呼ばれる
+        builder:
+            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          //データが取れていない時の処理
+          if (!snapshot.hasData) return const Text('Loading...');
+          if (snapshot.data["goal"] != null) {
+            return Text(
+              "週" + snapshot.data["goal"].toString() + "km",
+              style: TextStyle(
+                fontSize: 20,
+              ),
+            );
+          } else {
+            return Text(
+              "週0km",
+              style: TextStyle(
+                fontSize: 20,
+              ),
+            );
+          }
+        });
+  }
 }
