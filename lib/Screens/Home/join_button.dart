@@ -25,6 +25,8 @@ class JoinButton extends StatelessWidget {
             onPressed: () async {
               //チームに参加
               _joinTeam();
+              //前のページに戻る
+              Navigator.pop(context);
             }),
       ),
     );
