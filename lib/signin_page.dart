@@ -126,6 +126,7 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
   // Example code of how to sign in with email and password.
   void _signInWithEmailAndPassword() async {
     FirebaseUser user;
+    //端末のデータにアクセスするための変数
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     try {
@@ -142,10 +143,12 @@ class _EmailPasswordFormState extends State<_EmailPasswordForm> {
     }
 
     if (user != null) {
+      //emailとパスワードを端末に保存
       await prefs.setString('email', _emailController.text);
       await prefs.setString('password', _passwordController.text);
       print(prefs.getString('email'));
       print(prefs.getString('password'));
+
       setState(() {
         //前のページに戻る
         Navigator.pop(context, user);

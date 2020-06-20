@@ -8,6 +8,7 @@ import 'package:the4thdayofmikkabozu/Screens/Home/teams_screen.dart';
 import 'package:the4thdayofmikkabozu/Screens/Home/record_form.dart';
 import 'package:the4thdayofmikkabozu/Screens/Home/records_screen.dart';
 import 'package:the4thdayofmikkabozu/Screens/Home/teams_dropdownbutton.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'signin_screen.dart';
 import 'team_create_button.dart';
@@ -22,11 +23,23 @@ class HomeManager {
   HomeManager({@required this.updateStateCallback}) : super();
 
   //ログインの有無によって表示を変える関数
-  Widget showButton() {
-    if (_user == null) {
-      return getSigninScreen();
-    } else {
+  Future<Widget> showButton() async {
+    //端末のデータにアクセスするための変数
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (_user != null) {
       return getHomeScreen();
+    } else if (prefs.getString('password') != null) {
+      //自動ログイン
+      _user = (await _auth.signInWithEmailAndPassword(
+        email: prefs.getString('email'),
+        password: prefs.getString('password'),
+      ))
+          .user;
+      return getHomeScreen();
+    } else {
+      //ログイン画面
+      return getSigninScreen();
     }
   }
 
@@ -68,7 +81,7 @@ class HomeManager {
               //メールアドレスと参加チームIDの表示
               child: TeamsScreen(_user.email),
             ),
-             Center(
+            Center(
               //参加しているチームをドロップダウンボタンで表示
               child: TeamsDropdownButton(_user.email),
             ),
