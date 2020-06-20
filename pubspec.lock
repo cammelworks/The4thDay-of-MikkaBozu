@@ -153,6 +153,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_picker:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: e95d121f54faba889fbf8a850c86dd5cf4aa5c5a
+      url: "git://github.com/yangyxd/flutter_picker.git"
+    source: git
+    version: "1.1.5"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -212,6 +221,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.4"
+  infinite_listview:
+    dependency: "direct main"
+    description:
+      name: infinite_listview
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1+1"
   js:
     dependency: transitive
     description:
@@ -233,6 +249,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.8"
+  numberpicker:
+    dependency: "direct main"
+    description:
+      name: numberpicker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.0"
   path:
     dependency: transitive
     description:
