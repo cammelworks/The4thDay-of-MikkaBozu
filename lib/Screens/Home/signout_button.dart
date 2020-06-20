@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 //コールバック関数を変数として定義
 typedef UserCallback = void Function(FirebaseUser user);
@@ -33,9 +34,6 @@ class SignoutButton extends StatelessWidget {
                 Fluttertoast.showToast(
                   msg: email + 'はサインアウトしました',
                 );
-//                    setState(() {
-//                      user = null;
-//                    });
                 //ユーザがサインアウトしたことをコールバック
                 callback(null);
               }),
@@ -47,5 +45,9 @@ class SignoutButton extends StatelessWidget {
   //サインアウトをする関数
   void signOut() async {
     await _auth.signOut();
+    //端末データからemailとパスワードを削除する
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove("email");
+    await prefs.remove("password");
   }
 }
