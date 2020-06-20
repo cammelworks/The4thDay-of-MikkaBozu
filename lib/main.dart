@@ -5,10 +5,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import './Screens/Home/home_manager.dart';
 
-final FirebaseAuth _auth = FirebaseAuth.instance;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,6 +52,7 @@ class MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        drawer: _manager.showSidemenu(),
         appBar: AppBar(
           title: Text(widget.title),
         ),
