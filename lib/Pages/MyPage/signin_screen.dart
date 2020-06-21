@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../../register_page.dart';
-import '../../signin_page.dart';
-
-
+import '../RegisterPage/register_page.dart';
+import '../SigninPage/signin_page.dart';
 
 //コールバック関数を変数として定義
 typedef UserCallback = void Function(FirebaseUser user);

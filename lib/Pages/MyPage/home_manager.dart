@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:the4thdayofmikkabozu/Screens/Home/join_button.dart';
-import 'package:the4thdayofmikkabozu/Screens/Home/sidemenu.dart';
-import 'package:the4thdayofmikkabozu/Screens/Home/signout_button.dart';
-import 'package:the4thdayofmikkabozu/Screens/Home/teams_screen.dart';
-import 'package:the4thdayofmikkabozu/Screens/Home/record_form.dart';
-import 'package:the4thdayofmikkabozu/Screens/Home/records_screen.dart';
-import 'package:the4thdayofmikkabozu/Screens/Home/teams_dropdownbutton.dart';
+import 'package:the4thdayofmikkabozu/Pages/MyPage/SideMenu/sidemenu.dart';
+import 'package:the4thdayofmikkabozu/Pages/MyPage/signout_button.dart';
+import 'package:the4thdayofmikkabozu/Pages/MyPage/teams_screen.dart';
+import 'package:the4thdayofmikkabozu/Pages/MyPage/record_form.dart';
+import 'package:the4thdayofmikkabozu/Pages/MyPage/records_screen.dart';
+import 'package:the4thdayofmikkabozu/Pages/MyPage/teams_dropdownbutton.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'signin_screen.dart';
-import 'sidemenu.dart';
+import 'SideMenu/sidemenu.dart';
 
 class HomeManager {
   final VoidCallback updateStateCallback;
@@ -89,20 +88,7 @@ class HomeManager {
     );
   }
 
-  Widget showJoinButton() {
-    if (_teamName != null) {
-      //登録ボタンの表示
-      return JoinButton(_teamName, _user.email, () {
-        _teamName = null;
-        updateStateCallback();
-      });
-    } else {
-      //何も表示しない
-      return null;
-    }
-  }
-
-  Widget showSidemenu() {
+  Future<Widget> showSidemenu() async {
     if (_user != null) {
       //サイドメニューの表示
       return Sidemenu(_user.email);

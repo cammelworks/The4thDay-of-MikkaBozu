@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'Screens/Home/join_button.dart';
+import 'join_button.dart';
 
 class LookupTeamPage extends StatefulWidget {
   String _email;
