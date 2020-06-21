@@ -38,6 +38,8 @@ class RecordForm extends StatelessWidget {
               validator: (String value) {
                 if (value.isEmpty) {
                   return '距離が入力されていません';
+                } else if(double.parse(value) <= 0){
+                  return '正しい距離を入力してください';
                 }
                 return null;
               },
