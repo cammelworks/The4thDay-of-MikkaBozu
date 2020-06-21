@@ -1,17 +1,60 @@
+// Copyright 2019 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'join_button.dart';
 
-typedef TeamFoundCallback = void Function(String teamName);
+class LookupTeamPage extends StatefulWidget {
+  String _email;
+  //コンストラクタ
+  LookupTeamPage(this._email);
 
-class LookupTeam extends StatelessWidget {
-  final TeamFoundCallback callback;
+  final String title = 'チーム検索';
+  @override
+  State<StatefulWidget> createState() => LookupTeamPageState(_email);
+}
+
+class LookupTeamPageState extends State<LookupTeamPage> {
+  String _email;
+  //コンストラクタ
+  LookupTeamPageState(this._email);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Builder(builder: (BuildContext context) {
+        return ListView(
+          scrollDirection: Axis.vertical,
+          children: <Widget>[
+            _TeamForm(_email),
+          ],
+        );
+      }),
+    );
+  }
+}
+
+class _TeamForm extends StatefulWidget {
+  String _email;
+  //コンストラクタ
+  _TeamForm(this._email);
+  @override
+  State<StatefulWidget> createState() => _TeamFormState(_email);
+}
+
+class _TeamFormState extends State<_TeamForm> {
+  String _email;
+  bool _showButton = false;
+  //コンストラクタ
+  _TeamFormState(this._email);
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _teamNameField = TextEditingController();
-  String _email;
-  String _teamname;
-
-  LookupTeam(this._email, this._teamname, this.callback) : super();
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +76,6 @@ class LookupTeam extends StatelessWidget {
                   FocusScope.of(context).requestFocus(new FocusNode());
                 },
               ),
-              hintText: _teamname,
             ),
             //エンターアイコンを変更
             textInputAction: TextInputAction.search,
@@ -47,6 +89,9 @@ class LookupTeam extends StatelessWidget {
               }
               return null;
             },
+          ),
+          Center(
+            child: showJoinButton(),
           ),
         ],
       ),
@@ -62,7 +107,9 @@ class LookupTeam extends StatelessWidget {
     //入力されたチーム名があればコールバック
     if (docs.documents.length != 0) {
       if (await _searchAlreadyJoin(docs.documents[0].documentID)) {
-        callback(_teamNameField.text);
+      setState(() {
+        _showButton = true;
+      });
       } else {
         //すでに自分がチームに参加している
         Fluttertoast.showToast(
@@ -70,7 +117,9 @@ class LookupTeam extends StatelessWidget {
         );
       }
     } else {
-      callback(null);
+      setState(() {
+        _showButton = false;
+      });
       Fluttertoast.showToast(
         msg: '存在しないチームです',
       );
@@ -89,6 +138,17 @@ class LookupTeam extends StatelessWidget {
       return false;
     } else {
       return true;
+    }
+  }
+
+  Widget showJoinButton() {
+    if (_showButton) {
+      //登録ボタンの表示
+      return JoinButton(_teamNameField.text, _email, () {
+      });
+    } else {
+      //何も表示しない
+      return null;
     }
   }
 }

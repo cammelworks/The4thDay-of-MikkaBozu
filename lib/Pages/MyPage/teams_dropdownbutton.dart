@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:the4thdayofmikkabozu/Screens/Home/to_teampage_button.dart';
+import 'package:the4thdayofmikkabozu/Pages/MyPage/to_teampage_button.dart';
 
 class TeamsDropdownButton extends StatefulWidget {
   String _email;
