@@ -28,7 +28,7 @@ class SignoutButton extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
               ),
               onPressed: () async {
-                signOut();
+                await signOut();
                 final String email = _email;
                 // トーストを表示
                 Fluttertoast.showToast(
