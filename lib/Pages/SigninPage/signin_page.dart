@@ -13,6 +13,17 @@ class SignInPage extends StatefulWidget {
 }
 
 class SignInPageState extends State<SignInPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _isHidden = true;
+
+  void _toggleVisibility() {
+    setState(() {
+      _isHidden = !_isHidden;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,92 +34,71 @@ class SignInPageState extends State<SignInPage> {
         return ListView(
           scrollDirection: Axis.vertical,
           children: <Widget>[
-            _EmailPasswordForm(),
+            Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  TextFormField(
+                    controller: _emailController,
+                    decoration:
+                        const InputDecoration(labelText: 'アドレスを入力してください'),
+                    validator: (String value) {
+                      if (value.isEmpty) {
+                        return 'アドレスが入力されていません';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: _passwordController,
+                    decoration: InputDecoration(
+                        labelText: 'パスワードを入力してください',
+                        suffixIcon: _isHidden
+                            ? IconButton(
+                                onPressed: _toggleVisibility,
+                                icon: Icon(Icons.visibility),
+                              )
+                            : IconButton(
+                                onPressed: _toggleVisibility,
+                                icon: Icon(Icons.visibility_off),
+                              )),
+                    validator: (String value) {
+                      if (value.isEmpty) {
+                        return 'パスワードが入力されていません';
+                      }
+                      return null;
+                    },
+                    obscureText: _isHidden,
+                  ),
+                  Center(
+                    child: Container(
+                      margin: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 0.0),
+                      child: ButtonTheme(
+                        minWidth: 200.0,
+                        height: 50.0,
+                        buttonColor: Colors.white,
+                        child: RaisedButton(
+                          child: const Text('サインイン'),
+                          shape: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0)),
+                          ),
+                          onPressed: () async {
+                            if (_formKey.currentState.validate()) {
+                              _signInWithEmailAndPassword();
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         );
       }),
-    );
-  }
-
-  // Example code for sign out.
-}
-
-class _EmailPasswordForm extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _EmailPasswordFormState();
-}
-
-class _EmailPasswordFormState extends State<_EmailPasswordForm> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  bool _isHidden = true;
-
-  void _toggleVisibility(){
-    setState(() {
-      _isHidden = !_isHidden;
-    });
-  }
-  @override
-  Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          TextFormField(
-            controller: _emailController,
-            decoration: const InputDecoration(labelText: 'アドレスを入力してください'),
-            validator: (String value) {
-              if (value.isEmpty) {
-                return 'アドレスが入力されていません';
-              }
-              return null;
-            },
-          ),
-          TextFormField(
-            controller: _passwordController,
-            decoration: InputDecoration(
-                labelText: 'パスワードを入力してください',
-                suffixIcon: _isHidden ? IconButton(
-                  onPressed: _toggleVisibility,
-                  icon: Icon(Icons.visibility),
-                ) : IconButton(
-                  onPressed: _toggleVisibility,
-                  icon: Icon(Icons.visibility_off),
-                )
-            ),
-            validator: (String value) {
-              if (value.isEmpty) {
-                return 'パスワードが入力されていません';
-              }
-              return null;
-            },
-            obscureText: _isHidden,
-          ),
-          Center(
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 0.0),
-              child: ButtonTheme(
-                minWidth: 200.0,
-                height: 50.0,
-                buttonColor: Colors.white,
-                child: RaisedButton(
-                  child: const Text('サインイン'),
-                  shape: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  ),
-                  onPressed: () async {
-                    if (_formKey.currentState.validate()) {
-                      _signInWithEmailAndPassword();
-                    }
-                  },
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
