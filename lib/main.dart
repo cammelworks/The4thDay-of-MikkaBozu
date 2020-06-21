@@ -50,7 +50,6 @@ class MyHomePageState extends State<MyHomePage> {
         appBar: AppBar(
           title: Text(widget.title),
         ),
-//        body: _manager.showButton());
         body: FutureBuilder(
           future: _manager.showButton(),
           builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
@@ -61,16 +60,7 @@ class MyHomePageState extends State<MyHomePage> {
             }
           },
         ),
-      drawer: FutureBuilder(
-        future: _manager.showSidemenu(),
-        builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
-          if (snapshot.hasData) {
-            return snapshot.data;
-          } else {
-            return Center(child: Text("ログイン確認中"));
-          }
-        },
-      ),
+      drawer:_manager.showSidemenu()
     );
   }
 }

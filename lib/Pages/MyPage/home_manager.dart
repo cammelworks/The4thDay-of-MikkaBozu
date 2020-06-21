@@ -17,7 +17,6 @@ class HomeManager {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser _user = null;
-  String _teamName = null;
 
   HomeManager({@required this.updateStateCallback}) : super();
 
@@ -35,7 +34,9 @@ class HomeManager {
         password: prefs.getString('password'),
       ))
           .user;
-      return getHomeScreen();
+      //ログインが終了したらコールバック
+      updateStateCallback();
+      return null;
     } else {
       //ログイン画面
       return getSigninScreen();
@@ -88,7 +89,7 @@ class HomeManager {
     );
   }
 
-  Future<Widget> showSidemenu() async {
+  Widget showSidemenu()  {
     if (_user != null) {
       //サイドメニューの表示
       return Sidemenu(_user.email);
