@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -110,6 +111,8 @@ class RegisterPageState extends State<RegisterPage> {
   // Example code for registration.
   void _register() async {
     FirebaseUser user;
+    //端末のデータにアクセスするための変数
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       user = (await _auth.createUserWithEmailAndPassword(
         email: _emailController.text,
@@ -127,6 +130,12 @@ class RegisterPageState extends State<RegisterPage> {
     }
 
     if (user != null) {
+      //emailとパスワードを端末に保存
+      await prefs.setString('email', _emailController.text);
+      await prefs.setString('password', _passwordController.text);
+      print(prefs.getString('email'));
+      print(prefs.getString('password'));
+
       setState(() {
         //Firestoreにemailをpush
         Firestore.instance
