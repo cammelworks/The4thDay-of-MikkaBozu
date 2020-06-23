@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'team_create_button.dart';
-
-import '../../lookup_team_page.dart';
-import '../../teamcreate_page.dart';
+import '../../LookupTeamPage/lookup_team_page.dart';
+import '../../TeamcreatePage/team_create_page.dart';
 
 class Sidemenu extends StatelessWidget {
   String _email;

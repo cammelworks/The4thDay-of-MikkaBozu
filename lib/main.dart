@@ -1,12 +1,7 @@
-// Copyright 2017 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import './Screens/Home/home_manager.dart';
-
+import './Pages/MyPage/home_manager.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,10 +47,20 @@ class MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: _manager.showSidemenu(),
         appBar: AppBar(
           title: Text(widget.title),
         ),
-        body: _manager.showButton());
+        body: FutureBuilder(
+          future: _manager.showButton(),
+          builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+            if (snapshot.hasData) {
+              return snapshot.data;
+            } else {
+              return Center(child: Text("ログイン確認中"));
+            }
+          },
+        ),
+      drawer:_manager.showSidemenu()
+    );
   }
 }

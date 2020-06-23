@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../teamcreate_page.dart';
 import '../TeamPage/team_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 

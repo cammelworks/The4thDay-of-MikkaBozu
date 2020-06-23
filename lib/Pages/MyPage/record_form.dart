@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RecordForm extends StatelessWidget {
@@ -39,6 +38,8 @@ class RecordForm extends StatelessWidget {
               validator: (String value) {
                 if (value.isEmpty) {
                   return '距離が入力されていません';
+                } else if(double.parse(value) <= 0){
+                  return '正しい距離を入力してください';
                 }
                 return null;
               },

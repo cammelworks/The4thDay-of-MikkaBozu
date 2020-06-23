@@ -1,32 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:the4thdayofmikkabozu/Screens/Home/join_button.dart';
-import 'package:the4thdayofmikkabozu/Screens/Home/sidemenu.dart';
-import 'package:the4thdayofmikkabozu/Screens/Home/signout_button.dart';
-import 'package:the4thdayofmikkabozu/Screens/Home/teams_screen.dart';
-import 'package:the4thdayofmikkabozu/Screens/Home/record_form.dart';
-import 'package:the4thdayofmikkabozu/Screens/Home/records_screen.dart';
-import 'package:the4thdayofmikkabozu/Screens/Home/teams_dropdownbutton.dart';
+import 'package:the4thdayofmikkabozu/Pages/MyPage/SideMenu/sidemenu.dart';
+import 'package:the4thdayofmikkabozu/Pages/MyPage/signout_button.dart';
+import 'package:the4thdayofmikkabozu/Pages/MyPage/teams_screen.dart';
+import 'package:the4thdayofmikkabozu/Pages/MyPage/record_form.dart';
+import 'package:the4thdayofmikkabozu/Pages/MyPage/records_screen.dart';
+import 'package:the4thdayofmikkabozu/Pages/MyPage/teams_dropdownbutton.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'signin_screen.dart';
-import 'sidemenu.dart';
+import 'SideMenu/sidemenu.dart';
 
 class HomeManager {
   final VoidCallback updateStateCallback;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser _user = null;
-  String _teamName = null;
 
   HomeManager({@required this.updateStateCallback}) : super();
 
   //ログインの有無によって表示を変える関数
-  Widget showButton() {
-    if (_user == null) {
-      return getSigninScreen();
-    } else {
+  Future<Widget> showButton() async {
+    //端末のデータにアクセスするための変数
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (_user != null) {
       return getHomeScreen();
+    } else if (prefs.getString('password') != null) {
+      //自動ログイン
+      _user = (await _auth.signInWithEmailAndPassword(
+        email: prefs.getString('email'),
+        password: prefs.getString('password'),
+      ))
+          .user;
+      //ログインが終了したらコールバック
+      updateStateCallback();
+      return null;
+    } else {
+      //ログイン画面
+      return getSigninScreen();
     }
   }
 
@@ -76,20 +89,7 @@ class HomeManager {
     );
   }
 
-  Widget showJoinButton() {
-    if (_teamName != null) {
-      //登録ボタンの表示
-      return JoinButton(_teamName, _user.email, () {
-        _teamName = null;
-        updateStateCallback();
-      });
-    } else {
-      //何も表示しない
-      return null;
-    }
-  }
-
-  Widget showSidemenu() {
+  Widget showSidemenu()  {
     if (_user != null) {
       //サイドメニューの表示
       return Sidemenu(_user.email);

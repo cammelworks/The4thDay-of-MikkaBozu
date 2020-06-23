@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'Screens/Home/join_button.dart';
+import 'join_button.dart';
 
 class LookupTeamPage extends StatefulWidget {
   String _email;
@@ -19,6 +19,9 @@ class LookupTeamPage extends StatefulWidget {
 
 class LookupTeamPageState extends State<LookupTeamPage> {
   String _email;
+  bool _showButton = false;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _teamNameField = TextEditingController();
   //コンストラクタ
   LookupTeamPageState(this._email);
   @override
@@ -31,70 +34,46 @@ class LookupTeamPageState extends State<LookupTeamPage> {
         return ListView(
           scrollDirection: Axis.vertical,
           children: <Widget>[
-            _TeamForm(_email),
+            Form(
+              key: _formKey,
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                    controller: _teamNameField,
+                    decoration: InputDecoration(
+                      labelText: '参加したいチーム名を入力してください',
+                      suffixIcon: IconButton(
+                        icon: Icon(Icons.search),
+                        onPressed: () async {
+                          if (_formKey.currentState.validate()) {
+                            _lookupTeam();
+                          }
+                          //キーボードを閉じる
+                          FocusScope.of(context).requestFocus(new FocusNode());
+                        },
+                      ),
+                    ),
+                    //エンターアイコンを変更
+                    textInputAction: TextInputAction.search,
+                    onFieldSubmitted: (String value) async {
+                      if (_formKey.currentState.validate()) _lookupTeam();
+                    },
+                    validator: (String value) {
+                      if (value.isEmpty) {
+                        return 'チーム名を入力してください';
+                      }
+                      return null;
+                    },
+                  ),
+                  Center(
+                    child: showJoinButton(),
+                  ),
+                ],
+              ),
+            ),
           ],
         );
       }),
-    );
-  }
-}
-
-class _TeamForm extends StatefulWidget {
-  String _email;
-  //コンストラクタ
-  _TeamForm(this._email);
-  @override
-  State<StatefulWidget> createState() => _TeamFormState(_email);
-}
-
-class _TeamFormState extends State<_TeamForm> {
-  String _email;
-  bool _showButton = false;
-  //コンストラクタ
-  _TeamFormState(this._email);
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _teamNameField = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: <Widget>[
-          TextFormField(
-            controller: _teamNameField,
-            decoration: InputDecoration(
-              labelText: '参加したいチーム名を入力してください',
-              suffixIcon: IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () async {
-                  if(_formKey.currentState.validate()) {
-                    _lookupTeam();
-                  }
-                  //キーボードを閉じる
-                  FocusScope.of(context).requestFocus(new FocusNode());
-                },
-              ),
-            ),
-            //エンターアイコンを変更
-            textInputAction: TextInputAction.search,
-            onFieldSubmitted: (String value) async {
-              if(_formKey.currentState.validate())
-                _lookupTeam();
-            },
-            validator: (String value) {
-              if (value.isEmpty) {
-                return 'チーム名を入力してください';
-              }
-              return null;
-            },
-          ),
-          Center(
-            child: showJoinButton(),
-          ),
-        ],
-      ),
     );
   }
 
@@ -107,9 +86,9 @@ class _TeamFormState extends State<_TeamForm> {
     //入力されたチーム名があればコールバック
     if (docs.documents.length != 0) {
       if (await _searchAlreadyJoin(docs.documents[0].documentID)) {
-      setState(() {
-        _showButton = true;
-      });
+        setState(() {
+          _showButton = true;
+        });
       } else {
         //すでに自分がチームに参加している
         Fluttertoast.showToast(
@@ -144,8 +123,7 @@ class _TeamFormState extends State<_TeamForm> {
   Widget showJoinButton() {
     if (_showButton) {
       //登録ボタンの表示
-      return JoinButton(_teamNameField.text, _email, () {
-      });
+      return JoinButton(_teamNameField.text, _email, () {});
     } else {
       //何も表示しない
       return null;
