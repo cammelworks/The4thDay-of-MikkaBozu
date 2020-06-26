@@ -70,7 +70,7 @@ class HomeManager {
               child: TeamsScreen(_user.email),
             ),
             Center(
-              //参加しているチームをドロップダウンボタンで表示
+              //時間・距離計測ページへ遷移するボタン
               child: ToMeasurementPageButton(),
             ),
             Center(
