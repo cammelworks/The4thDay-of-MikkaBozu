@@ -6,7 +6,7 @@ import 'package:the4thdayofmikkabozu/Pages/MyPage/signout_button.dart';
 import 'package:the4thdayofmikkabozu/Pages/MyPage/teams_screen.dart';
 import 'package:the4thdayofmikkabozu/Pages/MyPage/record_form.dart';
 import 'package:the4thdayofmikkabozu/Pages/MyPage/records_screen.dart';
-import 'package:the4thdayofmikkabozu/Pages/MyPage/teams_dropdownbutton.dart';
+import 'package:the4thdayofmikkabozu/Pages/MyPage/to_mesurement_page_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'signin_screen.dart';
@@ -71,7 +71,7 @@ class HomeManager {
             ),
             Center(
               //参加しているチームをドロップダウンボタンで表示
-              child: TeamsDropdownButton(_user.email),
+              child: ToMeasurementPageButton(),
             ),
             Center(
               //走った距離を入力するフォーム
