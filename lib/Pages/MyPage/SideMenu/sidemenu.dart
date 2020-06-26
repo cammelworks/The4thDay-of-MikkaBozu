@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../LookupTeamPage/lookup_team_page.dart';
 import '../../TeamcreatePage/team_create_page.dart';
+import '../../TeamPage/team_page.dart';
 
 class Sidemenu extends StatelessWidget {
   String _email;
@@ -25,41 +26,38 @@ class Sidemenu extends StatelessWidget {
                 image: DecorationImage(
                     fit: BoxFit.fill, image: AssetImage('images/bouzu.png'))),
           ),
-          Container(
-            height: 34,
-            child: ListTile(
-              title: Text('MYPAGE'),
-              onTap: () => {},
-            ),
+          ListTile(
+            dense: true,
+            title: Text('MYPAGE'),
+            onTap: () => {},
           ),
-          Container(
-            height: 34,
-            child: ListTile(
-              title: Text('TEAM',
-              ),
-              trailing: Wrap(spacing: -16, children: <Widget>[
-                IconButton(
-                    icon: Icon(Icons.search),
-                    onPressed: () async {
-                      //チーム作成ページに移動
-                      final result = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => LookupTeamPage(_email),
-                          ));
-                    }),
-                IconButton(
-                    icon: Icon(Icons.add),
-                    onPressed: () async {
-                      //チーム作成ページに移動
-                      final result = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TeamCreatePage(_email),
-                          ));
-                    }),
-              ]),
+          ListTile(
+            dense: true,
+            title: Text(
+              'TEAM',
             ),
+            trailing: Wrap(spacing: -16, children: <Widget>[
+              IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: () async {
+                    //チーム作成ページに移動
+                    final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LookupTeamPage(_email),
+                        ));
+                  }),
+              IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () async {
+                    //チーム作成ページに移動
+                    final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TeamCreatePage(_email),
+                        ));
+                  }),
+            ]),
           ),
           Container(
             child: StreamBuilder<QuerySnapshot>(
@@ -95,7 +93,17 @@ class Sidemenu extends StatelessWidget {
         children: <Widget>[
           Container(
             height: 34,
-            child: ListTile(title: Text(document['team_name'])),
+            child: ListTile(
+              dense: true,
+              title: Text(document['team_name']),
+              onTap: () => {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TeamPage(document['team_name']),
+                    )),
+              },
+            ),
           )
         ],
       ),
