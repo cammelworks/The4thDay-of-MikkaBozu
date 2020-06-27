@@ -14,16 +14,7 @@ class MeasurementPageState extends State<MeasurementPage> {
   Position position; // Geolocator
   Position prevPosition;
   bool _showLocation = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _getLocation();
-    Timer.periodic(
-      Duration(seconds: 1),
-      countTime,
-    );
-  }
+  Timer _timer;
 
   Future<void> _getLocation() async {
     Position _currentPosition = await Geolocator().getCurrentPosition(
@@ -74,12 +65,26 @@ class MeasurementPageState extends State<MeasurementPage> {
                             ),
                           ),
                           onPressed: () {
-                            if (_value < 2) {
+                            //スタート
+                            if (_value == 0) {
+                              _timer = Timer.periodic(
+                                Duration(seconds: 1),
+                                countTime,
+                              );
                               setState(() {
                                 _value++;
                                 _showLocation = true;
                               });
-                            } else {
+                            }
+                            //ストップ
+                            else if (_value == 1) {
+                              _timer.cancel();
+                              setState(() {
+                                _value++;
+                              });
+                            }
+                            //マイページに戻る
+                            else {
                               Navigator.pop(context);
                             }
                           },
@@ -102,7 +107,7 @@ class MeasurementPageState extends State<MeasurementPage> {
 
   Widget showLocation() {
     if (_showLocation) {
-      //登録ボタンの表示
+      //位置情報の表示
       return Column(
         children: <Widget>[
           Text("${position}"),
@@ -116,7 +121,6 @@ class MeasurementPageState extends State<MeasurementPage> {
               }
             },
           ),
-//          Text(await Geolocator().distanceBetween(position.latitude, position.longitude, 34.4015, 132.714))
         ],
       );
     } else {
@@ -125,11 +129,10 @@ class MeasurementPageState extends State<MeasurementPage> {
     }
   }
 
+  //2点間の距離の計算
   Future<Widget> getDistance() async {
-    double distance = await Geolocator()
-        .distanceBetween(
-        prevPosition.latitude, prevPosition.longitude, position.latitude, position.longitude);
-    print(distance);
+    double distance = await Geolocator().distanceBetween(prevPosition.latitude,
+        prevPosition.longitude, position.latitude, position.longitude);
     return Text("${distance}");
   }
 }
