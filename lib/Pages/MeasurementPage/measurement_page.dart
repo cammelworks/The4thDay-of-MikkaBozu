@@ -15,6 +15,7 @@ class MeasurementPageState extends State<MeasurementPage> {
   Position prevPosition;
   bool _showLocation = false;
   Timer _timer;
+  double _distance = 0;
 
   Future<void> _getLocation() async {
     Position _currentPosition = await Geolocator().getCurrentPosition(
@@ -131,8 +132,13 @@ class MeasurementPageState extends State<MeasurementPage> {
 
   //2点間の距離の計算
   Future<Widget> getDistance() async {
-    double distance = await Geolocator().distanceBetween(prevPosition.latitude,
-        prevPosition.longitude, position.latitude, position.longitude);
-    return Text("${distance}");
+    double distance = await Geolocator().distanceBetween(
+        prevPosition.latitude,prevPosition.longitude,
+        position.latitude, position.longitude
+    );
+    //小数点2位以下を切り捨てて距離に加算する
+    _distance += (distance * 10).round() / 10;
+    //表示するときに丸め誤差が生じるため、小数点2位以下を切り捨てる
+    return Text("${(_distance * 10).round() / 10}");
   }
 }
