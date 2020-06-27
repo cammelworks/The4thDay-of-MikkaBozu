@@ -139,6 +139,6 @@ class MeasurementPageState extends State<MeasurementPage> {
     //小数点2位以下を切り捨てて距離に加算する
     _distance += (distance * 10).round() / 10;
     //表示するときに丸め誤差が生じるため、小数点2位以下を切り捨てる
-    return Text("${(_distance * 10).round() / 10}");
+    return Text("走った距離:" + "${(_distance * 10).round() / 10}" + "m");
   }
 }
