@@ -12,7 +12,9 @@ class MeasurementPageState extends State<MeasurementPage> {
   List<String> buttonStateList = ['START', 'STOP', 'My Page'];
   int _value = 0;
   Position position; // Geolocator
+  Position prevPosition;
   bool _showLocation = false;
+
   @override
   void initState() {
     super.initState();
@@ -28,6 +30,7 @@ class MeasurementPageState extends State<MeasurementPage> {
         desiredAccuracy: LocationAccuracy.high); // ここで精度を「high」に指定している
     print(_currentPosition);
     setState(() {
+      prevPosition = position;
       position = _currentPosition;
     });
   }
@@ -125,7 +128,7 @@ class MeasurementPageState extends State<MeasurementPage> {
   Future<Widget> getDistance() async {
     double distance = await Geolocator()
         .distanceBetween(
-        position.latitude, position.longitude, 34.4015, 132.714);
+        prevPosition.latitude, prevPosition.longitude, position.latitude, position.longitude);
     print(distance);
     return Text("${distance}");
   }
