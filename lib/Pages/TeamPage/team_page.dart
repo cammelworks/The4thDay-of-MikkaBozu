@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_picker/flutter_picker.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:the4thdayofmikkabozu/Pages/TeamPage/goal_manager.dart';
 
 class TeamPage extends StatefulWidget {
