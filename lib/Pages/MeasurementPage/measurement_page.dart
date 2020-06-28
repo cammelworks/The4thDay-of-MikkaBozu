@@ -29,6 +29,7 @@ class MeasurementPageState extends State<MeasurementPage> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
     return FutureBuilder<GeolocationStatus>(
         future: Geolocator().checkGeolocationPermissionStatus(),
         builder:
@@ -51,17 +52,91 @@ class MeasurementPageState extends State<MeasurementPage> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
+                    //四角い枠のpadding
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(size.width / 20,
+                          size.height / 10, size.width / 20, size.height / 10),
+                      child: Column(
+                        children: <Widget>[
+                          //時間表示のボックス
+                          Container(
+                            height: size.height / 6,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black),
+                            ),
+                            child: Row(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.timer,
+                                  size: size.height / 12,
+                                ),
+                                Container(
+                                  width: size.width * 2 / 3,
+                                  child: Center(
+                                    child: Text(
+                                      "00:00:00",
+                                      style: TextStyle(
+                                        fontSize: size.width / 7,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          //距離表示のボックス
+                          Container(
+                            height: size.height / 6,
+                            decoration: BoxDecoration(
+                              border: Border(
+                                left: BorderSide(color: Colors.black),
+                                right: BorderSide(color: Colors.black),
+                                bottom: BorderSide(color: Colors.black),
+                              ),
+                            ),
+                            child: Row(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.directions_run,
+                                  size: size.height / 12,
+                                ),
+                                Container(
+                                  width: size.width * 2 / 3,
+                                  child: FutureBuilder(
+                                    future: getDistance(),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<Widget> snapshot) {
+                                      if (snapshot.hasData) {
+                                        return snapshot.data;
+                                      } else {
+                                        return Center(
+                                          child: Text(
+                                            "1.0m",
+                                            style: TextStyle(
+                                              fontSize: size.width / 6,
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     Center(
                       child: ButtonTheme(
-                        minWidth: 100,
-                        height: 100,
+                        minWidth: size.width / 2,
+                        height: size.height / 4,
                         child: RaisedButton(
                           child: Text(buttonStateList[_value]),
                           color: Colors.white,
                           shape: CircleBorder(
                             side: BorderSide(
                               color: Colors.black,
-                              width: 1.0,
                               style: BorderStyle.solid,
                             ),
                           ),
@@ -132,10 +207,8 @@ class MeasurementPageState extends State<MeasurementPage> {
 
   //2点間の距離の計算
   Future<Widget> getDistance() async {
-    double distance = await Geolocator().distanceBetween(
-        prevPosition.latitude,prevPosition.longitude,
-        position.latitude, position.longitude
-    );
+    double distance = await Geolocator().distanceBetween(prevPosition.latitude,
+        prevPosition.longitude, position.latitude, position.longitude);
     //小数点2位以下を切り捨てて距離に加算する
     _distance += (distance * 10).round() / 10;
     //表示するときに丸め誤差が生じるため、小数点2位以下を切り捨てる
