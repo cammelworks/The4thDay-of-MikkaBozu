@@ -7,8 +7,8 @@ class MeasurementPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Padding(
-      padding: EdgeInsets.fromLTRB(size.width / 20,
-          size.height / 10, size.width / 20, size.height / 10),
+      padding: EdgeInsets.fromLTRB(
+          size.width / 20, size.height / 10, size.width / 20, size.height / 10),
       child: Column(
         children: <Widget>[
           //時間表示のボックス
@@ -72,7 +72,7 @@ class MeasurementPanel extends StatelessWidget {
     );
   }
 
-  String _convertUnit(){
+  String _convertUnit() {
     // _distanceはメートル
     // 距離が1000.0m以上のときkmに変換する
     //表示するときに丸め誤差が生じるため、小数点2位以下を切り捨てる
@@ -85,5 +85,4 @@ class MeasurementPanel extends StatelessWidget {
       return "${(_distance * 10).round() / 10}" + "m";
     }
   }
-
 }

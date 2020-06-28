@@ -89,9 +89,8 @@ class MeasurementPageState extends State<MeasurementPage> {
         });
   }
 
-  void countTime(Timer timer) async {
-    await _getLocation();
-    //showLocation();
+  void countTime(Timer timer) {
+    _getLocation();
   }
 
   //2点間の距離の計算

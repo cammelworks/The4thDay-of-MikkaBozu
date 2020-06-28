@@ -25,12 +25,8 @@ class MeasurementButton extends StatelessWidget {
           ),
         ),
         onPressed: () {
-          //スタート
-          if (_value == 0) {
-            callback();
-          }
-          //ストップ
-          else if (_value == 1) {
+          //スタート、ストップ
+          if (_value < 2) {
             callback();
           }
           //マイページに戻る
@@ -41,6 +37,4 @@ class MeasurementButton extends StatelessWidget {
       ),
     );
   }
-
-
 }
