@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
+import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
 class MeasurementPage extends StatefulWidget {
   @override
@@ -160,6 +162,8 @@ class MeasurementPageState extends State<MeasurementPage> {
                             //ストップ
                             else if (_value == 1) {
                               _timer.cancel();
+                              //集計距離をFireStoreにプッシュ
+                              _pushRecord();
                               setState(() {
                                 _value++;
                               });
@@ -200,5 +204,31 @@ class MeasurementPageState extends State<MeasurementPage> {
     else {
       return "${(_distance * 10).round() / 10}" + "m";
     }
+  }
+
+  void _pushRecord() async {
+    //自分のEmailに紐づくドキュメントを取得
+    getData() async {
+      return await Firestore.instance
+          .collection('users')
+          .where("email", isEqualTo: userData.userEmail)
+          .getDocuments();
+    }
+
+    getData().then((val) {
+      //データの更新
+      //FireStoreにはメートルとしてデータを格納
+      if (val.documents.length > 0) {
+        String userDocId = val.documents[0].documentID;
+        Firestore.instance
+            .collection('users')
+            .document(userDocId)
+            .collection('records')
+            .document()
+            .setData({'distance': _distance, 'timestamp': Timestamp.now()});
+      } else {
+        print("Not Found");
+      }
+    });
   }
 }

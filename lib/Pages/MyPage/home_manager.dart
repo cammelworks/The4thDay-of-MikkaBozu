@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 import 'package:the4thdayofmikkabozu/Pages/MyPage/SideMenu/sidemenu.dart';
 import 'package:the4thdayofmikkabozu/Pages/MyPage/signout_button.dart';
 import 'package:the4thdayofmikkabozu/Pages/MyPage/teams_screen.dart';
-import 'package:the4thdayofmikkabozu/Pages/MyPage/record_form.dart';
 import 'package:the4thdayofmikkabozu/Pages/MyPage/records_screen.dart';
 import 'package:the4thdayofmikkabozu/Pages/MyPage/to_mesurement_page_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,6 +34,7 @@ class HomeManager {
         password: prefs.getString('password'),
       ))
           .user;
+      userData.userEmail = _user.email;
       //ログインが終了したらコールバック
       updateStateCallback();
       return null;
@@ -73,10 +74,10 @@ class HomeManager {
               //時間・距離計測ページへ遷移するボタン
               child: ToMeasurementPageButton(),
             ),
-            Center(
-              //走った距離を入力するフォーム
-              child: RecordForm(_user.email),
-            ),
+//            Center(
+//              //走った距離を入力するフォーム
+//              child: RecordForm(_user.email),
+//            ),
             Container(
               child: Center(
                 //距離のデータを表示
@@ -89,7 +90,7 @@ class HomeManager {
     );
   }
 
-  Widget showSidemenu()  {
+  Widget showSidemenu() {
     if (_user != null) {
       //サイドメニューの表示
       return Sidemenu(_user.email);
