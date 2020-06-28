@@ -13,7 +13,6 @@ class MeasurementPageState extends State<MeasurementPage> {
   int _value = 0;
   Position position; // Geolocator
   Position prevPosition;
-  bool _showLocation = false;
   Timer _timer;
   double _distance = 0;
 
@@ -105,13 +104,20 @@ class MeasurementPageState extends State<MeasurementPage> {
                                   child: FutureBuilder(
                                     future: getDistance(),
                                     builder: (BuildContext context,
-                                        AsyncSnapshot<Widget> snapshot) {
+                                        AsyncSnapshot<String> snapshot) {
                                       if (snapshot.hasData) {
-                                        return snapshot.data;
+                                        return Center(
+                                          child: Text(
+                                            snapshot.data,
+                                            style: TextStyle(
+                                              fontSize: size.width / 6,
+                                            ),
+                                          ),
+                                        );
                                       } else {
                                         return Center(
                                           child: Text(
-                                            "1.0m",
+                                            "0.0m",
                                             style: TextStyle(
                                               fontSize: size.width / 6,
                                             ),
@@ -149,7 +155,6 @@ class MeasurementPageState extends State<MeasurementPage> {
                               );
                               setState(() {
                                 _value++;
-                                _showLocation = true;
                               });
                             }
                             //ストップ
@@ -167,9 +172,6 @@ class MeasurementPageState extends State<MeasurementPage> {
                         ),
                       ),
                     ),
-                    Center(
-                      child: showLocation(),
-                    ),
                   ]),
             ),
           );
@@ -178,40 +180,25 @@ class MeasurementPageState extends State<MeasurementPage> {
 
   void countTime(Timer timer) async {
     await _getLocation();
-    showLocation();
-  }
-
-  Widget showLocation() {
-    if (_showLocation) {
-      //位置情報の表示
-      return Column(
-        children: <Widget>[
-          Text("${position}"),
-          FutureBuilder(
-            future: getDistance(),
-            builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
-              if (snapshot.hasData) {
-                return snapshot.data;
-              } else {
-                return Center(child: Text("距離計算中"));
-              }
-            },
-          ),
-        ],
-      );
-    } else {
-      //何も表示しない
-      return null;
-    }
+    //showLocation();
   }
 
   //2点間の距離の計算
-  Future<Widget> getDistance() async {
+  Future<String> getDistance() async {
     double distance = await Geolocator().distanceBetween(prevPosition.latitude,
         prevPosition.longitude, position.latitude, position.longitude);
     //小数点2位以下を切り捨てて距離に加算する
     _distance += (distance * 10).round() / 10;
+    // _distanceはメートル
+    // 距離が1000.0m以上のときkmに変換する
     //表示するときに丸め誤差が生じるため、小数点2位以下を切り捨てる
-    return Text("走った距離:" + "${(_distance * 10).round() / 10}" + "m");
+    if (_distance >= 1000.0) {
+      double km_distance = _distance / 1000.0;
+      return "${(km_distance * 10).round() / 10}" + "km";
+    }
+    // 1000.0mより小さいときはmで表示
+    else {
+      return "${(_distance * 10).round() / 10}" + "m";
+    }
   }
 }
