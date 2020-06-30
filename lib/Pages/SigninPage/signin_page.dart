@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -132,8 +133,7 @@ class SignInPageState extends State<SignInPage> {
       //emailとパスワードを端末に保存
       await prefs.setString('email', _emailController.text);
       await prefs.setString('password', _passwordController.text);
-      print(prefs.getString('email'));
-      print(prefs.getString('password'));
+      userData.userEmail = _emailController.text;
 
       setState(() {
         //前のページに戻る
