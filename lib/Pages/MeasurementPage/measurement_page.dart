@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:the4thdayofmikkabozu/Pages/MeasurementPage/measurement_button.dart';
+import 'package:the4thdayofmikkabozu/Pages/MeasurementPage/measurement_panel.dart';
 import 'dart:async';
+import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
 class MeasurementPage extends StatefulWidget {
   @override
@@ -13,7 +17,6 @@ class MeasurementPageState extends State<MeasurementPage> {
   int _value = 0;
   Position position; // Geolocator
   Position prevPosition;
-  bool _showLocation = false;
   Timer _timer;
   double _distance = 0;
 
@@ -51,49 +54,34 @@ class MeasurementPageState extends State<MeasurementPage> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
+                  FutureBuilder(
+                    future: getDistance(),
+                    builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+                      if (snapshot.hasData) {
+                        return snapshot.data;
+                      }else{
+                        return MeasurementPanel(0.0);
+                      }
+                    }
+                  ),
                     Center(
-                      child: ButtonTheme(
-                        minWidth: 100,
-                        height: 100,
-                        child: RaisedButton(
-                          child: Text(buttonStateList[_value]),
-                          color: Colors.white,
-                          shape: CircleBorder(
-                            side: BorderSide(
-                              color: Colors.black,
-                              width: 1.0,
-                              style: BorderStyle.solid,
-                            ),
-                          ),
-                          onPressed: () {
-                            //スタート
-                            if (_value == 0) {
-                              _timer = Timer.periodic(
-                                Duration(seconds: 1),
-                                countTime,
-                              );
-                              setState(() {
-                                _value++;
-                                _showLocation = true;
-                              });
-                            }
-                            //ストップ
-                            else if (_value == 1) {
-                              _timer.cancel();
-                              setState(() {
-                                _value++;
-                              });
-                            }
-                            //マイページに戻る
-                            else {
-                              Navigator.pop(context);
-                            }
-                          },
-                        ),
-                      ),
-                    ),
-                    Center(
-                      child: showLocation(),
+                      child: MeasurementButton(_value, () {
+                        if(_value == 0){
+                          _timer = Timer.periodic(
+                            Duration(seconds: 1),
+                            countTime,
+                          );
+                        } else if(_value ==1){
+                          _timer.cancel();
+                          _pushRecord();
+                        }
+                        else {
+                          Navigator.pop(context);
+                        }
+                        setState(() {
+                          _value++;
+                        });
+                      }),
                     ),
                   ]),
             ),
@@ -101,44 +89,44 @@ class MeasurementPageState extends State<MeasurementPage> {
         });
   }
 
-  void countTime(Timer timer) async {
-    await _getLocation();
-    showLocation();
-  }
-
-  Widget showLocation() {
-    if (_showLocation) {
-      //位置情報の表示
-      return Column(
-        children: <Widget>[
-          Text("${position}"),
-          FutureBuilder(
-            future: getDistance(),
-            builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
-              if (snapshot.hasData) {
-                return snapshot.data;
-              } else {
-                return Center(child: Text("距離計算中"));
-              }
-            },
-          ),
-        ],
-      );
-    } else {
-      //何も表示しない
-      return null;
-    }
+  void countTime(Timer timer) {
+    _getLocation();
   }
 
   //2点間の距離の計算
   Future<Widget> getDistance() async {
-    double distance = await Geolocator().distanceBetween(
-        prevPosition.latitude,prevPosition.longitude,
-        position.latitude, position.longitude
-    );
+    double distance = await Geolocator().distanceBetween(prevPosition.latitude,
+        prevPosition.longitude, position.latitude, position.longitude);
     //小数点2位以下を切り捨てて距離に加算する
     _distance += (distance * 10).round() / 10;
-    //表示するときに丸め誤差が生じるため、小数点2位以下を切り捨てる
-    return Text("走った距離:" + "${(_distance * 10).round() / 10}" + "m");
+    return MeasurementPanel(_distance);
+  }
+
+  void _pushRecord() async {
+    //自分のEmailに紐づくドキュメントを取得
+    getData() async {
+      return await Firestore.instance
+          .collection('users')
+          .where("email", isEqualTo: userData.userEmail)
+          .getDocuments();
+    }
+
+    getData().then((val) {
+      //データの更新
+      //FireStoreにはメートルとしてデータを格納
+      if (val.documents.length > 0) {
+        //丸め誤差が生じるため、小数点2位以下を切り捨てる
+        _distance = (_distance * 10).round() / 10;
+        String userDocId = val.documents[0].documentID;
+        Firestore.instance
+            .collection('users')
+            .document(userDocId)
+            .collection('records')
+            .document()
+            .setData({'distance': _distance, 'timestamp': Timestamp.now()});
+      } else {
+        print("Not Found");
+      }
+    });
   }
 }

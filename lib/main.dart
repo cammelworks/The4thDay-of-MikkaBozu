@@ -32,7 +32,6 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
   HomeManager _manager;
-
   @override
   void initState() {
     super.initState();
@@ -60,7 +59,6 @@ class MyHomePageState extends State<MyHomePage> {
             }
           },
         ),
-      drawer:_manager.showSidemenu()
-    );
+        drawer: _manager.showSidemenu());
   }
 }
