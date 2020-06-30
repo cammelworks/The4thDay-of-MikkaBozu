@@ -1,6 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:the4thdayofmikkabozu/Pages/MeasurementPage/measurement_button.dart';
+import 'package:the4thdayofmikkabozu/Pages/MeasurementPage/measurement_panel.dart';
+import 'dart:async';
+import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
 class MeasurementPage extends StatefulWidget {
   @override
@@ -11,18 +16,16 @@ class MeasurementPageState extends State<MeasurementPage> {
   List<String> buttonStateList = ['START', 'STOP', 'My Page'];
   int _value = 0;
   Position position; // Geolocator
-  bool _showLocation = false;
-  @override
-  void initState() {
-    super.initState();
-    _getLocation(context);
-  }
+  Position prevPosition;
+  Timer _timer;
+  double _distance = 0;
 
-  Future<void> _getLocation(context) async {
+  Future<void> _getLocation() async {
     Position _currentPosition = await Geolocator().getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high); // ここで精度を「high」に指定している
     print(_currentPosition);
     setState(() {
+      prevPosition = position;
       position = _currentPosition;
     });
   }
@@ -51,35 +54,34 @@ class MeasurementPageState extends State<MeasurementPage> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
+                  FutureBuilder(
+                    future: getDistance(),
+                    builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+                      if (snapshot.hasData) {
+                        return snapshot.data;
+                      }else{
+                        return MeasurementPanel(0.0);
+                      }
+                    }
+                  ),
                     Center(
-                      child: ButtonTheme(
-                        minWidth: 100,
-                        height: 100,
-                        child: RaisedButton(
-                          child: Text(buttonStateList[_value]),
-                          color: Colors.white,
-                          shape: CircleBorder(
-                            side: BorderSide(
-                              color: Colors.black,
-                              width: 1.0,
-                              style: BorderStyle.solid,
-                            ),
-                          ),
-                          onPressed: () {
-                            if (_value < 2) {
-                              setState(() {
-                                _value++;
-                                _showLocation = true;
-                              });
-                            } else {
-                              Navigator.pop(context);
-                            }
-                          },
-                        ),
-                      ),
-                    ),
-                    Center(
-                      child: showLocation(),
+                      child: MeasurementButton(_value, () {
+                        if(_value == 0){
+                          _timer = Timer.periodic(
+                            Duration(seconds: 1),
+                            countTime,
+                          );
+                        } else if(_value ==1){
+                          _timer.cancel();
+                          _pushRecord();
+                        }
+                        else {
+                          Navigator.pop(context);
+                        }
+                        setState(() {
+                          _value++;
+                        });
+                      }),
                     ),
                   ]),
             ),
@@ -87,13 +89,44 @@ class MeasurementPageState extends State<MeasurementPage> {
         });
   }
 
-  Widget showLocation() {
-    if (_showLocation) {
-      //登録ボタンの表示
-      return Text("${position}");
-    } else {
-      //何も表示しない
-      return null;
+  void countTime(Timer timer) {
+    _getLocation();
+  }
+
+  //2点間の距離の計算
+  Future<Widget> getDistance() async {
+    double distance = await Geolocator().distanceBetween(prevPosition.latitude,
+        prevPosition.longitude, position.latitude, position.longitude);
+    //小数点2位以下を切り捨てて距離に加算する
+    _distance += (distance * 10).round() / 10;
+    return MeasurementPanel(_distance);
+  }
+
+  void _pushRecord() async {
+    //自分のEmailに紐づくドキュメントを取得
+    getData() async {
+      return await Firestore.instance
+          .collection('users')
+          .where("email", isEqualTo: userData.userEmail)
+          .getDocuments();
     }
+
+    getData().then((val) {
+      //データの更新
+      //FireStoreにはメートルとしてデータを格納
+      if (val.documents.length > 0) {
+        //丸め誤差が生じるため、小数点2位以下を切り捨てる
+        _distance = (_distance * 10).round() / 10;
+        String userDocId = val.documents[0].documentID;
+        Firestore.instance
+            .collection('users')
+            .document(userDocId)
+            .collection('records')
+            .document()
+            .setData({'distance': _distance, 'timestamp': Timestamp.now()});
+      } else {
+        print("Not Found");
+      }
+    });
   }
 }
