@@ -74,15 +74,9 @@ class MeasurementPanel extends StatelessWidget {
 
   String _convertUnit() {
     // _distanceはメートル
-    // 距離が1000.0m以上のときkmに変換する
+    // 距離をkmで表示する
     //表示するときに丸め誤差が生じるため、小数点2位以下を切り捨てる
-    if (_distance >= 1000.0) {
-      double km_distance = _distance / 1000.0;
-      return "${(km_distance * 10).round() / 10}" + "km";
-    }
-    // 1000.0mより小さいときはmで表示
-    else {
-      return "${(_distance * 10).round() / 10}" + "m";
-    }
+    double km_distance = _distance / 1000.0;
+    return "${(km_distance * 10).round() / 10}" + "km";
   }
 }
