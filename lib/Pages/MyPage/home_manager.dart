@@ -74,10 +74,6 @@ class HomeManager {
               //時間・距離計測ページへ遷移するボタン
               child: ToMeasurementPageButton(),
             ),
-//            Center(
-//              //走った距離を入力するフォーム
-//              child: RecordForm(_user.email),
-//            ),
             Container(
               child: Center(
                 //距離のデータを表示
