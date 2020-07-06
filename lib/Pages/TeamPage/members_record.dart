@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:the4thdayofmikkabozu/Pages/MemberPage/member_page.dart';
 
 class MembersRecord extends StatelessWidget{
   String _teamName;
@@ -9,7 +10,19 @@ class MembersRecord extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return getMembers();
+    return Column(
+      children: [
+        Text(
+          'メンバー',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
+        getMembers(),
+      ],
+    );
   }
 
   //メンバー一覧を表示する
@@ -30,11 +43,18 @@ class MembersRecord extends StatelessWidget{
             shrinkWrap: true,
             itemCount: snapshot.data.documents.length,
             itemBuilder: (context, int index) {
-              return Container(
-                padding: const EdgeInsets.all(6),
-                alignment: Alignment.center,
-                child: Text(
-                  snapshot.data.documents[index].documentID.toString(),
+              return GestureDetector(
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MemberPage(snapshot.data.documents[index].documentID.toString()),
+                    )),
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  alignment: Alignment.center,
+                  child: Text(
+                    snapshot.data.documents[index].documentID.toString(),
+                  ),
                 ),
               );
             },
