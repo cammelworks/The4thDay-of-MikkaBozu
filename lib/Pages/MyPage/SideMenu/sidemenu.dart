@@ -14,6 +14,7 @@ class Sidemenu extends StatelessWidget {
     return Drawer(
       child: ListView(
         shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(

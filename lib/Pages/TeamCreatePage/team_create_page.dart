@@ -41,6 +41,8 @@ class TeamCreatePageState extends State<TeamCreatePage> {
                     validator: (String value) {
                       if (value.isEmpty) {
                         return '登録にはチーム名が必要です';
+                      } else if (value.length >= 19) {
+                        return 'チーム名が長すぎます';
                       }
                       return null;
                     },
