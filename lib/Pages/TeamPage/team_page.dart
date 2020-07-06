@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:the4thdayofmikkabozu/Pages/TeamPage/goal_manager.dart';
+import 'package:the4thdayofmikkabozu/Pages/TeamPage/members_record.dart';
 
 class TeamPage extends StatefulWidget {
   String _teamName;
@@ -39,6 +40,7 @@ class TeamPageState extends State<TeamPage> {
                 ),
               ),
               GoalManager(_teamName),
+              MembersRecord(_teamName),
             ]),
       ),
     );
