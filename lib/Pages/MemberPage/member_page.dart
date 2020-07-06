@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MemberPage extends StatefulWidget {
   String _email;
@@ -15,11 +16,102 @@ class MemberPageState extends State<MemberPage> {
   MemberPageState(this._email);
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text(_email),
       ),
-      body: Text(_email)
+      body: Center(
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: EdgeInsets.fromLTRB(size.width / 4, 20, 6, 20),
+                  width: size.width / 2,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '日付',
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+                Container(
+                  width: size.width / 2,
+                  padding: EdgeInsets.fromLTRB(6, 6, size.width / 4, 6),
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    '距離',
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Container(
+              child: getRecords(),
+            ),
+          ],
+        ),
+      ),
     );
+  }
+
+  //走った距離を取得する関数
+  Widget getRecords() {
+    return StreamBuilder<QuerySnapshot>(
+        //表示したいFiresotreの保存先を指定
+        stream: Firestore.instance
+            .collection('users')
+            .document(_email)
+            .collection('records')
+            .orderBy("timestamp", descending: true)
+            .snapshots(),
+        //streamが更新されるたびに呼ばれる
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          //データが取れていない時の処理
+          if (!snapshot.hasData) return const Text('Loading...');
+
+          return ListView.builder(
+            shrinkWrap: true,
+            itemCount: snapshot.data.documents.length,
+            itemBuilder: (context, int index) {
+              Size size = MediaQuery.of(context).size;
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(left: size.width / 4),
+                    width: size.width / 2,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      _timestampToString(
+                          snapshot.data.documents[index]["timestamp"]),
+                    ),
+                  ),
+                  Container(
+                    width: size.width / 2,
+                    padding: EdgeInsets.fromLTRB(6, 6, size.width / 4, 6),
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      snapshot.data.documents[index]["distance"].toString(),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        });
+  }
+
+  //Timestamp型の時間情報を日にちに変換する
+  String _timestampToString(Timestamp timeStamp) {
+    DateTime time = timeStamp.toDate();
+    int month = time.month;
+    int day = time.day;
+    return month.toString() + "/" + day.toString();
   }
 }
