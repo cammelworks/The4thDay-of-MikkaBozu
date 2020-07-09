@@ -52,6 +52,7 @@ class MemberPageState extends State<MemberPage> {
               ],
             ),
             Container(
+              height: size.height*(7/10),
               child: getRecords(),
             ),
           ],
@@ -97,7 +98,7 @@ class MemberPageState extends State<MemberPage> {
                     padding: EdgeInsets.fromLTRB(6, 6, size.width / 4, 6),
                     alignment: Alignment.centerRight,
                     child: Text(
-                      snapshot.data.documents[index]["distance"].toString(),
+                      _convertUnit(snapshot.data.documents[index]["distance"]),
                     ),
                   ),
                 ],
@@ -105,6 +106,14 @@ class MemberPageState extends State<MemberPage> {
             },
           );
         });
+  }
+
+  String _convertUnit(double distance) {
+    // _distanceはメートル
+    // 距離をkmで表示する
+    //表示するときに丸め誤差が生じるため、小数点2位以下を切り捨てる
+    double km_distance = distance / 1000.0;
+    return "${(km_distance * 10).round() / 10}" + "km";
   }
 
   //Timestamp型の時間情報を日にちに変換する
