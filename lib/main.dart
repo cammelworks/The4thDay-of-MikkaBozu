@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import './Pages/MyPage/home_manager.dart';
+import 'package:the4thdayofmikkabozu/Pages/MyPage/my_page.dart';
+import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,34 +34,50 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-  HomeManager _manager;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseUser _user = null;
   @override
   void initState() {
     super.initState();
-
-    // マネージャの初期化
-    _manager = HomeManager(updateStateCallback: () {
-      // ステート更新
-      setState(() {});
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
         body: FutureBuilder(
-          future: _manager.showButton(),
-          builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
-            if (snapshot.hasData) {
-              return snapshot.data;
-            } else {
-              return Center(child: Text("ログイン確認中"));
+          future: showButton(),
+          builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+            if (snapshot.hasData && snapshot.data) {
+              return MyPage();
+            } else if (snapshot.connectionState != ConnectionState.done) {
+              return Center(child: CircularProgressIndicator());
+            } else if(snapshot.hasData && !snapshot.data){
+              return Text("ログインページへ");
             }
           },
-        ),
-        drawer: _manager.showSidemenu());
+        ));
+  }
+
+  //ログインの有無によって表示を変える関数
+  Future<bool> showButton() async {
+    //端末のデータにアクセスするための変数
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (_user != null) {
+      return true;
+    } else if (prefs.getString('password') != null) {
+      //自動ログイン
+      _user = (await _auth.signInWithEmailAndPassword(
+        email: prefs.getString('email'),
+        password: prefs.getString('password'),
+      ))
+          .user;
+      userData.userEmail = _user.email;
+      userData.firebaseUser = _user;
+      return true;
+    } else {
+      //初回起動 or サインアウト後
+      return false;
+    }
   }
 }
