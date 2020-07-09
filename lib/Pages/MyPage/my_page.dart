@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 import 'package:the4thdayofmikkabozu/SideMenu/sidemenu.dart';
-import 'file:///H:/Cammel/The4thDay-of-MikkaBozu/lib/SideMenu/signout_button.dart';
 import 'package:the4thdayofmikkabozu/Pages/MyPage/records_screen.dart';
 import 'package:the4thdayofmikkabozu/Pages/MyPage/to_mesurement_page_button.dart';
 
