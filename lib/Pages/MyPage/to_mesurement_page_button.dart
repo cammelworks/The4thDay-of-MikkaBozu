@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:the4thdayofmikkabozu/Pages/MeasurementPage/measurement_page.dart';
+import 'package:flutter/services.dart';
 
 class ToMeasurementPageButton extends StatelessWidget {
+  static const platform = const MethodChannel('com.tasogarei.test/web');
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -17,11 +19,13 @@ class ToMeasurementPageButton extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
               ),
               onPressed: () async {
-                  final result = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MeasurementPage(),
-                      ));
+                //kotlinのメソッドを呼ぶ
+                await platform.invokeMethod('web');
+//                  final result = await Navigator.push(
+//                      context,
+//                      MaterialPageRoute(
+//                        builder: (context) => MeasurementPage(),
+//                      ));
               }),
         ),
       ),
