@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:the4thdayofmikkabozu/SideMenu/signout_button.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 import 'package:the4thdayofmikkabozu/Pages/LookupTeamPage/lookup_team_page.dart';
 import 'package:the4thdayofmikkabozu/Pages/TeamcreatePage/team_create_page.dart';
@@ -78,6 +79,9 @@ class Sidemenu extends StatelessWidget {
                       itemBuilder: (context, index) => _buildListItem(
                           context, snapshot.data.documents[index]));
                 }),
+          ),
+          Container(
+            child: SignoutButton(),
           ),
         ],
       ),
