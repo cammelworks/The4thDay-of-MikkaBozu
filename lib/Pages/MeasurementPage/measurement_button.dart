@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 typedef UserCallback = void Function();
 
@@ -8,6 +9,8 @@ class MeasurementButton extends StatelessWidget {
   final UserCallback callback;
 
   MeasurementButton(this._value, this.callback) : super();
+
+  static const platform = const MethodChannel("Java.Foreground");
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +30,10 @@ class MeasurementButton extends StatelessWidget {
         onPressed: () {
           //スタート、ストップ
           if (_value < 2) {
+            if(_value == 0)
+              platform.invokeMethod("ON");
+            if(_value == 1)
+              platform.invokeMethod("OFF");
             callback();
           }
           //マイページに戻る
