@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
 class RecordsScreen extends StatelessWidget {
-  String _email;
+  String _email = userData.userEmail;
 
-  RecordsScreen(this._email);
   @override
   Widget build(BuildContext context) {
     //画面サイズを取得

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:the4thdayofmikkabozu/main.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -135,10 +136,11 @@ class SignInPageState extends State<SignInPage> {
       await prefs.setString('password', _passwordController.text);
       userData.userEmail = _emailController.text;
 
-      setState(() {
-        //前のページに戻る
-        Navigator.pop(context, user);
-      });
-    } else {}
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MyHomePage(),
+          ));
+    }
   }
 }
