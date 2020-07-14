@@ -13,7 +13,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
-public class TestServiceJ extends Service {
+public class LocationService extends Service {
 
     @Override
     public void onCreate() {
@@ -41,12 +41,6 @@ public class TestServiceJ extends Service {
                 Log.d("debug", "before call startForeground()");
                 startForeground(1,notification);
                 Log.d("debug", "after call startForeground()");
-                try{
-                    Thread.sleep(10000);
-                    Log.i("info", "processing service");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
         }
 

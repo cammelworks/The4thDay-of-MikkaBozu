@@ -10,7 +10,7 @@ import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodChannel;
 
-public class MainActivityJ extends FlutterActivity {
+public class MainActivity extends FlutterActivity {
     private static final String CHANNEL = "Java.Foreground";
 
     @Override
@@ -21,12 +21,12 @@ public class MainActivityJ extends FlutterActivity {
                         (call, result) -> {
                             if(call.method.equals("ON")){
                                 Log.d("debug", "call Java");
-                                Intent serviceIntent = new Intent(getApplication(), TestServiceJ.class);
+                                Intent serviceIntent = new Intent(getApplication(), LocationService.class);
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                     startForegroundService(serviceIntent);
                                 }
                             } else if(call.method.equals("OFF")){
-                                Intent intent = new Intent(getApplication(), TestServiceJ.class);
+                                Intent intent = new Intent(getApplication(), LocationService.class);
                                 stopService(intent);
                             }
                         }
