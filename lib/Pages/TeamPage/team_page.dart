@@ -43,6 +43,7 @@ class TeamPageState extends State<TeamPage> {
               MembersRecord(_teamName),
             ]),
       ),
+      drawer: Sidemenu(),
     );
   }
 }

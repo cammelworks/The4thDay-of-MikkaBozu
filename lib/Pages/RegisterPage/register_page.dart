@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:the4thdayofmikkabozu/main.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -138,10 +139,13 @@ class RegisterPageState extends State<RegisterPage> {
             .collection('users')
             .document(user.email)
             .setData({'email': user.email});
-        //前のページに戻る
-        Navigator.pop(context, user);
       });
-    } else {}
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MyHomePage(),
+          ));
+    }
   }
 
   bool validateIncludeNumber(String value) {

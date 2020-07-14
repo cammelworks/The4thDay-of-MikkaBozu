@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
-import '../../LookupTeamPage/lookup_team_page.dart';
-import '../../TeamcreatePage/team_create_page.dart';
-import '../../TeamPage/team_page.dart';
+import 'package:the4thdayofmikkabozu/SideMenu/signout_button.dart';
+import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
+import 'package:the4thdayofmikkabozu/Pages/LookupTeamPage/lookup_team_page.dart';
+import 'package:the4thdayofmikkabozu/Pages/TeamcreatePage/team_create_page.dart';
+import 'package:the4thdayofmikkabozu/Pages/TeamPage/team_page.dart';
+import 'package:the4thdayofmikkabozu/Pages/MyPage/my_page.dart';
 
 class Sidemenu extends StatelessWidget {
-  String _email;
-  Sidemenu(this._email);
-
+  String _email = userData.userEmail;
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -30,7 +30,13 @@ class Sidemenu extends StatelessWidget {
           ListTile(
             dense: true,
             title: Text('MYPAGE'),
-            onTap: () => {},
+            onTap: () async => {
+              await Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MyPage(),
+                )),
+            },
           ),
           ListTile(
             dense: true,
@@ -81,6 +87,9 @@ class Sidemenu extends StatelessWidget {
                           context, snapshot.data.documents[index]));
                 }),
           ),
+          Container(
+            child: SignoutButton(),
+          ),
         ],
       ),
     );
@@ -89,24 +98,19 @@ class Sidemenu extends StatelessWidget {
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     return Padding(
       padding: EdgeInsets.only(left: 20.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Container(
-            height: 34,
-            child: ListTile(
-              dense: true,
-              title: Text(document['team_name']),
-              onTap: () => {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TeamPage(document['team_name']),
-                    )),
-              },
-            ),
-          )
-        ],
+      child: Container(
+        height: 34,
+        child: ListTile(
+          dense: true,
+          title: Text(document['team_name']),
+          onTap: () => {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TeamPage(document['team_name']),
+                )),
+          },
+        ),
       ),
     );
   }
