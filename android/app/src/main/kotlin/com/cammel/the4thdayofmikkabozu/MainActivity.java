@@ -20,7 +20,6 @@ public class MainActivity extends FlutterActivity {
                 .setMethodCallHandler(
                         (call, result) -> {
                             if(call.method.equals("ON")){
-                                Log.d("debug", "call Java");
                                 Intent serviceIntent = new Intent(getApplication(), LocationService.class);
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                     startForegroundService(serviceIntent);

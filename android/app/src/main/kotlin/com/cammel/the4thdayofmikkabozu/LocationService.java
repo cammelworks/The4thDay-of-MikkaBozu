@@ -18,12 +18,10 @@ public class LocationService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d("debug", "called TestServiceJ.onCreate()");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("debug", "called onStartCommand()");
         String channelId = "service";
         String title = "TestServiceJ";
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
@@ -38,9 +36,7 @@ public class LocationService extends Service {
                         .setContentText("service start")
                         .build();
 
-                Log.d("debug", "before call startForeground()");
                 startForeground(1,notification);
-                Log.d("debug", "after call startForeground()");
             }
         }
 
@@ -50,7 +46,6 @@ public class LocationService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d("debug", "called onDestroy()");
     }
 
     @Nullable
