@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:the4thdayofmikkabozu/Pages/TeamPage/goal_manager.dart';
 import 'package:the4thdayofmikkabozu/Pages/TeamPage/members_record.dart';
+import 'package:the4thdayofmikkabozu/SideMenu/sidemenu.dart';
 
 class TeamPage extends StatefulWidget {
   String _teamName;
