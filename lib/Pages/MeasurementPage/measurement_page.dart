@@ -6,6 +6,7 @@ import 'package:the4thdayofmikkabozu/Pages/MeasurementPage/measurement_button.da
 import 'package:the4thdayofmikkabozu/Pages/MeasurementPage/measurement_panel.dart';
 import 'dart:async';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
+import 'package:flutter/services.dart';
 
 class MeasurementPage extends StatefulWidget {
   @override
@@ -19,6 +20,7 @@ class MeasurementPageState extends State<MeasurementPage> {
   Position prevPosition;
   Timer _timer;
   double _distance = 0;
+  static const platform = const MethodChannel("Java.Foreground");
 
   Future<void> _getLocation() async {
     Position _currentPosition = await Geolocator().getCurrentPosition(
@@ -67,11 +69,13 @@ class MeasurementPageState extends State<MeasurementPage> {
                     Center(
                       child: MeasurementButton(_value, () {
                         if(_value == 0){
+                          platform.invokeMethod("ON");
                           _timer = Timer.periodic(
                             Duration(seconds: 1),
                             countTime,
                           );
                         } else if(_value ==1){
+                          platform.invokeMethod("OFF");
                           _timer.cancel();
                           _pushRecord();
                         }
