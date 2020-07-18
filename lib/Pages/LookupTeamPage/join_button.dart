@@ -40,26 +40,11 @@ class JoinButton extends StatelessWidget {
         .setData({'email': _email});
 
     //自分の情報にチームの情報を追加
-
-    getData() async {
-      return await Firestore.instance
-          .collection('users')
-          .document((_email));
-    }
-
-    getData().then((val) {
-      //データの更新
-      if (val != null) {
-        String userDocId = val.documentID;
-        Firestore.instance
-            .collection('users')
-            .document(userDocId)
-            .collection('teams')
-            .document(_teamName)
-            .setData({'team_name': _teamName});
-      } else {
-        print("Not Found");
-      }
-    });
+    Firestore.instance
+        .collection('users')
+        .document(_email)
+        .collection('teams')
+        .document(_teamName)
+        .setData({'team_name': _teamName});
   }
 }

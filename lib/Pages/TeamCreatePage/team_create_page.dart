@@ -60,8 +60,8 @@ class TeamCreatePageState extends State<TeamCreatePage> {
                             if (_formKey.currentState.validate()) {
                               if (await checkUniqueTeamName(
                                   _nameController.text)) {
-                                createTeam(_email);
-                                updateDataUserData(_email);
+                                createTeam();
+                                updateDataUserData();
                                 Navigator.pop(context);
                               } else {
                                 Fluttertoast.showToast(
@@ -89,7 +89,7 @@ class TeamCreatePageState extends State<TeamCreatePage> {
   }
 
   //チームを作成する関数
-  void createTeam(String email) {
+  void createTeam() {
     Firestore.instance
         .collection('teams')
         .document(_nameController.text)
@@ -99,31 +99,18 @@ class TeamCreatePageState extends State<TeamCreatePage> {
         .collection('teams')
         .document(_nameController.text)
         .collection('users')
-        .document(email)
-        .setData({'email': email});
+        .document(_email)
+        .setData({'email': _email});
   }
 
   //ユーザデータにチーム名を追加する関数
-  void updateDataUserData(String email) {
-    //自分のEmailに紐づくドキュメントを取得
-    getData() async {
-      return await Firestore.instance.collection('users').document(_email);
-    }
-
-    getData().then((val) {
-      //データの更新
-      if (val != null) {
-        String userDocId = val.documentID;
-        Firestore.instance
-            .collection('users')
-            .document(userDocId)
-            .collection('teams')
-            .document(_nameController.text)
-            .setData({'team_name': _nameController.text});
-      } else {
-        print("Not Found");
-      }
-    });
+  void updateDataUserData() {
+    Firestore.instance
+        .collection('users')
+        .document(_email)
+        .collection('teams')
+        .document(_nameController.text)
+        .setData({'team_name': _nameController.text});
   }
 
   Future<bool> checkUniqueTeamName(String candidateName) async {
