@@ -100,31 +100,13 @@ class MeasurementPageState extends State<MeasurementPage> {
     setState(() {});
   }
 
-  void _pushRecord() async {
-    //自分のEmailに紐づくドキュメントを取得
-    getData() async {
-      return await Firestore.instance
-          .collection('users')
-          .where("email", isEqualTo: userData.userEmail)
-          .getDocuments();
-    }
-
-    getData().then((val) {
-      //データの更新
-      //FireStoreにはメートルとしてデータを格納
-      if (val.documents.length > 0) {
-        //丸め誤差が生じるため、小数点2位以下を切り捨てる
-        _distance = (_distance * 10).round() / 10;
-        String userDocId = val.documents[0].documentID;
-        Firestore.instance
-            .collection('users')
-            .document(userDocId)
-            .collection('records')
-            .document()
-            .setData({'distance': _distance, 'timestamp': Timestamp.now()});
-      } else {
-        print("Not Found");
-      }
-    });
+  void _pushRecord() {
+    _distance = (_distance * 10).round() / 10;
+    Firestore.instance
+        .collection('users')
+        .document(userData.userEmail)
+        .collection('records')
+        .document()
+        .setData({'distance': _distance, 'timestamp': Timestamp.now()});
   }
 }
