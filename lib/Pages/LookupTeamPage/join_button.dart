@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-typedef TeamJoinCallback = void Function();
+import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
 class JoinButton extends StatelessWidget {
   String _teamName;
-  String _email;
-  final TeamJoinCallback callback;
+  String _email = userData.userEmail;
 
-  JoinButton(this._teamName, this._email, this.callback) : super();
+  JoinButton(this._teamName) : super();
 
   @override
   Widget build(BuildContext context) {
@@ -63,8 +61,5 @@ class JoinButton extends StatelessWidget {
         print("Not Found");
       }
     });
-
-    //コールバック
-    callback();
   }
 }

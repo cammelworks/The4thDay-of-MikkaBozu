@@ -51,7 +51,7 @@ class Sidemenu extends StatelessWidget {
                     final result = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => LookupTeamPage(_email),
+                          builder: (context) => LookupTeamPage(),
                         ));
                   }),
               IconButton(
