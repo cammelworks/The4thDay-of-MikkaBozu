@@ -140,11 +140,13 @@ class RegisterPageState extends State<RegisterPage> {
             .document(user.email)
             .setData({'email': user.email});
       });
-      await Navigator.push(
+      await Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
             builder: (context) => MyHomePage(),
-          ));
+          ),
+          (_) => false
+      );
     }
   }
 

@@ -136,11 +136,13 @@ class SignInPageState extends State<SignInPage> {
       await prefs.setString('password', _passwordController.text);
       userData.userEmail = _emailController.text;
 
-      await Navigator.push(
+      await Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
             builder: (context) => MyHomePage(),
-          ));
+          ),
+          (_) => false
+      );
     }
   }
 }
