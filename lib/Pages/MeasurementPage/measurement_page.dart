@@ -1,13 +1,13 @@
+import 'dart:async';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:the4thdayofmikkabozu/Pages/MeasurementPage/measurement_button.dart';
 import 'package:the4thdayofmikkabozu/Pages/MeasurementPage/measurement_panel.dart';
-import 'dart:async';
-import 'dart:io';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
-import 'package:flutter/services.dart';
 
 class MeasurementPage extends StatefulWidget {
   @override
@@ -15,34 +15,12 @@ class MeasurementPage extends StatefulWidget {
 }
 
 class MeasurementPageState extends State<MeasurementPage> {
-  List<String> buttonStateList = ['START', 'STOP', 'My Page'];
   int _value = 0;
   Position position; // Geolocator
   Position prevPosition;
   Timer _timer;
   double _distance = 0;
   static const platform = const MethodChannel("Java.Foreground");
-
-  Future<void> _getLocation() async {
-    Position _currentPosition = await Geolocator().getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high); // ここで精度を「high」に指定している
-    if (position == null) {
-      prevPosition = _currentPosition;
-    }
-    else {
-      prevPosition = position;
-    }
-    position = _currentPosition;
-    // 距離の計算
-    double distance = await Geolocator().distanceBetween(prevPosition.latitude,
-        prevPosition.longitude, position.latitude, position.longitude);
-    //小数点2位以下を切り捨てて距離に加算する
-    _distance += (distance * 10).round() / 10;
-    setState(() {
-    });
-    print(_currentPosition);
-    print(_distance);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,22 +49,22 @@ class MeasurementPageState extends State<MeasurementPage> {
                     MeasurementPanel(_distance),
                     Center(
                       child: MeasurementButton(_value, () {
-                        if(_value == 0){
-                          if (Platform.isAndroid){
+                        if (_value == 0) {
+                          if (Platform.isAndroid) {
                             platform.invokeMethod("ON");
                           }
+                          //countTime()を1秒ごとに実行
                           _timer = Timer.periodic(
                             Duration(seconds: 1),
                             countTime,
                           );
-                        } else if(_value ==1){
-                          if (Platform.isAndroid){
+                        } else if (_value == 1) {
+                          if (Platform.isAndroid) {
                             platform.invokeMethod("OFF");
                           }
                           _timer.cancel();
                           _pushRecord();
-                        }
-                        else {
+                        } else {
                           Navigator.pop(context);
                         }
                         setState(() {
@@ -104,13 +82,23 @@ class MeasurementPageState extends State<MeasurementPage> {
     _getLocation();
   }
 
-//  Future<Widget> getDistance() async {
-//    double distance = await Geolocator().distanceBetween(prevPosition.latitude,
-//        prevPosition.longitude, position.latitude, position.longitude);
-//    //小数点2位以下を切り捨てて距離に加算する
-//    _distance += (distance * 10).round() / 10;
-//    return MeasurementPanel(_distance);
-//  }
+  Future<void> _getLocation() async {
+    Position _currentPosition = await Geolocator().getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high); // ここで精度を「high」に指定している
+    if (position == null) {
+      prevPosition = _currentPosition;
+    } else {
+      prevPosition = position;
+    }
+    position = _currentPosition;
+    // 距離の計算
+    double distance = await Geolocator().distanceBetween(prevPosition.latitude,
+        prevPosition.longitude, position.latitude, position.longitude);
+    //小数点2位以下を切り捨てて距離に加算する
+    _distance += (distance * 10).round() / 10;
+    // 画面の更新
+    setState(() {});
+  }
 
   void _pushRecord() async {
     //自分のEmailに紐づくドキュメントを取得

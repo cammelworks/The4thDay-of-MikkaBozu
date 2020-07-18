@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../RegisterPage/register_page.dart';
-import '../SigninPage/signin_page.dart';
+import 'package:the4thdayofmikkabozu/Pages/RegisterPage/register_page.dart';
+import 'package:the4thdayofmikkabozu/Pages/SigninPage/signin_page.dart';
 
 class SigninScreen extends StatefulWidget{
   final String title = '三日坊主の四日目';

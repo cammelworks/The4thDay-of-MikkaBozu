@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 typedef UserCallback = void Function();
 
 class MeasurementButton extends StatelessWidget {
-  List<String> buttonStateList = ['START', 'STOP', 'My Page'];
+  final List<String> buttonStateList = ['START', 'STOP', 'My Page'];
   int _value;
   final UserCallback callback;
 
