@@ -1,29 +1,22 @@
-// Copyright 2019 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'join_button.dart';
+import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
+import 'package:the4thdayofmikkabozu/Pages/LookupTeamPage/join_button.dart';
 
 class LookupTeamPage extends StatefulWidget {
-  String _email;
-  //コンストラクタ
-  LookupTeamPage(this._email);
-
   final String title = 'チーム検索';
+
   @override
-  State<StatefulWidget> createState() => LookupTeamPageState(_email);
+  State<StatefulWidget> createState() => LookupTeamPageState();
 }
 
 class LookupTeamPageState extends State<LookupTeamPage> {
-  String _email;
+  String _email = userData.userEmail;
   bool _showButton = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _teamNameField = TextEditingController();
-  //コンストラクタ
-  LookupTeamPageState(this._email);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,7 +116,7 @@ class LookupTeamPageState extends State<LookupTeamPage> {
   Widget showJoinButton() {
     if (_showButton) {
       //登録ボタンの表示
-      return JoinButton(_teamNameField.text, _email, () {});
+      return JoinButton(_teamNameField.text);
     } else {
       //何も表示しない
       return null;

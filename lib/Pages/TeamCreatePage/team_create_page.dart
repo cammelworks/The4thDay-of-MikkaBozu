@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
 class TeamCreatePage extends StatefulWidget {
-  String _email;
-  //コンストラクタ
-  TeamCreatePage(this._email);
-
   final String title = 'チーム作成';
+
   @override
-  State<StatefulWidget> createState() => TeamCreatePageState(_email);
+  State<StatefulWidget> createState() => TeamCreatePageState();
 }
 
 class TeamCreatePageState extends State<TeamCreatePage> {
-  String _email;
-  //コンストラクタ
-  TeamCreatePageState(this._email);
+  String _email = userData.userEmail;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
 
