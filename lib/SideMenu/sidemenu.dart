@@ -61,7 +61,7 @@ class Sidemenu extends StatelessWidget {
                     final result = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => TeamCreatePage(_email),
+                          builder: (context) => TeamCreatePage(),
                         ));
                   }),
             ]),
