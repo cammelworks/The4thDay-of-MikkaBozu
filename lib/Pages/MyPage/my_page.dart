@@ -4,7 +4,7 @@ import 'package:the4thdayofmikkabozu/SideMenu/sidemenu.dart';
 import 'package:the4thdayofmikkabozu/Pages/MyPage/records_screen.dart';
 
 class MyPage extends StatefulWidget {
-  final String title = '三日坊主の四日目';
+  final String title = '記録ページ';
   MyPage();
   @override
   State<StatefulWidget> createState() => MyPageState();
