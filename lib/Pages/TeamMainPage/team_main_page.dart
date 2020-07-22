@@ -15,47 +15,80 @@ class TeamMainPageState extends State<TeamMainPage> {
   String _email = userData.userEmail;
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text("チーム関連ページ"),
       ),
       body: Column(
         children: <Widget>[
-          RaisedButton(
-            child: Row(
-              children: <Widget>[
-                Spacer(),
-                Text("チーム検索"),
-                Icon(Icons.search),
-                Spacer()
-              ],
+          Container(
+            margin: EdgeInsets.fromLTRB(size.width/4, 16.0, size.width/4, 0.0),
+            child: ButtonTheme(
+              minWidth: 200.0,
+              height: 50.0,
+              buttonColor: Colors.white,
+              child: RaisedButton(
+                child: Row(
+                  children: <Widget>[
+                    Spacer(),
+                    Text(
+                      "チーム検索",
+                      style: TextStyle(
+                          fontSize: 18
+                      ),
+                    ),
+                    Icon(Icons.search),
+                    Spacer()
+                  ],
+                ),
+                shape: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
+                onPressed: () async {
+                  await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LookupTeamPage(),
+                      )
+                  );
+                },
+              ),
             ),
-            onPressed: () async {
-              await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => LookupTeamPage(),
-                  )
-              );
-            },
           ),
-          RaisedButton(
-            child: Row(
-              children: <Widget>[
-                Spacer(),
-                Text("チーム作成"),
-                Icon(Icons.add),
-                Spacer()
-              ],
+          Container(
+            margin: EdgeInsets.fromLTRB(size.width/4, 16.0, size.width/4, 0.0),
+            child: ButtonTheme(
+              minWidth: 200.0,
+              height: 50.0,
+              buttonColor: Colors.white,
+              child: RaisedButton(
+                child: Row(
+                  children: <Widget>[
+                    Spacer(),
+                    Text(
+                      "チーム作成",
+                      style: TextStyle(
+                          fontSize: 18
+                      ),
+                    ),
+                    Icon(Icons.add),
+                    Spacer()
+                  ],
+                ),
+                shape: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
+                onPressed: () async {
+                  await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TeamCreatePage(),
+                      )
+                  );
+                },
+              ),
             ),
-            onPressed: () async {
-              await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TeamCreatePage(),
-                  )
-              );
-            },
           ),
           Container(
             child: StreamBuilder<QuerySnapshot>(
@@ -85,16 +118,31 @@ class TeamMainPageState extends State<TeamMainPage> {
   }
 
   Widget _buildListItem(BuildContext context, String teamName) {
-    return RaisedButton(
-      child: Text(teamName),
-      onPressed: () async {
-        await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => TeamPage(teamName),
-            )
-        );
-      },
+    final Size size = MediaQuery.of(context).size;
+    return Container(
+      margin: EdgeInsets.fromLTRB(size.width/5, 16.0, size.width/5, 0.0),
+      child: ButtonTheme(
+        minWidth: 200.0,
+        height: 50.0,
+        buttonColor: Colors.white,
+        child: RaisedButton(
+          child: Text(
+            teamName,
+            style: TextStyle(
+                fontSize: 18
+            ),
+          ),
+          shape: OutlineInputBorder(),
+          onPressed: () async {
+            await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TeamPage(teamName),
+                )
+            );
+          },
+        ),
+      ),
     );
   }
 }
