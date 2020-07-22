@@ -16,7 +16,15 @@ class RunPageState extends State<RunPage> {
       ),
       body: Column(
         children: <Widget>[
-          Text("走る準備ができたら押してください"),
+          SizedBox(
+            height: 60,
+          ),
+          Text(
+              "走る準備ができたら押してください",
+            style: TextStyle(
+              fontSize: 18
+            ),
+          ),
           ToMeasurementPageButton()
         ],
       ),

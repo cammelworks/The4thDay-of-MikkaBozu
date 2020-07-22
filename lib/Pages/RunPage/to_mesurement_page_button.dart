@@ -12,7 +12,11 @@ class ToMeasurementPageButton extends StatelessWidget {
           height: 50.0,
           buttonColor: Colors.white,
           child: RaisedButton(
-              child: const Text('運動をする'),
+              child: const Text('走る',
+                style: TextStyle(
+                  fontSize: 18
+                ),
+              ),
               shape: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
               ),
