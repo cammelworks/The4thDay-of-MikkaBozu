@@ -9,15 +9,42 @@ class RecordsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     //画面サイズを取得
     final Size size = MediaQuery.of(context).size;
-    return ConstrainedBox(
-      //表示できる最大範囲を画面の縦3分の1に指定
-      constraints: BoxConstraints(maxHeight: size.height/3),
-      child: Center(
-            child: Container(
-              alignment: Alignment.center,
-              child: getRecords(),
-            ),
+    return Center(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: EdgeInsets.fromLTRB(size.width / 4, 20, 6, 20),
+                width: size.width / 2,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '日付',
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+              ),
+              Container(
+                width: size.width / 2,
+                padding: EdgeInsets.fromLTRB(6, 6, size.width / 4, 6),
+                alignment: Alignment.centerRight,
+                child: Text(
+                  '距離',
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+              ),
+            ],
           ),
+          Container(
+            height: size.height*(7/10),
+            child: getRecords(),
+          ),
+        ],
+      ),
     );
   }
 
@@ -29,7 +56,7 @@ class RecordsScreen extends StatelessWidget {
             .collection('users')
             .document(_email)
             .collection('records')
-            .orderBy("timestamp",descending: true)
+            .orderBy("timestamp", descending: true)
             .snapshots(),
         //streamが更新されるたびに呼ばれる
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -40,15 +67,47 @@ class RecordsScreen extends StatelessWidget {
             shrinkWrap: true,
             itemCount: snapshot.data.documents.length,
             itemBuilder: (context, int index) {
-              return Container(
-                padding: const EdgeInsets.all(6),
-                alignment: Alignment.center,
-                child: Text(
-                  snapshot.data.documents[index]["distance"].toString(),
-                ),
+              Size size = MediaQuery.of(context).size;
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(left: size.width / 4),
+                    width: size.width / 2,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      _timestampToString(
+                          snapshot.data.documents[index]["timestamp"]),
+                    ),
+                  ),
+                  Container(
+                    width: size.width / 2,
+                    padding: EdgeInsets.fromLTRB(6, 6, size.width / 4, 6),
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      _convertUnit(snapshot.data.documents[index]["distance"]),
+                    ),
+                  ),
+                ],
               );
             },
           );
         });
+  }
+
+  String _convertUnit(double distance) {
+    // _distanceはメートル
+    // 距離をkmで表示する
+    //表示するときに丸め誤差が生じるため、小数点2位以下を切り捨てる
+    double km_distance = distance / 1000.0;
+    return "${(km_distance * 10).round() / 10}" + "km";
+  }
+
+  //Timestamp型の時間情報を日にちに変換する
+  String _timestampToString(Timestamp timeStamp) {
+    DateTime time = timeStamp.toDate();
+    int month = time.month;
+    int day = time.day;
+    return month.toString() + "/" + day.toString();
   }
 }
