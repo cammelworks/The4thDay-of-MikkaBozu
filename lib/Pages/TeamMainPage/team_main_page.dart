@@ -91,6 +91,7 @@ class TeamMainPageState extends State<TeamMainPage> {
             ),
           ),
           Container(
+            height: size.height*(6/10),
             child: StreamBuilder<QuerySnapshot>(
               //表示したいFirestoreの保存先を指定
                 stream: Firestore.instance
