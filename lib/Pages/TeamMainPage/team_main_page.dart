@@ -104,12 +104,14 @@ class TeamMainPageState extends State<TeamMainPage> {
                     AsyncSnapshot<QuerySnapshot> snapshot) {
                   //データが取れていない時の処理
                   if (!snapshot.hasData) return const Text('Loading...');
-                  return ListView.builder(
-                      padding: EdgeInsets.zero,
-                      shrinkWrap: true,
-                      itemCount: snapshot.data.documents.length,
-                      itemBuilder: (context, index) => _buildListItem(
-                          context, snapshot.data.documents[index]['team_name']));
+                  return Scrollbar(
+                    child: ListView.builder(
+                        padding: EdgeInsets.zero,
+                        shrinkWrap: true,
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (context, index) => _buildListItem(
+                            context, snapshot.data.documents[index]['team_name'])),
+                  );
                 }),
           ),
         ],

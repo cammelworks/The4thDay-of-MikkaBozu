@@ -39,25 +39,27 @@ class MembersRecord extends StatelessWidget{
           //データが取れていない時の処理
           if (!snapshot.hasData) return const Text('Loading...');
 
-          return ListView.builder(
-            shrinkWrap: true,
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context, int index) {
-              return GestureDetector(
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MemberPage(snapshot.data.documents[index].documentID.toString()),
-                    )),
-                child: Container(
-                  padding: const EdgeInsets.all(6),
-                  alignment: Alignment.center,
-                  child: Text(
-                    snapshot.data.documents[index].documentID.toString(),
+          return Scrollbar(
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: snapshot.data.documents.length,
+              itemBuilder: (context, int index) {
+                return GestureDetector(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MemberPage(snapshot.data.documents[index].documentID.toString()),
+                      )),
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    alignment: Alignment.center,
+                    child: Text(
+                      snapshot.data.documents[index].documentID.toString(),
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           );
         });
   }
