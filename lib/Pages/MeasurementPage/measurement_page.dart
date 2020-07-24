@@ -51,7 +51,7 @@ class MeasurementPageState extends State<MeasurementPage> {
                       child: MeasurementButton(_value, () {
                         if (_value == 0) {
                           if (Platform.isAndroid) {
-                            platform.invokeMethod("ON");
+                            platform.invokeMethod<dynamic>("ON");
                           }
                           //countTime()を1秒ごとに実行
                           _timer = Timer.periodic(
@@ -60,7 +60,7 @@ class MeasurementPageState extends State<MeasurementPage> {
                           );
                         } else if (_value == 1) {
                           if (Platform.isAndroid) {
-                            platform.invokeMethod("OFF");
+                            platform.invokeMethod<dynamic>("OFF");
                           }
                           _timer.cancel();
                           _pushRecord();
@@ -107,6 +107,6 @@ class MeasurementPageState extends State<MeasurementPage> {
         .document(userData.userEmail)
         .collection('records')
         .document()
-        .setData({'distance': _distance, 'timestamp': Timestamp.now()});
+        .setData(<String, dynamic>{'distance': _distance, 'timestamp': Timestamp.now()});
   }
 }

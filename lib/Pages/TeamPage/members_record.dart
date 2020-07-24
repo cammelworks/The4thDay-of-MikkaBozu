@@ -45,9 +45,9 @@ class MembersRecord extends StatelessWidget{
               itemCount: snapshot.data.documents.length,
               itemBuilder: (context, int index) {
                 return GestureDetector(
-                  onTap: () => Navigator.push(
+                  onTap: () => Navigator.push<dynamic>(
                       context,
-                      MaterialPageRoute(
+                      MaterialPageRoute<dynamic>(
                         builder: (context) => MemberPage(snapshot.data.documents[index].documentID.toString()),
                       )),
                   child: Container(

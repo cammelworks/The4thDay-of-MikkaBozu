@@ -93,14 +93,14 @@ class TeamCreatePageState extends State<TeamCreatePage> {
     Firestore.instance
         .collection('teams')
         .document(_nameController.text)
-        .setData({'team_name': _nameController.text});
+        .setData(<String, dynamic>{'team_name': _nameController.text});
 
     Firestore.instance
         .collection('teams')
         .document(_nameController.text)
         .collection('users')
         .document(_email)
-        .setData({'email': _email});
+        .setData(<String, dynamic>{'email': _email});
   }
 
   //ユーザデータにチーム名を追加する関数
@@ -110,7 +110,7 @@ class TeamCreatePageState extends State<TeamCreatePage> {
         .document(_email)
         .collection('teams')
         .document(_nameController.text)
-        .setData({'team_name': _nameController.text});
+        .setData(<String, dynamic>{'team_name': _nameController.text});
   }
 
   Future<bool> checkUniqueTeamName(String candidateName) async {

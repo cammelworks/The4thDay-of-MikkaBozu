@@ -21,9 +21,9 @@ class ToMeasurementPageButton extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
               ),
               onPressed: () async {
-                  final result = await Navigator.push(
+                  await Navigator.push<dynamic>(
                       context,
-                      MaterialPageRoute(
+                      MaterialPageRoute<dynamic>(
                         builder: (context) => MeasurementPage(),
                       ));
               }),

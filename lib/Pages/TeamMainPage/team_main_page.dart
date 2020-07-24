@@ -46,9 +46,9 @@ class TeamMainPageState extends State<TeamMainPage> {
                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
                 ),
                 onPressed: () async {
-                  await Navigator.push(
+                  await Navigator.push<dynamic>(
                       context,
-                      MaterialPageRoute(
+                      MaterialPageRoute<dynamic>(
                         builder: (context) => LookupTeamPage(),
                       )
                   );
@@ -80,9 +80,9 @@ class TeamMainPageState extends State<TeamMainPage> {
                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
                 ),
                 onPressed: () async {
-                  await Navigator.push(
+                  await Navigator.push<dynamic>(
                       context,
-                      MaterialPageRoute(
+                      MaterialPageRoute<dynamic>(
                         builder: (context) => TeamCreatePage(),
                       )
                   );
@@ -110,7 +110,7 @@ class TeamMainPageState extends State<TeamMainPage> {
                         shrinkWrap: true,
                         itemCount: snapshot.data.documents.length,
                         itemBuilder: (context, index) => _buildListItem(
-                            context, snapshot.data.documents[index]['team_name'])),
+                            context, snapshot.data.documents[index]['team_name'] as String)),
                   );
                 }),
           ),
@@ -137,9 +137,9 @@ class TeamMainPageState extends State<TeamMainPage> {
           ),
           shape: OutlineInputBorder(),
           onPressed: () async {
-            await Navigator.push(
+            await Navigator.push<dynamic>(
                 context,
-                MaterialPageRoute(
+                MaterialPageRoute<dynamic>(
                   builder: (context) => TeamPage(teamName),
                 )
             );
