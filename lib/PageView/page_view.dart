@@ -26,15 +26,15 @@ class MyPageViewState extends State<MyPageView> {
         items: [
           BottomNavigationBarItem(
               icon: Icon(Icons.equalizer),
-              title: Text("記録ページ")
+              title: Text("記録")
           ),
           BottomNavigationBarItem(
               icon: Icon(Icons.directions_run),
-              title: Text("ランページ")
+              title: Text("ラン")
           ),
           BottomNavigationBarItem(
               icon: Icon(Icons.people),
-              title: Text("チーム関連ページ")
+              title: Text("チーム関連")
           ),
         ],
       ),
