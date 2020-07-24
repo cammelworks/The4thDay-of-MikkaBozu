@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:the4thdayofmikkabozu/Pages/MemberPage/member_page.dart';
+import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
 class MembersRecord extends StatelessWidget{
   String _teamName;
@@ -44,10 +45,13 @@ class MembersRecord extends StatelessWidget{
               shrinkWrap: true,
               itemCount: snapshot.data.documents.length,
               itemBuilder: (context, int index) {
+                if(snapshot.data.documents[index].documentID.toString() == userData.userEmail){
+                  return Container();
+                }
                 return GestureDetector(
-                  onTap: () => Navigator.push(
+                  onTap: () => Navigator.push<dynamic>(
                       context,
-                      MaterialPageRoute(
+                      MaterialPageRoute<dynamic>(
                         builder: (context) => MemberPage(snapshot.data.documents[index].documentID.toString()),
                       )),
                   child: Container(

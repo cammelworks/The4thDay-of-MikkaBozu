@@ -30,9 +30,9 @@ class SignoutButton extends StatelessWidget {
                 Fluttertoast.showToast(
                   msg: email + 'はサインアウトしました',
                 );
-                await Navigator.pushAndRemoveUntil(
+                await Navigator.pushAndRemoveUntil<dynamic>(
                     context,
-                    MaterialPageRoute(
+                    MaterialPageRoute<dynamic>(
                       builder: (context) => MyHomePage(),
                     ),
                     (_)=>false

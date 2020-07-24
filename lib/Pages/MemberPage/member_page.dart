@@ -110,17 +110,17 @@ class MemberPageState extends State<MemberPage> {
         });
   }
 
-  String _convertUnit(double distance) {
+  String _convertUnit(dynamic distance) {
     // _distanceはメートル
     // 距離をkmで表示する
     //表示するときに丸め誤差が生じるため、小数点2位以下を切り捨てる
-    double km_distance = distance / 1000.0;
+    double km_distance = (distance as double) / 1000.0;
     return "${(km_distance * 10).round() / 10}" + "km";
   }
 
   //Timestamp型の時間情報を日にちに変換する
-  String _timestampToString(Timestamp timeStamp) {
-    DateTime time = timeStamp.toDate();
+  String _timestampToString(dynamic timeStamp) {
+    DateTime time = (timeStamp as Timestamp).toDate();
     int month = time.month;
     int day = time.day;
     return month.toString() + "/" + day.toString();

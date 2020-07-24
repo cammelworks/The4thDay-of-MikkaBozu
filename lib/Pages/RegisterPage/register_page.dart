@@ -138,11 +138,11 @@ class RegisterPageState extends State<RegisterPage> {
         Firestore.instance
             .collection('users')
             .document(user.email)
-            .setData({'email': user.email});
+            .setData(<String, dynamic>{'email': user.email});
       });
-      await Navigator.pushAndRemoveUntil(
+      await Navigator.pushAndRemoveUntil<dynamic>(
           context,
-          MaterialPageRoute(
+          MaterialPageRoute<dynamic>(
             builder: (context) => MyHomePage(),
           ),
           (_) => false

@@ -24,7 +24,7 @@ class GoalManager extends StatelessWidget {
     );
   }
 
-  showPickerNumber(BuildContext context) {
+  void showPickerNumber(BuildContext context) {
     Picker(
         adapter: NumberPickerAdapter(data: [
           NumberPickerColumn(begin: 0, end: 9, jump: 1),
@@ -36,18 +36,16 @@ class GoalManager extends StatelessWidget {
         confirmText: "決定",
         cancelText: "キャンセル",
         onConfirm: (Picker picker, List values) {
-          var goal = values[0] * 10 + values[1];
-          print(goal);
-          _setGoal(goal);
+          _setGoal(values[0] * 10 + values[1]);
         }).showDialog(context);
   }
 
-  void _setGoal(int goal) {
+  void _setGoal(dynamic goal) {
     //Firebaseのteamsに目標を設定する
     Firestore.instance
         .collection('teams')
         .document(_teamName)
-        .updateData({'goal': goal});
+        .updateData(<String, dynamic>{'goal': goal});
   }
 
   Widget _showGoal() {
