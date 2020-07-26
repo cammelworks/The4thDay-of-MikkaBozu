@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:the4thdayofmikkabozu/SideMenu/signout_button.dart';
+import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
 class Sidemenu extends StatelessWidget {
   @override
@@ -16,6 +17,7 @@ class Sidemenu extends StatelessWidget {
                 image: DecorationImage(
                     fit: BoxFit.fill, image: AssetImage('images/bouzu.png'))),
           ),
+          Center(child: Container(child: Text(userData.userEmail))),
           Container(
             child: SignoutButton(),
           ),
