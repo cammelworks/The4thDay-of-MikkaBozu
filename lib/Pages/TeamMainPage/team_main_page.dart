@@ -23,7 +23,8 @@ class TeamMainPageState extends State<TeamMainPage> {
       body: Column(
         children: <Widget>[
           Container(
-            margin: EdgeInsets.fromLTRB(size.width/4, 16.0, size.width/4, 0.0),
+            margin:
+                EdgeInsets.fromLTRB(size.width / 4, 16.0, size.width / 4, 0.0),
             child: ButtonTheme(
               minWidth: 200.0,
               height: 50.0,
@@ -34,9 +35,7 @@ class TeamMainPageState extends State<TeamMainPage> {
                     Spacer(),
                     Text(
                       "チーム検索",
-                      style: TextStyle(
-                          fontSize: 18
-                      ),
+                      style: TextStyle(fontSize: 18),
                     ),
                     Icon(Icons.search),
                     Spacer()
@@ -50,14 +49,14 @@ class TeamMainPageState extends State<TeamMainPage> {
                       context,
                       MaterialPageRoute<dynamic>(
                         builder: (context) => LookupTeamPage(),
-                      )
-                  );
+                      ));
                 },
               ),
             ),
           ),
           Container(
-            margin: EdgeInsets.fromLTRB(size.width/4, 16.0, size.width/4, 0.0),
+            margin:
+                EdgeInsets.fromLTRB(size.width / 4, 16.0, size.width / 4, 0.0),
             child: ButtonTheme(
               minWidth: 200.0,
               height: 50.0,
@@ -68,9 +67,7 @@ class TeamMainPageState extends State<TeamMainPage> {
                     Spacer(),
                     Text(
                       "チーム作成",
-                      style: TextStyle(
-                          fontSize: 18
-                      ),
+                      style: TextStyle(fontSize: 18),
                     ),
                     Icon(Icons.add),
                     Spacer()
@@ -84,16 +81,15 @@ class TeamMainPageState extends State<TeamMainPage> {
                       context,
                       MaterialPageRoute<dynamic>(
                         builder: (context) => TeamCreatePage(),
-                      )
-                  );
+                      ));
                 },
               ),
             ),
           ),
           Container(
-            height: size.height*(6/10),
+            height: size.height * (6 / 12),
             child: StreamBuilder<QuerySnapshot>(
-              //表示したいFirestoreの保存先を指定
+                //表示したいFirestoreの保存先を指定
                 stream: Firestore.instance
                     .collection('users')
                     .document(_email)
@@ -110,7 +106,9 @@ class TeamMainPageState extends State<TeamMainPage> {
                         shrinkWrap: true,
                         itemCount: snapshot.data.documents.length,
                         itemBuilder: (context, index) => _buildListItem(
-                            context, snapshot.data.documents[index]['team_name'] as String)),
+                            context,
+                            snapshot.data.documents[index]['team_name']
+                                as String)),
                   );
                 }),
           ),
@@ -123,7 +121,7 @@ class TeamMainPageState extends State<TeamMainPage> {
   Widget _buildListItem(BuildContext context, String teamName) {
     final Size size = MediaQuery.of(context).size;
     return Container(
-      margin: EdgeInsets.fromLTRB(size.width/5, 16.0, size.width/5, 0.0),
+      margin: EdgeInsets.fromLTRB(size.width / 5, 16.0, size.width / 5, 0.0),
       child: ButtonTheme(
         minWidth: 200.0,
         height: 50.0,
@@ -131,9 +129,7 @@ class TeamMainPageState extends State<TeamMainPage> {
         child: RaisedButton(
           child: Text(
             teamName,
-            style: TextStyle(
-                fontSize: 18
-            ),
+            style: TextStyle(fontSize: 18),
           ),
           shape: OutlineInputBorder(),
           onPressed: () async {
@@ -141,8 +137,7 @@ class TeamMainPageState extends State<TeamMainPage> {
                 context,
                 MaterialPageRoute<dynamic>(
                   builder: (context) => TeamPage(teamName),
-                )
-            );
+                ));
           },
         ),
       ),
