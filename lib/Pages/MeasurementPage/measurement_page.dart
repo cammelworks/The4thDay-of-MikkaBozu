@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:the4thdayofmikkabozu/Pages/MeasurementPage/measurement_button.dart';
 import 'package:the4thdayofmikkabozu/Pages/MeasurementPage/measurement_panel.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
+import 'package:the4thdayofmikkabozu/permission.dart';
 
 class MeasurementPage extends StatefulWidget {
   @override
@@ -33,10 +34,13 @@ class MeasurementPageState extends State<MeasurementPage> {
           }
 
           if (snapshot.data == GeolocationStatus.denied) {
-            return Text(
-              'Access to location denied',
-              textAlign: TextAlign.center,
-            );
+//            return Scaffold(
+//              body: Text(
+//                'Access to location denied',
+//                textAlign: TextAlign.center,
+//              ),
+//            );
+            Permission().checkPermission();
           }
           return Scaffold(
             appBar: AppBar(
