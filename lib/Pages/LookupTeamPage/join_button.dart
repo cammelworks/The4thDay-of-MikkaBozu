@@ -37,7 +37,7 @@ class JoinButton extends StatelessWidget {
         .document(_teamName)
         .collection('users')
         .document(_email)
-        .setData({'email': _email});
+        .setData(<String, dynamic>{'email': _email});
 
     //自分の情報にチームの情報を追加
     Firestore.instance
@@ -45,6 +45,6 @@ class JoinButton extends StatelessWidget {
         .document(_email)
         .collection('teams')
         .document(_teamName)
-        .setData({'team_name': _teamName});
+        .setData(<String, dynamic>{'team_name': _teamName});
   }
 }

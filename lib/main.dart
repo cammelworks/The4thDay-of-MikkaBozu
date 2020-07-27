@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:the4thdayofmikkabozu/Pages/MyPage/my_page.dart';
+import 'package:the4thdayofmikkabozu/PageView/page_view.dart';
 import 'package:the4thdayofmikkabozu/Pages/MyPage/signin_screen.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,7 +49,7 @@ class MyHomePageState extends State<MyHomePage> {
           future: showButton(),
           builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
             if (snapshot.hasData && snapshot.data) {
-              return MyPage();
+              return MyPageView();
             } else if (snapshot.connectionState != ConnectionState.done) {
               return Center(child: CircularProgressIndicator());
             } else if(snapshot.hasData && !snapshot.data){

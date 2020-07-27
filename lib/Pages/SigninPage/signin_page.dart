@@ -136,9 +136,9 @@ class SignInPageState extends State<SignInPage> {
       await prefs.setString('password', _passwordController.text);
       userData.userEmail = _emailController.text;
 
-      await Navigator.pushAndRemoveUntil(
+      await Navigator.pushAndRemoveUntil<dynamic>(
           context,
-          MaterialPageRoute(
+          MaterialPageRoute<dynamic>(
             builder: (context) => MyHomePage(),
           ),
           (_) => false

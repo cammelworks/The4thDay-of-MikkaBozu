@@ -33,9 +33,9 @@ class SigninScreenState extends State<SigninScreen> {
                     ),
                     onPressed: () async {
                       //移動先のページから値を受け取る
-                      final result = await Navigator.push(
+                      await Navigator.push<dynamic>(
                           context,
-                          MaterialPageRoute(
+                          MaterialPageRoute<dynamic>(
                             builder: (context) => RegisterPage(),
                           ));
                     }),
@@ -56,9 +56,9 @@ class SigninScreenState extends State<SigninScreen> {
                     ),
                     onPressed: () async {
                       //移動先のページから値を受け取る
-                      final result = await Navigator.push(
+                      await Navigator.push<dynamic>(
                           context,
-                          MaterialPageRoute(
+                          MaterialPageRoute<dynamic>(
                             builder: (context) => SignInPage(),
                           ));
                     }),

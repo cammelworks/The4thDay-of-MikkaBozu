@@ -76,49 +76,51 @@ class MemberPageState extends State<MemberPage> {
           //データが取れていない時の処理
           if (!snapshot.hasData) return const Text('Loading...');
 
-          return ListView.builder(
-            shrinkWrap: true,
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context, int index) {
-              Size size = MediaQuery.of(context).size;
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: EdgeInsets.only(left: size.width / 4),
-                    width: size.width / 2,
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      _timestampToString(
-                          snapshot.data.documents[index]["timestamp"]),
+          return Scrollbar(
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: snapshot.data.documents.length,
+              itemBuilder: (context, int index) {
+                Size size = MediaQuery.of(context).size;
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(left: size.width / 4),
+                      width: size.width / 2,
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        _timestampToString(
+                            snapshot.data.documents[index]["timestamp"]),
+                      ),
                     ),
-                  ),
-                  Container(
-                    width: size.width / 2,
-                    padding: EdgeInsets.fromLTRB(6, 6, size.width / 4, 6),
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      _convertUnit(snapshot.data.documents[index]["distance"]),
+                    Container(
+                      width: size.width / 2,
+                      padding: EdgeInsets.fromLTRB(6, 6, size.width / 4, 6),
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        _convertUnit(snapshot.data.documents[index]["distance"]),
+                      ),
                     ),
-                  ),
-                ],
-              );
-            },
+                  ],
+                );
+              },
+            ),
           );
         });
   }
 
-  String _convertUnit(double distance) {
+  String _convertUnit(dynamic distance) {
     // _distanceはメートル
     // 距離をkmで表示する
     //表示するときに丸め誤差が生じるため、小数点2位以下を切り捨てる
-    double km_distance = distance / 1000.0;
+    double km_distance = (distance as double) / 1000.0;
     return "${(km_distance * 10).round() / 10}" + "km";
   }
 
   //Timestamp型の時間情報を日にちに変換する
-  String _timestampToString(Timestamp timeStamp) {
-    DateTime time = timeStamp.toDate();
+  String _timestampToString(dynamic timeStamp) {
+    DateTime time = (timeStamp as Timestamp).toDate();
     int month = time.month;
     int day = time.day;
     return month.toString() + "/" + day.toString();
