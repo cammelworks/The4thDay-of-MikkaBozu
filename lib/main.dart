@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: '三日坊主の四日目',
       home: MyHomePage(title: '三日坊主の四日目'),
     );
