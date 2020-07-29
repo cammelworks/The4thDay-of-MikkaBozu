@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:the4thdayofmikkabozu/PageView/page_view.dart';
 import 'package:the4thdayofmikkabozu/Pages/MyPage/signin_screen.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
+import 'package:the4thdayofmikkabozu/permission.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -63,6 +64,9 @@ class MyHomePageState extends State<MyHomePage> {
   Future<bool> showButton() async {
     //端末のデータにアクセスするための変数
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    //位置情報の許可が出ているか確認する
+    Permission().checkPermission();
 
     if (_user != null) {
       return true;
