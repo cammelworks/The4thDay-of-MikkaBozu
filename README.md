@@ -31,3 +31,12 @@ https://docs.google.com/presentation/d/1ZDK06Qx4u-7yiB8-y9v228KsxJjNyG_YvZ-i64Df
 https://app.diagrams.net/#G1CMR3LrljikwbxKwDcdyfu1eU36fBlCtx
 ### Application
 https://app.diagrams.net/#G1x4mvbFxA61XcJ-GQylx98LIYyS1DM-vH
+
+## Frameworks
+
+- Flutter SDK : 1.7.5
+- Dart : 2.8.4
+
+### iOS
+- xcode : version 11.6
+- cocoapods : 1.9.3
