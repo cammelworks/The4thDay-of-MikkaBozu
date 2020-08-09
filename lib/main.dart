@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:the4thdayofmikkabozu/Pages/MyPage/my_page.dart';
+import 'package:the4thdayofmikkabozu/PageView/page_view.dart';
 import 'package:the4thdayofmikkabozu/Pages/MyPage/signin_screen.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
+import 'package:the4thdayofmikkabozu/permission.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: '三日坊主の四日目',
       home: MyHomePage(title: '三日坊主の四日目'),
     );
@@ -49,7 +51,7 @@ class MyHomePageState extends State<MyHomePage> {
           future: showButton(),
           builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
             if (snapshot.hasData && snapshot.data) {
-              return MyPage();
+              return MyPageView();
             } else if (snapshot.connectionState != ConnectionState.done) {
               return Center(child: CircularProgressIndicator());
             } else if(snapshot.hasData && !snapshot.data){
@@ -63,6 +65,9 @@ class MyHomePageState extends State<MyHomePage> {
   Future<bool> showButton() async {
     //端末のデータにアクセスするための変数
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    //位置情報の許可が出ているか確認する
+    Permission().checkPermission();
 
     if (_user != null) {
       return true;

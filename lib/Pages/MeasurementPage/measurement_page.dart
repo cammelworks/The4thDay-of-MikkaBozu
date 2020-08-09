@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:the4thdayofmikkabozu/Pages/MeasurementPage/measurement_button.dart';
 import 'package:the4thdayofmikkabozu/Pages/MeasurementPage/measurement_panel.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
+import 'package:the4thdayofmikkabozu/permission.dart';
 
 class MeasurementPage extends StatefulWidget {
   @override
@@ -33,10 +34,13 @@ class MeasurementPageState extends State<MeasurementPage> {
           }
 
           if (snapshot.data == GeolocationStatus.denied) {
-            return Text(
-              'Access to location denied',
-              textAlign: TextAlign.center,
-            );
+//            return Scaffold(
+//              body: Text(
+//                'Access to location denied',
+//                textAlign: TextAlign.center,
+//              ),
+//            );
+            Permission().checkPermission();
           }
           return Scaffold(
             appBar: AppBar(
@@ -51,7 +55,7 @@ class MeasurementPageState extends State<MeasurementPage> {
                       child: MeasurementButton(_value, () {
                         if (_value == 0) {
                           if (Platform.isAndroid) {
-                            platform.invokeMethod("ON");
+                            platform.invokeMethod<dynamic>("ON");
                           }
                           //countTime()を1秒ごとに実行
                           _timer = Timer.periodic(
@@ -60,7 +64,7 @@ class MeasurementPageState extends State<MeasurementPage> {
                           );
                         } else if (_value == 1) {
                           if (Platform.isAndroid) {
-                            platform.invokeMethod("OFF");
+                            platform.invokeMethod<dynamic>("OFF");
                           }
                           _timer.cancel();
                           _pushRecord();
@@ -107,6 +111,6 @@ class MeasurementPageState extends State<MeasurementPage> {
         .document(userData.userEmail)
         .collection('records')
         .document()
-        .setData({'distance': _distance, 'timestamp': Timestamp.now()});
+        .setData(<String, dynamic>{'distance': _distance, 'timestamp': Timestamp.now()});
   }
 }
