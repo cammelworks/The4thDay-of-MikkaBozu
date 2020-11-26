@@ -86,7 +86,7 @@ class GoalManager extends StatelessWidget {
             return Text(
               "週0km",
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 40,
               ),
             );
           }
