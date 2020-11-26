@@ -23,25 +23,18 @@ class TeamPageState extends State<TeamPage> {
         title: Text(_teamName),
       ),
       body: Center(
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Center(
-                child: Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: Text(
-                    '目標',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 20.0),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                GoalManager(_teamName),
+                Container(
+                  height: 10.0,
                 ),
-              ),
-              GoalManager(_teamName),
-              MembersRecord(_teamName),
-            ]),
+                MembersRecord(_teamName),
+              ]),
+        ),
       ),
     );
   }

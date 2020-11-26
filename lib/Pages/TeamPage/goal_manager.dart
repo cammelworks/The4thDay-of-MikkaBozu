@@ -10,16 +10,30 @@ class GoalManager extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Column(
       children: <Widget>[
-        Center(child: _showGoal()),
-        IconButton(
-            icon: Icon(Icons.mode_edit),
-            onPressed: () async {
-              //目標変更
-              showPickerNumber(context);
-            }),
+        Center(
+          child: Text(
+            '目標',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: Theme.of(context).primaryColor,
+            ),
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Center(child: _showGoal()),
+            IconButton(
+                icon: Icon(Icons.mode_edit),
+                onPressed: () async {
+                  //目標変更
+                  showPickerNumber(context);
+                }),
+          ],
+        ),
       ],
     );
   }
@@ -65,7 +79,7 @@ class GoalManager extends StatelessWidget {
             return Text(
               "週" + snapshot.data["goal"].toString() + "km",
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 40,
               ),
             );
           } else {
