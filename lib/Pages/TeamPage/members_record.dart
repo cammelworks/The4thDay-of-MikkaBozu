@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:the4thdayofmikkabozu/Pages/MemberPage/member_page.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
-class MembersRecord extends StatelessWidget{
+class MembersRecord extends StatelessWidget {
   String _teamName;
 
   MembersRecord(this._teamName);
@@ -29,7 +29,7 @@ class MembersRecord extends StatelessWidget{
   //メンバー一覧を表示する
   Widget getMembers() {
     return StreamBuilder<QuerySnapshot>(
-      //表示したいFiresotreの保存先を指定
+        //表示したいFiresotreの保存先を指定
         stream: Firestore.instance
             .collection('teams')
             .document(_teamName)
@@ -45,22 +45,24 @@ class MembersRecord extends StatelessWidget{
               shrinkWrap: true,
               itemCount: snapshot.data.documents.length,
               itemBuilder: (context, int index) {
-                if(snapshot.data.documents[index].documentID.toString() == userData.userEmail){
+                if (snapshot.data.documents[index].documentID.toString() ==
+                    userData.userEmail) {
                   return Container();
                 }
-                return GestureDetector(
+                return ListTile(
+                  leading: Icon(
+                    Icons.account_circle,
+                    size: 50,
+                  ),
+                  title: Text(
+                      snapshot.data.documents[index].documentID.toString()),
                   onTap: () => Navigator.push<dynamic>(
                       context,
                       MaterialPageRoute<dynamic>(
-                        builder: (context) => MemberPage(snapshot.data.documents[index].documentID.toString()),
+                        builder: (context) => MemberPage(snapshot
+                            .data.documents[index].documentID
+                            .toString()),
                       )),
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    alignment: Alignment.center,
-                    child: Text(
-                      snapshot.data.documents[index].documentID.toString(),
-                    ),
-                  ),
                 );
               },
             ),
