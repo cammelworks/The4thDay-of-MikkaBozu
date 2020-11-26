@@ -41,7 +41,7 @@ golden_test/failures/
 **/android/gradlew.bat
 **/android/local.properties
 **/android/**/GeneratedPluginRegistrant.java
-**/android/key.properties
+**/android/**/key.properties
 **/android/app/src/Release/google-services.json
 
 # iOS/XCode related
