@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:the4thdayofmikkabozu/Pages/LookupTeamPage/lookup_team_page.dart';
 import 'package:the4thdayofmikkabozu/Pages/TeamCreatePage/team_create_page.dart';
 import 'package:the4thdayofmikkabozu/Pages/TeamPage/team_page.dart';
@@ -18,86 +18,43 @@ class TeamMainPageState extends State<TeamMainPage> {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text("チーム関連ページ"),
+        title: const Text(
+          'チーム関連ページ',
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            color: Colors.white,
+            onPressed: () async {
+              await Navigator.push<dynamic>(
+                  context,
+                  MaterialPageRoute<dynamic>(
+                    builder: (context) => LookupTeamPage(),
+                  ));
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.add),
+            color: Colors.white,
+            onPressed: () async {
+              await Navigator.push<dynamic>(
+                  context,
+                  MaterialPageRoute<dynamic>(
+                    builder: (context) => TeamCreatePage(),
+                  ));
+            },
+          ),
+        ],
       ),
       body: Column(
         children: <Widget>[
           Container(
-            margin:
-                EdgeInsets.fromLTRB(size.width / 4, 16.0, size.width / 4, 0.0),
-            child: ButtonTheme(
-              minWidth: 200.0,
-              height: 50.0,
-              buttonColor: Colors.white,
-              child: RaisedButton(
-                child: Row(
-                  children: <Widget>[
-                    Spacer(),
-                    Text(
-                      "チーム検索",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    Icon(Icons.search),
-                    Spacer()
-                  ],
-                ),
-                shape: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                ),
-                onPressed: () async {
-                  await Navigator.push<dynamic>(
-                      context,
-                      MaterialPageRoute<dynamic>(
-                        builder: (context) => LookupTeamPage(),
-                      ));
-                },
-              ),
-            ),
-          ),
-          Container(
-            margin:
-                EdgeInsets.fromLTRB(size.width / 4, 16.0, size.width / 4, 0.0),
-            child: ButtonTheme(
-              minWidth: 200.0,
-              height: 50.0,
-              buttonColor: Colors.white,
-              child: RaisedButton(
-                child: Row(
-                  children: <Widget>[
-                    Spacer(),
-                    Text(
-                      "チーム作成",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    Icon(Icons.add),
-                    Spacer()
-                  ],
-                ),
-                shape: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                ),
-                onPressed: () async {
-                  await Navigator.push<dynamic>(
-                      context,
-                      MaterialPageRoute<dynamic>(
-                        builder: (context) => TeamCreatePage(),
-                      ));
-                },
-              ),
-            ),
-          ),
-          Container(
             height: size.height * (6 / 12),
             child: StreamBuilder<QuerySnapshot>(
                 //表示したいFirestoreの保存先を指定
-                stream: Firestore.instance
-                    .collection('users')
-                    .document(_email)
-                    .collection('teams')
-                    .snapshots(),
+                stream: Firestore.instance.collection('users').document(_email).collection('teams').snapshots(),
                 //streamが更新されるたびに呼ばれる
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   //データが取れていない時の処理
                   if (!snapshot.hasData) return const Text('Loading...');
                   return Scrollbar(
@@ -105,10 +62,8 @@ class TeamMainPageState extends State<TeamMainPage> {
                         padding: EdgeInsets.zero,
                         shrinkWrap: true,
                         itemCount: snapshot.data.documents.length,
-                        itemBuilder: (context, index) => _buildListItem(
-                            context,
-                            snapshot.data.documents[index]['team_name']
-                                as String)),
+                        itemBuilder: (context, index) =>
+                            _buildListItem(context, snapshot.data.documents[index]['team_name'] as String)),
                   );
                 }),
           ),
