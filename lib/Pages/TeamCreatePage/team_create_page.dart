@@ -14,6 +14,8 @@ class TeamCreatePageState extends State<TeamCreatePage> {
   String _email = userData.userEmail;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _overviewController = TextEditingController();
+  final TextEditingController _goalController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,31 @@ class TeamCreatePageState extends State<TeamCreatePage> {
                         return '登録にはチーム名が必要です';
                       } else if (value.length >= 19) {
                         return 'チーム名が長すぎます';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: _overviewController,
+                    decoration:
+                    const InputDecoration(labelText: 'チームの概要を入力してください'),
+                    validator: (String value) {
+                      if (value.isEmpty) {
+                        return '登録にはチームの概要が必要です';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: _goalController,
+                    keyboardType: TextInputType.number,
+                    decoration:
+                    const InputDecoration(labelText: 'チームの目標を入力してください'),
+                    validator: (String value) {
+                      if (value.isEmpty) {
+                        return '登録にはチームの目標が必要です';
+                      } else if (_goalController.text.contains(',')){
+                        return '目標に","を含めないでください';
                       }
                       return null;
                     },
@@ -93,7 +120,11 @@ class TeamCreatePageState extends State<TeamCreatePage> {
     Firestore.instance
         .collection('teams')
         .document(_nameController.text)
-        .setData(<String, dynamic>{'team_name': _nameController.text});
+        .setData(<String, dynamic>{
+          'team_name': _nameController.text,
+          'goal': int.parse(_goalController.text),
+          'team_overview': _overviewController.text,
+        });
 
     Firestore.instance
         .collection('teams')
@@ -110,7 +141,11 @@ class TeamCreatePageState extends State<TeamCreatePage> {
         .document(_email)
         .collection('teams')
         .document(_nameController.text)
-        .setData(<String, dynamic>{'team_name': _nameController.text});
+        .setData(<String, dynamic>{
+          'team_name': _nameController.text,
+          'goal': int.parse(_goalController.text),
+          'team_overview': _overviewController.text,
+        });
   }
 
   Future<bool> checkUniqueTeamName(String candidateName) async {
