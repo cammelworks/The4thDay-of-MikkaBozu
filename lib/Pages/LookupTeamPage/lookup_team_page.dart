@@ -59,12 +59,14 @@ class LookupTeamPageState extends State<LookupTeamPage> {
                       return null;
                     },
                   ),
+                  if(_teamNameField.text != "")
+                    showAllTeams(),
                   Container(
                     child: showOverview(),
                   ),
-                  Center(
-                    child: showJoinButton(),
-                  ),
+//                  Center(
+//                    child: showJoinButton(),
+//                  ),
                 ],
               ),
             ),
@@ -74,11 +76,60 @@ class LookupTeamPageState extends State<LookupTeamPage> {
     );
   }
 
+  Widget showAllTeams() {
+    return StreamBuilder<QuerySnapshot>(
+      //表示したいFiresotreの保存先を指定
+        stream: Firestore.instance
+            .collection("teams")
+            .snapshots(),
+        //streamが更新されるたびに呼ばれる
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          //データが取れていない時の処理
+          if (!snapshot.hasData) return const Text('Loading...');
+
+          return Scrollbar(
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: snapshot.data.documents.length,
+              itemBuilder: (context, int index) {
+                return GestureDetector(
+                  child: (snapshot.data.documents[index].documentID.toString().contains(_teamNameField.text))? Container(
+                    child: Column(
+                      children: [
+                        Text(
+                          "チーム名 " + snapshot.data.documents[index]["team_name"].toString(),
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
+                        Text(
+                          "概要 " + snapshot.data.documents[index]["team_overview"].toString(),
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
+                        Text(
+                          "目標 " + snapshot.data.documents[index]["goal"].toString() + "km",
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
+                        JoinButton(snapshot.data.documents[index].documentID),
+                      ],
+                    ),
+                  ) : Container(),
+                );
+              },
+            ),
+          );
+        });
+  }
+
   //チームを検索する
   void _lookupTeam() async {
     var docs = await Firestore.instance
         .collection("teams")
-        .where("team_name", isEqualTo: _teamNameField.text)
+//        .where("team_name", isEqualTo: _teamNameField.text)
         .getDocuments();
     //入力されたチーム名があればコールバック
     if (docs.documents.length != 0) {
