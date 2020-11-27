@@ -23,7 +23,7 @@ class OverviewManager extends StatelessWidget {
       ],
     );
   }
-  
+
   Widget _showOverview() {
     //Firestoreから目標を取得して表示
     return StreamBuilder<DocumentSnapshot>(
