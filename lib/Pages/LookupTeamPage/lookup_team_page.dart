@@ -15,6 +15,7 @@ class LookupTeamPageState extends State<LookupTeamPage> {
   String _email = userData.userEmail;
   bool _showButton = false;
   String _docmentID = "aaaaaaaa";
+  List<String> _joinedTeamList;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _teamNameField = TextEditingController();
 
@@ -40,6 +41,7 @@ class LookupTeamPageState extends State<LookupTeamPage> {
                         icon: Icon(Icons.search),
                         onPressed: () async {
                           if (_formKey.currentState.validate()) {
+                            addJoinedTeam();
                             _lookupTeam();
                           }
                           //キーボードを閉じる
@@ -93,7 +95,7 @@ class LookupTeamPageState extends State<LookupTeamPage> {
               itemCount: snapshot.data.documents.length,
               itemBuilder: (context, int index) {
                 return GestureDetector(
-                  child: (snapshot.data.documents[index].documentID.toString().contains(_teamNameField.text))? Container(
+                  child: teamSearch(index, snapshot)? Container(
                     child: Column(
                       children: [
                         Text(
@@ -225,6 +227,36 @@ class LookupTeamPageState extends State<LookupTeamPage> {
     } else {
       //何も表示しない
       return null;
+    }
+  }
+
+  void addJoinedTeam() async {
+    _joinedTeamList = [];
+    var docs = await Firestore.instance
+        .collection('users')
+        .document(_email)
+        .collection("teams")
+        .getDocuments();
+    docs.documents.forEach((var document) {
+      _joinedTeamList.add(document.data["team_name"].toString());
+    });
+  }
+
+  bool teamSearch(int index, AsyncSnapshot<QuerySnapshot> snapshot) {
+    if (_joinedTeamList.contains(snapshot.data.documents[index].data["team_name"].toString())) {
+      return false;
+    }
+    else {
+      if (snapshot.data.documents[index].data["team_name"].toString().contains(
+          _teamNameField.text) ||
+          snapshot.data.documents[index].data["team_overview"]
+              .toString()
+              .contains(_teamNameField.text)) {
+        return true;
+      }
+      else {
+        return false;
+      }
     }
   }
 }
