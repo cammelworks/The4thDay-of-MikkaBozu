@@ -23,7 +23,7 @@ class MembersRecord extends StatelessWidget {
           ),
         ),
         Container(
-          height: size.height * (2 / 3),
+          height: size.height * (1 / 2),
           child: getMembers(),
         ),
       ],

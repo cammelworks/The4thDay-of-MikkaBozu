@@ -14,6 +14,7 @@ class LookupTeamPage extends StatefulWidget {
 class LookupTeamPageState extends State<LookupTeamPage> {
   String _email = userData.userEmail;
   bool _showButton = false;
+  String _docmentID = "aaaaaaaa";
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _teamNameField = TextEditingController();
 
@@ -58,6 +59,9 @@ class LookupTeamPageState extends State<LookupTeamPage> {
                       return null;
                     },
                   ),
+                  Container(
+                    child: showOverview(),
+                  ),
                   Center(
                     child: showJoinButton(),
                   ),
@@ -81,6 +85,7 @@ class LookupTeamPageState extends State<LookupTeamPage> {
       if (await _searchAlreadyJoin(docs.documents[0].documentID)) {
         setState(() {
           _showButton = true;
+          _docmentID = docs.documents[0].documentID;
         });
       } else {
         //すでに自分がチームに参加している
@@ -91,6 +96,7 @@ class LookupTeamPageState extends State<LookupTeamPage> {
     } else {
       setState(() {
         _showButton = false;
+        _docmentID = "";
       });
       Fluttertoast.showToast(
         msg: '存在しないチームです',
@@ -111,6 +117,54 @@ class LookupTeamPageState extends State<LookupTeamPage> {
     } else {
       return true;
     }
+  }
+
+  Widget showOverview(){
+    return StreamBuilder<DocumentSnapshot>(
+      //表示したいFiresotreの保存先を指定
+        stream: Firestore.instance
+            .collection('teams')
+            .document((_docmentID))
+            .snapshots(),
+        //streamが更新されるたびに呼ばれる
+        builder:
+            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          //データが取れていない時の処理
+          if (!snapshot.hasData) return const Text('Loading...');
+          else if (snapshot.data.exists){
+            if (snapshot.data["team_overview"] != null) {
+              //検索結果の表示
+              return Container(
+                child: Column(
+                  children: [
+                    Text(
+                      "チーム名 " + snapshot.data["team_name"].toString(),
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    Text(
+                      "概要 " + snapshot.data["team_overview"].toString(),
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    Text(
+                      "目標 " + snapshot.data["goal"].toString() + "km",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }else {
+              return Container();
+            }
+          } else {
+            return Container();
+          }
+        });
   }
 
   Widget showJoinButton() {
