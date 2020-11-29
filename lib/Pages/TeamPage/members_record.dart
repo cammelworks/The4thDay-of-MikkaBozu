@@ -11,6 +11,7 @@ class MembersRecord extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
     return Column(
       children: [
         Text(
@@ -21,7 +22,10 @@ class MembersRecord extends StatelessWidget {
             color: Theme.of(context).primaryColor,
           ),
         ),
-        getMembers(),
+        Container(
+          height: size.height * (2 / 3),
+          child: getMembers(),
+        ),
       ],
     );
   }
@@ -45,8 +49,9 @@ class MembersRecord extends StatelessWidget {
               shrinkWrap: true,
               itemCount: snapshot.data.documents.length,
               itemBuilder: (context, int index) {
-                if (snapshot.data.documents[index].documentID.toString() ==
-                    userData.userEmail) {
+                String userEmail =
+                    snapshot.data.documents[index].documentID.toString();
+                if (userEmail == userData.userEmail) {
                   return Container();
                 }
                 return ListTile(
@@ -54,8 +59,7 @@ class MembersRecord extends StatelessWidget {
                     Icons.account_circle,
                     size: 50,
                   ),
-                  title: Text(
-                      snapshot.data.documents[index].documentID.toString()),
+                  title: Text(userEmail),
                   onTap: () => Navigator.push<dynamic>(
                       context,
                       MaterialPageRoute<dynamic>(
