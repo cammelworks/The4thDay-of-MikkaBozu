@@ -52,7 +52,7 @@ class MeasurementPageState extends State<MeasurementPage> {
                   children: <Widget>[
                     MeasurementPanel(_distance),
                     Center(
-                      child: MeasurementButton(_value, () {
+                      child: MeasurementButton(_value, () async {
                         if (_value == 0) {
                           if (Platform.isAndroid) {
                             platform.invokeMethod<dynamic>("ON");
@@ -67,7 +67,7 @@ class MeasurementPageState extends State<MeasurementPage> {
                             platform.invokeMethod<dynamic>("OFF");
                           }
                           _timer.cancel();
-                          _pushRecord();
+                          await _pushRecord();
                         } else {
                           Navigator.pop(context);
                         }
@@ -104,13 +104,47 @@ class MeasurementPageState extends State<MeasurementPage> {
     setState(() {});
   }
 
-  void _pushRecord() {
-    _distance = (_distance * 10).round() / 10;
+  // 走った距離をデータベースにプッシュする
+  Future<void> _pushRecord() async {
+    dynamic _recordDistance = await _confirmTodayRecord();
+    print((_recordDistance as double));
+    _distance = (_distance * 10).round() / 10 + (_recordDistance as double);
     Firestore.instance
         .collection('users')
         .document(userData.userEmail)
         .collection('records')
         .document()
         .setData(<String, dynamic>{'distance': _distance, 'timestamp': Timestamp.now()});
+  }
+
+  // 同じ日の記録があるか確認する
+  Future<dynamic> _confirmTodayRecord() async {
+    QuerySnapshot snapshots = await Firestore.instance
+        .collection('users')
+        .document(userData.userEmail)
+        .collection('records')
+        .orderBy("timestamp", descending: true)
+        .getDocuments();
+    if(snapshots.documents.length == 0){
+      return 0.0;
+    }
+    // 直近の記録の日付を確認する
+    DateTime time = (snapshots.documents[0].data['timestamp'] as Timestamp).toDate();
+    int year = time.year;
+    int month = time.month;
+    int day = time.day;
+    DateTime today = Timestamp.now().toDate();
+    // 直近の記録と同じ日付ならその日の記録を返す
+    if(year == today.year && month == today.month && day == today.day){
+      Firestore.instance
+          .collection('users')
+          .document(userData.userEmail)
+          .collection('records')
+          .document(snapshots.documents[0].documentID)
+          .delete();
+      return snapshots.documents[0].data['distance'];
+    } else{
+      return 0.0;
+    }
   }
 }
