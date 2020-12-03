@@ -61,8 +61,8 @@ class LookupTeamPageState extends State<LookupTeamPage> {
                       return null;
                     },
                   ),
-                  if(_teamNameField.text != "")
-                    showAllTeams(),
+//                  if(_teamNameField.text != "")
+                  showAllTeams(),
                   Container(
                     child: showOverview(),
                   ),
@@ -79,6 +79,9 @@ class LookupTeamPageState extends State<LookupTeamPage> {
   }
 
   Widget showAllTeams() {
+    if(_teamNameField.text != ""){
+      return Container();
+    }
     return StreamBuilder<QuerySnapshot>(
       //表示したいFiresotreの保存先を指定
         stream: Firestore.instance
