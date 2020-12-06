@@ -21,7 +21,9 @@ class MyPageState extends State<MyPage>{
 
   void onDayPressed(DateTime date, List<Event> events) {
     this.setState(() => _currentDate = date);
-    Fluttertoast.showToast(msg: events[0].title + "km");
+    if(events.length > 0){
+      Fluttertoast.showToast(msg: events[0].title + "km");
+    }
   }
 
   @override
@@ -37,17 +39,22 @@ class MyPageState extends State<MyPage>{
         .collection('users')
         .document(userData.userEmail)
         .collection('records')
-        .orderBy("timestamp", descending: true)
+        .orderBy("distance", descending: true)
         .getDocuments();
 
+    double max_distance;
     for(int i=0; i<snapshots.documents.length; i++){
+      if(i == 0){
+        max_distance = snapshots.documents[i].data['distance'] as double;
+      }
       // 時間情報を取り除く
       DateTime time = (snapshots.documents[i].data['timestamp'] as Timestamp).toDate();
       int year = time.year;
       int month = time.month;
       int day = time.day;
       double distance = (snapshots.documents[i].data['distance'] as double) / 1000.0;
-      addEvent(DateTime(year, month, day), (distance * 10).round() / 10);
+      double roundedDistance = (distance * 10).round() / 10;
+      addEvent(DateTime(year, month, day), (roundedDistance * 10).round() / 10);
     }
     this.setState(() {});
   }
@@ -77,12 +84,14 @@ class MyPageState extends State<MyPage>{
                         thisMonthDayBorderColor: Colors.grey,
                         weekFormat: false,
                         height: 420.0,
+                        todayButtonColor: Colors.white,
                         selectedDateTime: _currentDate,
                         daysHaveCircularBorder: false,
                         customGridViewPhysics: NeverScrollableScrollPhysics(),
                         markedDatesMap: _markedDateMap,
                         markedDateShowIcon: true,
                         markedDateIconMaxShown: 2,
+                        locale: "ja",
                         todayTextStyle: TextStyle(
                           color: Colors.blue,
                         ),
@@ -111,14 +120,15 @@ class MyPageState extends State<MyPage>{
         date: date,
         title: distance.toString(),
         icon: Container(
-            decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.blue, width: 1.0)),
-            child: Icon(
-              Icons.calendar_today,
-              color: Colors.blue,
-            )
-        )
+          color: Colors.red,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(date.day.toString()),
+              Text(distance.toString() + "km"),
+            ],
+          ),
+        ),
     );
   } // 追加
 }
