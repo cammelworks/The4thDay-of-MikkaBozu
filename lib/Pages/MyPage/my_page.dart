@@ -47,16 +47,25 @@ class MyPageState extends State<MyPage>{
       if(i == 0){
         max_distance = snapshots.documents[i].data['distance'] as double;
       }
-      // 時間情報を取り除く
-      DateTime time = (snapshots.documents[i].data['timestamp'] as Timestamp).toDate();
-      int year = time.year;
-      int month = time.month;
-      int day = time.day;
-      double distance = (snapshots.documents[i].data['distance'] as double) / 1000.0;
-      double roundedDistance = (distance * 10).round() / 10;
-      addEvent(DateTime(year, month, day), (roundedDistance * 10).round() / 10);
+      DateTime date = (snapshots.documents[i].data['timestamp'] as Timestamp).toDate();
+      double distance = snapshots.documents[i].data['distance'] as double;
+      double roundedDistance = (distance / 100).round() / 10;
+      addEvent(getDate(date), roundedDistance, getColorCode(max_distance, distance));
     }
     this.setState(() {});
+  }
+
+  // 時間情報を取り除く
+  DateTime getDate(DateTime date){
+    int year = date.year;
+    int month = date.month;
+    int day = date.day;
+    return(DateTime(year, month, day));
+  }
+
+  String getColorCode(double max, double distance){
+    int tmp = ((1 - distance / max) * 100).round();
+    return '00' + tmp.toString().padLeft(2, '0') + 'c4';
   }
 
   @override
@@ -111,16 +120,17 @@ class MyPageState extends State<MyPage>{
     );
   }
 
-  void addEvent(DateTime date, double distance) {
-    _markedDateMap.add(date, createEvent(date, distance));
+  void addEvent(DateTime date, double distance, String colorCode) {
+    print(colorCode);
+    _markedDateMap.add(date, createEvent(date, distance, colorCode));
   }  // 追加
 
-  Event createEvent(DateTime date, double distance) {
+  Event createEvent(DateTime date, double distance, String colorCode) {
     return Event(
         date: date,
         title: distance.toString(),
         icon: Container(
-          color: Colors.red,
+          color: HexColor(colorCode),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -131,4 +141,16 @@ class MyPageState extends State<MyPage>{
         ),
     );
   } // 追加
+}
+
+class HexColor extends Color {
+  static int _getColorFromHex(String hexColor) {
+    hexColor = hexColor.toUpperCase().replaceAll('#', '');
+    if (hexColor.length == 6) {
+      hexColor = 'FF' + hexColor;
+    }
+    return int.parse(hexColor, radix: 16);
+  }
+
+  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
 }
