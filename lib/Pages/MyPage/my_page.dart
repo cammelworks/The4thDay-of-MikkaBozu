@@ -110,6 +110,7 @@ class MyPageState extends State<MyPage> {
                     markedDatesMap: _markedDateMap,
                     markedDateShowIcon: true,
                     markedDateIconMaxShown: 2,
+                    markedDateIconMargin: 0,
                     locale: "ja",
                     todayTextStyle: TextStyle(
                       color: Colors.blue,

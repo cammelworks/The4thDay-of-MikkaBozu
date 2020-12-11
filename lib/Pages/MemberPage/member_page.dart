@@ -103,7 +103,7 @@ class MemberPageState extends State<MemberPage> {
                     weekendTextStyle: TextStyle(color: Colors.red),
                     thisMonthDayBorderColor: Colors.grey,
                     weekFormat: true,
-                    height: 420.0,
+                    height: 200.0,
                     todayButtonColor: Colors.white,
                     selectedDateTime: _currentDate,
                     daysHaveCircularBorder: false,
@@ -111,6 +111,7 @@ class MemberPageState extends State<MemberPage> {
                     markedDatesMap: _markedDateMap,
                     markedDateShowIcon: true,
                     markedDateIconMaxShown: 2,
+                    markedDateIconMargin: 0,
                     locale: "ja",
                     todayTextStyle: TextStyle(
                       color: Colors.blue,
