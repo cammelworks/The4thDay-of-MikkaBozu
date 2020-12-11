@@ -73,8 +73,18 @@ class MyPageState extends State<MyPage> {
   }
 
   String getColorCode(double max, double distance) {
-    int tmp = ((1 - distance / max) * 100).round();
-    return '00' + tmp.toString().padLeft(2, '0') + 'c4';
+    double distanceRatio = distance / max;
+    if(distanceRatio >= 0.8){
+      return '21576E';
+    } else if(distanceRatio >= 0.6){
+      return '307FA1';
+    } else if(distanceRatio >= 0.4){
+      return '419DC4';
+    } else if(distanceRatio >= 0.2){
+      return '9BD1E8';
+    } else {
+      return 'EBEDF0';
+    }
   }
 
   @override
