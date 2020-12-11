@@ -78,7 +78,7 @@ class MembersRecord extends StatelessWidget {
                                   lineHeight: 20.0,
                                   animationDuration: 2000,
                                   percent: achievementNum/snapshot.data.documents.length,
-            //                      center: Text("90.0%"),
+//                                  center: Text(achievementNum.toString() + "/" + snapshot.data.documents.length.toString()),
                                   linearStrokeCap: LinearStrokeCap.roundAll,
                                   progressColor: hex.HexColor("f17300"),
                                   trailing: Image.asset(
@@ -107,23 +107,42 @@ class MembersRecord extends StatelessWidget {
                                 itemBuilder: (context, int index) {
                                   String userEmail =
                                       snapshot.data.documents[index].documentID.toString();
-                                  if (userEmail == userData.userEmail) {
-                                    return Container();
+                                  if(memberSnapshot.data[userEmail] as bool){
+                                    return ListTile(
+                                      leading: Icon(
+                                        Icons.account_circle,
+                                        size: 50,
+                                      ),
+                                      trailing: Image.asset(
+                                        'images/flag-icon.png',
+                                        height: 30.0,
+                                        width: 30.0,
+                                      ),
+                                      title: Text(userEmail),
+                                      onTap: () => Navigator.push<dynamic>(
+                                          context,
+                                          MaterialPageRoute<dynamic>(
+                                            builder: (context) => MemberPage(snapshot
+                                                .data.documents[index].documentID
+                                                .toString()),
+                                          )),
+                                    );
+                                  } else{
+                                    return ListTile(
+                                      leading: Icon(
+                                        Icons.account_circle,
+                                        size: 50,
+                                      ),
+                                      title: Text(userEmail),
+                                      onTap: () => Navigator.push<dynamic>(
+                                          context,
+                                          MaterialPageRoute<dynamic>(
+                                            builder: (context) => MemberPage(snapshot
+                                                .data.documents[index].documentID
+                                                .toString()),
+                                          )),
+                                    );
                                   }
-                                  return ListTile(
-                                    leading: Icon(
-                                      Icons.account_circle,
-                                      size: 50,
-                                    ),
-                                    title: Text(userEmail),
-                                    onTap: () => Navigator.push<dynamic>(
-                                        context,
-                                        MaterialPageRoute<dynamic>(
-                                          builder: (context) => MemberPage(snapshot
-                                              .data.documents[index].documentID
-                                              .toString()),
-                                        )),
-                                  );
                                 },
                               ),
                             ),
@@ -159,7 +178,7 @@ class MembersRecord extends StatelessWidget {
           .collection('users')
           .document(data.documents[i].documentID)
           .collection('records')
-          .where("timestamp", isLessThan: Timestamp.fromDate(getLastSundayDataTime()))
+          .where("timestamp", isGreaterThanOrEqualTo: Timestamp.fromDate(getLastSundayDataTime()))
           .getDocuments();
       for(int j=0; j<snapshots.documents.length; j++){
         totalDistance += snapshots.documents[j].data['distance'] as double;
