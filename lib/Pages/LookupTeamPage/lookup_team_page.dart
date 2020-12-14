@@ -123,7 +123,7 @@ class LookupTeamPageState extends State<LookupTeamPage> {
                                   ),
                                 ),
                               ),
-                              JoinButton(_teamNameField.text),
+                              JoinButton(snapshots.data[index].data["team_name"].toString()),
                             ],
                           ),
                         );
