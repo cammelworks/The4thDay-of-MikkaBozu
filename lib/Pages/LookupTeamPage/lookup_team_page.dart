@@ -86,48 +86,52 @@ class LookupTeamPageState extends State<LookupTeamPage> {
         builder: (BuildContext context, AsyncSnapshot<List<DocumentSnapshot>> snapshots){
           final Size size = MediaQuery.of(context).size;
           if (snapshots.hasData) {
-            return Container(
-              height: size.height * (2 / 3),
-              child: Scrollbar(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: snapshots.data.length,
-                  itemBuilder: (context, int index) {
-                    return Container(
-                      child: Column(
-                        children: [
-                          Text(
-                            "チーム名 " + snapshots.data[index].data["team_name"].toString(),
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                          ),
-                          Visibility(
-                            visible: snapshots.data[index].data["team_overview"]!=null,
-                            child: Text(
-                              "概要 " + snapshots.data[index].data["team_overview"].toString(),
-                              style: TextStyle(
-                                fontSize: 20,
+            if(snapshots.data.length == 0){
+              return Text("該当チームなし");
+            } else{
+              return Container(
+                height: size.height * (2 / 3),
+                child: Scrollbar(
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshots.data.length,
+                      itemBuilder: (context, int index) {
+                        return Container(
+                          child: Column(
+                            children: [
+                              Text(
+                                "チーム名 " + snapshots.data[index].data["team_name"].toString(),
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
                               ),
-                            ),
-                          ),
-                          Visibility(
-                            visible: snapshots.data[index].data["goal"]!=null,
-                            child: Text(
-                              "目標 " + snapshots.data[index].data["goal"].toString() + "km",
-                              style: TextStyle(
-                                fontSize: 20,
+                              Visibility(
+                                visible: snapshots.data[index].data["team_overview"]!=null,
+                                child: Text(
+                                  "概要 " + snapshots.data[index].data["team_overview"].toString(),
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
                               ),
-                            ),
+                              Visibility(
+                                visible: snapshots.data[index].data["goal"]!=null,
+                                child: Text(
+                                  "目標 " + snapshots.data[index].data["goal"].toString() + "km",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
+                              JoinButton(_teamNameField.text),
+                            ],
                           ),
-                          JoinButton(_teamNameField.text),
-                        ],
-                      ),
-                    );
-                  }
+                        );
+                      }
+                  ),
                 ),
-              ),
-            );
+              );
+            }
           } else {
             return Text("検索中");
           }
