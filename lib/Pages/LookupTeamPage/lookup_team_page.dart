@@ -174,8 +174,10 @@ class LookupTeamPageState extends State<LookupTeamPage> {
     }
     else {
       // チーム名か概要に入力された文字列が含まれていたらtrueを返す
-      if (snapshot.data["team_name"].toString().contains(_teamNameField.text) ||
-          snapshot.data["team_overview"].toString().contains(_teamNameField.text)) {
+      if (snapshot.data["team_name"].toString().contains(_teamNameField.text)) {
+        return true;
+      } else if(snapshot.data["team_overview"] != null &&
+          snapshot.data["team_overview"].toString().contains(_teamNameField.text)){
         return true;
       }
       // ヒットなし
