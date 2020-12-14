@@ -29,19 +29,6 @@ class TeamPageState extends State<TeamPage> {
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(20.0),
-                    child: Text(
-                      '概要',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                  ),
-                ),
                 OverviewManager(_teamName),
                 GoalManager(_teamName),
                 Container(

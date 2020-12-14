@@ -13,13 +13,20 @@ class OverviewManager extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
+        Center(
+          child: Padding(
+            padding: EdgeInsets.all(20.0),
+            child: Text(
+              '概要',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+          ),
+        ),
         Center(child: _showOverview()),
-//        IconButton(
-//            icon: Icon(Icons.mode_edit),
-//            onPressed: () async {
-//              //概要変更
-//              showPickerNumber(context);
-//            }),
       ],
     );
   }

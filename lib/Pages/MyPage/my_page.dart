@@ -6,7 +6,7 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:the4thdayofmikkabozu/SideMenu/sidemenu.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:the4thdayofmikkabozu/hex_color.dart' as hex;
 
 class MyPage extends StatefulWidget {
   final String title = '記録ページ';
@@ -120,6 +120,7 @@ class MyPageState extends State<MyPage> {
                     markedDatesMap: _markedDateMap,
                     markedDateShowIcon: true,
                     markedDateIconMaxShown: 2,
+                    markedDateIconMargin: 0,
                     locale: "ja",
                     todayTextStyle: TextStyle(
                       color: Colors.blue,
@@ -183,7 +184,7 @@ class MyPageState extends State<MyPage> {
       date: date,
       title: distance.toString(),
       icon: Container(
-        color: HexColor(colorCode),
+        color: hex.HexColor(colorCode),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -194,16 +195,4 @@ class MyPageState extends State<MyPage> {
       ),
     );
   } // 追加
-}
-
-// カラーコードからColorを生成する
-class HexColor extends Color {
-  static int _getColorFromHex(String hexColor) {
-    hexColor = hexColor.toUpperCase().replaceAll('#', '');
-    if (hexColor.length == 6) {
-      hexColor = 'FF' + hexColor;
-    }
-    return int.parse(hexColor, radix: 16);
-  }
-  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
 }
