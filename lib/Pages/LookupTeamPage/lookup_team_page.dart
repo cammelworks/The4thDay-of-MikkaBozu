@@ -13,11 +13,16 @@ class LookupTeamPage extends StatefulWidget {
 
 class LookupTeamPageState extends State<LookupTeamPage> {
   String _email = userData.userEmail;
-  bool _showButton = false;
-  String _docmentID = "aaaaaaaa";
-  List<String> _joinedTeamList;
+  List<String> _joinedTeamList = [];
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _teamNameField = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // 自分が所属しているチームを取得する
+    _searchJoinedTeam();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,215 +30,136 @@ class LookupTeamPageState extends State<LookupTeamPage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Builder(builder: (BuildContext context) {
-        return ListView(
-          scrollDirection: Axis.vertical,
-          children: <Widget>[
-            Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  TextFormField(
-                    controller: _teamNameField,
-                    decoration: InputDecoration(
-                      labelText: '参加したいチーム名を入力してください',
-                      suffixIcon: IconButton(
-                        icon: Icon(Icons.search),
-                        onPressed: () async {
-                          if (_formKey.currentState.validate()) {
-                            addJoinedTeam();
-                            _lookupTeam();
-                          }
-                          //キーボードを閉じる
-                          FocusScope.of(context).requestFocus(new FocusNode());
-                        },
-                      ),
-                    ),
-                    //エンターアイコンを変更
-                    textInputAction: TextInputAction.search,
-                    onFieldSubmitted: (String value) async {
-                      if (_formKey.currentState.validate()) _lookupTeam();
-                    },
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return 'チーム名を入力してください';
-                      }
-                      return null;
-                    },
-                  ),
-//                  if(_teamNameField.text != "")
-                  showAllTeams(),
-                  Container(
-                    child: showOverview(),
-                  ),
-//                  Center(
-//                    child: showJoinButton(),
-//                  ),
-                ],
-              ),
-            ),
-          ],
-        );
-      }),
-    );
-  }
-
-  Widget showAllTeams() {
-    if(_teamNameField.text != ""){
-      return Container();
-    }
-    return StreamBuilder<QuerySnapshot>(
-      //表示したいFiresotreの保存先を指定
-        stream: Firestore.instance
-            .collection("teams")
-            .snapshots(),
-        //streamが更新されるたびに呼ばれる
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          //データが取れていない時の処理
-          if (!snapshot.hasData) return const Text('Loading...');
-
-          return Scrollbar(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: snapshot.data.documents.length,
-              itemBuilder: (context, int index) {
-                return GestureDetector(
-                  child: teamSearch(index, snapshot)? Container(
-                    child: Column(
-                      children: [
-                        Text(
-                          "チーム名 " + snapshot.data.documents[index]["team_name"].toString(),
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
-                        Text(
-                          "概要 " + snapshot.data.documents[index]["team_overview"].toString(),
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
-                        Text(
-                          "目標 " + snapshot.data.documents[index]["goal"].toString() + "km",
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
-                        JoinButton(snapshot.data.documents[index].documentID),
-                      ],
-                    ),
-                  ) : Container(),
-                );
-              },
-            ),
-          );
-        });
-  }
-
-  //チームを検索する
-  void _lookupTeam() async {
-    var docs = await Firestore.instance
-        .collection("teams")
-//        .where("team_name", isEqualTo: _teamNameField.text)
-        .getDocuments();
-    //入力されたチーム名があればコールバック
-    if (docs.documents.length != 0) {
-      if (await _searchAlreadyJoin(docs.documents[0].documentID)) {
-        setState(() {
-          _showButton = true;
-          _docmentID = docs.documents[0].documentID;
-        });
-      } else {
-        //すでに自分がチームに参加している
-        Fluttertoast.showToast(
-          msg: 'すでに参加しています。',
-        );
-      }
-    } else {
-      setState(() {
-        _showButton = false;
-        _docmentID = "";
-      });
-      Fluttertoast.showToast(
-        msg: '存在しないチームです',
-      );
-    }
-  }
-
-  //すでに自分がチームに参加しているか調べる
-  Future<bool> _searchAlreadyJoin(String teamName) async {
-    var docs = await Firestore.instance
-        .collection("teams")
-        .document(teamName)
-        .collection('users')
-        .where("email", isEqualTo: _email)
-        .getDocuments();
-    if (docs.documents.length >= 1) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  Widget showOverview(){
-    return StreamBuilder<DocumentSnapshot>(
-      //表示したいFiresotreの保存先を指定
-        stream: Firestore.instance
-            .collection('teams')
-            .document((_docmentID))
-            .snapshots(),
-        //streamが更新されるたびに呼ばれる
-        builder:
-            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-          //データが取れていない時の処理
-          if (!snapshot.hasData) return const Text('Loading...');
-          else if (snapshot.data.exists){
-            if (snapshot.data["team_overview"] != null) {
-              //検索結果の表示
-              return Container(
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Form(
+                key: _formKey,
                 child: Column(
-                  children: [
-                    Text(
-                      "チーム名 " + snapshot.data["team_name"].toString(),
-                      style: TextStyle(
-                        fontSize: 20,
+                  children: <Widget>[
+                    TextFormField(
+                      controller: _teamNameField,
+                      decoration: InputDecoration(
+                        labelText: '参加したいチーム名を入力してください',
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.search),
+                          onPressed: () async {
+                            print(_formKey.currentState.validate());
+                            if (_formKey.currentState.validate()) {
+                              // 再レンダリング
+                              setState(() {});
+                            }
+                            //キーボードを閉じる
+                            FocusScope.of(context).requestFocus(new FocusNode());
+                          },
+                        ),
                       ),
-                    ),
-                    Text(
-                      "概要 " + snapshot.data["team_overview"].toString(),
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                    ),
-                    Text(
-                      "目標 " + snapshot.data["goal"].toString() + "km",
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
+                      //エンターアイコンを変更
+                      textInputAction: TextInputAction.search,
+                      onFieldSubmitted: (String value) async {
+                        if (_formKey.currentState.validate()) setState(() {});;
+                      },
+                      validator: (String value) {
+                        if (value.isEmpty) {
+                          return 'チーム名を入力してください';
+                        }
+                        return null;
+                      },
                     ),
                   ],
                 ),
-              );
-            }else {
-              return Container();
-            }
-          } else {
-            return Container();
-          }
-        });
+              ),
+              _showsearchResults(),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
-  Widget showJoinButton() {
-    if (_showButton) {
-      //登録ボタンの表示
-      return JoinButton(_teamNameField.text);
-    } else {
-      //何も表示しない
-      return null;
+  Widget _showsearchResults(){
+    if(_teamNameField.text != ""){
+      return FutureBuilder(
+        future: _search(),
+        builder: (BuildContext context, AsyncSnapshot<List<DocumentSnapshot>> snapshots){
+          final Size size = MediaQuery.of(context).size;
+          if (snapshots.hasData) {
+            if(snapshots.data.length == 0){
+              return Text("該当チームなし");
+            } else{
+              return Container(
+                height: size.height * (2 / 3),
+                child: Scrollbar(
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshots.data.length,
+                      itemBuilder: (context, int index) {
+                        return Container(
+                          child: Column(
+                            children: [
+                              Text(
+                                "チーム名 " + snapshots.data[index].data["team_name"].toString(),
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
+                              ),
+                              Visibility(
+                                visible: snapshots.data[index].data["team_overview"]!=null,
+                                child: Text(
+                                  "概要 " + snapshots.data[index].data["team_overview"].toString(),
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
+                              Visibility(
+                                visible: snapshots.data[index].data["goal"]!=null,
+                                child: Text(
+                                  "目標 " + snapshots.data[index].data["goal"].toString() + "km",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
+                              JoinButton(snapshots.data[index].data["team_name"].toString()),
+                            ],
+                          ),
+                        );
+                      }
+                  ),
+                ),
+              );
+            }
+          } else {
+            return Text("検索中");
+          }
+        },
+      );
+    } else{
+      return Container();
     }
   }
 
-  void addJoinedTeam() async {
+  Future<List<DocumentSnapshot>> _search() async {
+    //結果を格納するリストを初期化する
+    List<DocumentSnapshot> result = [];
+    // 全チームを検索する
+    QuerySnapshot docs = await Firestore.instance
+        .collection("teams")
+        .getDocuments();
+    // すでに参加しているチームをリストに格納する
+    await docs.documents.forEach((doc) {
+      if(_teamSearch(doc)){
+        result.add(doc);
+      }
+    });
+    return result;
+  }
+
+  // 自分が所属しているチームを検索して配列に格納する
+  void _searchJoinedTeam() async {
     _joinedTeamList = [];
     var docs = await Firestore.instance
         .collection('users')
@@ -245,18 +171,20 @@ class LookupTeamPageState extends State<LookupTeamPage> {
     });
   }
 
-  bool teamSearch(int index, AsyncSnapshot<QuerySnapshot> snapshot) {
-    if (_joinedTeamList.contains(snapshot.data.documents[index].data["team_name"].toString())) {
+  bool _teamSearch(DocumentSnapshot snapshot) {
+    // すでに参加していたらfalseを返す
+    if (_joinedTeamList.contains(snapshot.data["team_name"].toString())) {
       return false;
     }
     else {
-      if (snapshot.data.documents[index].data["team_name"].toString().contains(
-          _teamNameField.text) ||
-          snapshot.data.documents[index].data["team_overview"]
-              .toString()
-              .contains(_teamNameField.text)) {
+      // チーム名か概要に入力された文字列が含まれていたらtrueを返す
+      if (snapshot.data["team_name"].toString().contains(_teamNameField.text)) {
+        return true;
+      } else if(snapshot.data["team_overview"] != null &&
+          snapshot.data["team_overview"].toString().contains(_teamNameField.text)){
         return true;
       }
+      // ヒットなし
       else {
         return false;
       }
