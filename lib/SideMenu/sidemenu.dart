@@ -19,7 +19,10 @@ class Sidemenu extends StatelessWidget {
           ),
           Row(
             children: [
-              Center(child: Container(child: Text(userData.userEmail))),
+              Expanded(
+                child: Container(),
+              ),
+              Container(child: Text(userData.userEmail)),
               IconButton(
                 icon: const Icon(Icons.edit),
                 color: Colors.grey,
@@ -28,28 +31,39 @@ class Sidemenu extends StatelessWidget {
                     context: context,
                     builder: (context) {
                       return SimpleDialog(
-                        title: Text("タイトル"),
+                        title: Text("ユーザ名変更"),
                         children: [
-                          TextField(
-                            obscureText: true,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: '変更するユーザー名を入力してください',
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(left: 8.0, right: 8.0),
+                            child: TextField(
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: '変更するユーザ名を入力してください',
+                              ),
                             ),
                           ),
-                          FlatButton(
-                            child: Text("キャンセル"),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                          FlatButton(
-                            child: Text("変更"),
-                            onPressed: () => Navigator.pop(context),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              FlatButton(
+                                child: Text("キャンセル"),
+                                onPressed: () => Navigator.pop(context),
+                              ),
+                              FlatButton(
+                                child: Text("変更"),
+                                onPressed: () => Navigator.pop(context),
+                              ),
+                            ],
                           ),
                         ],
                       );
                     },
                   );
                 },
+              ),
+              Expanded(
+                child: Container(),
               ),
             ],
           ),
