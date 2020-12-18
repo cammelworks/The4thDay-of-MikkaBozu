@@ -47,7 +47,7 @@ class MembersRecord extends StatelessWidget {
                       print(memberSnapshot.data);
                       int achievedMemberNum = 0;
                       memberSnapshot.data.forEach((dynamic key, dynamic value) {
-                        if(value as bool){
+                        if(value[0] as bool){
                           achievementNum++;
                         }
                       });
@@ -108,10 +108,11 @@ class MembersRecord extends StatelessWidget {
                                   String userEmail =
                                       snapshot.data.documents[index].documentID.toString();
                                   String userName = "Guest";
-                                  if(snapshot.data.documents[index].data['name'] != null) {
-                                    userName =snapshot.data.documents[index].data['name'].toString();
+                                  print(memberSnapshot.data[userEmail][1]);
+                                  if(memberSnapshot.data[userEmail][1] != "null") {
+                                    userName = memberSnapshot.data[userEmail][1] as String;
                                   }
-                                  if(memberSnapshot.data[userEmail] as bool){
+                                  if(memberSnapshot.data[userEmail][0] as bool){
                                     return ListTile(
                                       leading: Icon(
                                         Icons.account_circle,
@@ -171,26 +172,33 @@ class MembersRecord extends StatelessWidget {
 
   Future<Map> getMemberRecord(QuerySnapshot data, int goal) async{
     // マップの初期化
-    Map<String, bool> hasMemberAchieved = {};
+    Map<String, List> userMap = {};
     for(int i=0; i<data.documents.length; i++){
+      List<dynamic> hasMemberAchieved = List<dynamic>();
       double totalDistance = 0.0;
-      QuerySnapshot snapshots = await Firestore.instance
+      QuerySnapshot recordSnapshots = await Firestore.instance
           .collection('users')
           .document(data.documents[i].documentID)
           .collection('records')
           .where("timestamp", isGreaterThanOrEqualTo: Timestamp.fromDate(getLastSundayDataTime()))
           .getDocuments();
-      for(int j=0; j<snapshots.documents.length; j++){
-        totalDistance += snapshots.documents[j].data['distance'] as double;
+      DocumentSnapshot userSnapshot = await Firestore.instance
+          .collection('users')
+          .document(data.documents[i].documentID)
+          .get();
+      for(int j=0; j<recordSnapshots.documents.length; j++){
+        totalDistance += recordSnapshots.documents[j].data['distance'] as double;
       }
       // 目標を達成しているかの確認
       if(((totalDistance / 100.0).round() / 10) >= goal){
-        hasMemberAchieved[data.documents[i].documentID] = true;
+        hasMemberAchieved.add(true);
       } else{
-        hasMemberAchieved[data.documents[i].documentID] = false;
+        hasMemberAchieved.add(false);
       }
+      hasMemberAchieved.add(userSnapshot.data['name'].toString());//0にbool,1にname
+      userMap[data.documents[i].documentID] = hasMemberAchieved;
     }
-    return hasMemberAchieved;
+    return userMap;
   }
 
   // 直近の日曜日の日付を算出し、その日付を返す
