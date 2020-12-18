@@ -17,7 +17,42 @@ class Sidemenu extends StatelessWidget {
                 image: DecorationImage(
                     fit: BoxFit.fill, image: AssetImage('images/bouzu.png'))),
           ),
-          Center(child: Container(child: Text(userData.userEmail))),
+          Row(
+            children: [
+              Center(child: Container(child: Text(userData.userEmail))),
+              IconButton(
+                icon: const Icon(Icons.edit),
+                color: Colors.grey,
+                onPressed: () {
+                  showDialog<dynamic>(
+                    context: context,
+                    builder: (context) {
+                      return SimpleDialog(
+                        title: Text("タイトル"),
+                        children: [
+                          TextField(
+                            obscureText: true,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: '変更するユーザー名を入力してください',
+                            ),
+                          ),
+                          FlatButton(
+                            child: Text("キャンセル"),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                          FlatButton(
+                            child: Text("変更"),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
           Container(
             child: SignoutButton(),
           ),
