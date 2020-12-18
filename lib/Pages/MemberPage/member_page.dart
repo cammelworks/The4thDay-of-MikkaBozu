@@ -5,17 +5,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:the4thdayofmikkabozu/hex_color.dart' as hex;
+import 'package:the4thdayofmikkabozu/user_data.dart';
 
 class MemberPage extends StatefulWidget {
   String _email;
+  String _name;
   //コンストラクタ
-  MemberPage(this._email);
+  MemberPage(this._email, this._name);
   @override
-  State<StatefulWidget> createState() => MemberPageState(_email);
+  State<StatefulWidget> createState() => MemberPageState(_email, _name);
 }
 
 class MemberPageState extends State<MemberPage> {
   String _email;
+  String _name;
   DateTime _currentDate = DateTime.now();
   EventList<Event> _markedDateMap = EventList<Event>();
   bool _shouldShowRecord = false;
@@ -32,7 +35,7 @@ class MemberPageState extends State<MemberPage> {
   }
 
   //コンストラクタ
-  MemberPageState(this._email);
+  MemberPageState(this._email, this._name);
 
   @override
   void initState() {
@@ -97,7 +100,7 @@ class MemberPageState extends State<MemberPage> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text(_email),
+        title: Text(_name),
       ),
       body: SingleChildScrollView(
         child: Center(

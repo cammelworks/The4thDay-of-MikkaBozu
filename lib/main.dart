@@ -7,6 +7,7 @@ import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 import 'package:the4thdayofmikkabozu/permission.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -78,6 +79,17 @@ class MyHomePageState extends State<MyHomePage> {
         password: prefs.getString('password'),
       ))
           .user;
+
+      var snapshot = await Firestore.instance
+          .collection('users')
+          .document(_user.email)
+          .get();
+
+      String userName = "Guest";
+      if(snapshot.data['name'] != null){
+        userName = snapshot.data['name'].toString();
+      }
+      userData.userName = userName;
       userData.userEmail = _user.email;
       userData.firebaseUser = _user;
       return true;

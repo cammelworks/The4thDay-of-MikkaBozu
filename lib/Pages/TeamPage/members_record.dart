@@ -107,6 +107,10 @@ class MembersRecord extends StatelessWidget {
                                 itemBuilder: (context, int index) {
                                   String userEmail =
                                       snapshot.data.documents[index].documentID.toString();
+                                  String userName = "Guest";
+                                  if(snapshot.data.documents[index].data['name'] != null) {
+                                    userName =snapshot.data.documents[index].data['name'].toString();
+                                  }
                                   if(memberSnapshot.data[userEmail] as bool){
                                     return ListTile(
                                       leading: Icon(
@@ -118,13 +122,11 @@ class MembersRecord extends StatelessWidget {
                                         height: 30.0,
                                         width: 30.0,
                                       ),
-                                      title: Text(userEmail),
+                                      title: Text(userName),
                                       onTap: () => Navigator.push<dynamic>(
                                           context,
                                           MaterialPageRoute<dynamic>(
-                                            builder: (context) => MemberPage(snapshot
-                                                .data.documents[index].documentID
-                                                .toString()),
+                                            builder: (context) => MemberPage(userEmail, userName),
                                           )),
                                     );
                                   } else{
@@ -133,13 +135,11 @@ class MembersRecord extends StatelessWidget {
                                         Icons.account_circle,
                                         size: 50,
                                       ),
-                                      title: Text(userEmail),
+                                      title: Text(userName),
                                       onTap: () => Navigator.push<dynamic>(
                                           context,
                                           MaterialPageRoute<dynamic>(
-                                            builder: (context) => MemberPage(snapshot
-                                                .data.documents[index].documentID
-                                                .toString()),
+                                            builder: (context) => MemberPage(userEmail, userName),
                                           )),
                                     );
                                   }
