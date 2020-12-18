@@ -46,28 +46,30 @@ class TeamMainPageState extends State<TeamMainPage> {
           ),
         ],
       ),
-      body: Column(
-        children: <Widget>[
-          Container(
-            height: size.height * (6 / 12),
-            child: StreamBuilder<QuerySnapshot>(
-                //表示したいFirestoreの保存先を指定
-                stream: Firestore.instance.collection('users').document(_email).collection('teams').snapshots(),
-                //streamが更新されるたびに呼ばれる
-                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                  //データが取れていない時の処理
-                  if (!snapshot.hasData) return const Text('Loading...');
-                  return Scrollbar(
-                    child: ListView.builder(
-                        padding: EdgeInsets.zero,
-                        shrinkWrap: true,
-                        itemCount: snapshot.data.documents.length,
-                        itemBuilder: (context, index) =>
-                            _buildListItem(context, snapshot.data.documents[index]['team_name'] as String)),
-                  );
-                }),
-          ),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: size.height * (3 / 4),
+              child: StreamBuilder<QuerySnapshot>(
+                  //表示したいFirestoreの保存先を指定
+                  stream: Firestore.instance.collection('users').document(_email).collection('teams').snapshots(),
+                  //streamが更新されるたびに呼ばれる
+                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    //データが取れていない時の処理
+                    if (!snapshot.hasData) return const Text('Loading...');
+                    return Scrollbar(
+                      child: ListView.builder(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          itemCount: snapshot.data.documents.length,
+                          itemBuilder: (context, index) =>
+                              _buildListItem(context, snapshot.data.documents[index]['team_name'] as String)),
+                    );
+                  }),
+            ),
+          ],
+        ),
       ),
       drawer: Sidemenu(),
     );

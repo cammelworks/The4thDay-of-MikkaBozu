@@ -19,6 +19,7 @@ class RegisterPageState extends State<RegisterPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _userNameController = TextEditingController();
   bool _isHidden = true;
 
   void _toggleVisibility(){
@@ -37,6 +38,16 @@ class RegisterPageState extends State<RegisterPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            TextFormField(
+              controller: _userNameController,
+              decoration: const InputDecoration(labelText: 'ユーザー名を入力してください'),
+              validator: (String value) {
+                if (value.isEmpty) {
+                  return 'ユーザー名が入力されていません';
+                }
+                return null;
+              },
+            ),
             TextFormField(
               controller: _emailController,
               decoration: const InputDecoration(labelText: 'アドレスを入力してください'),
@@ -117,6 +128,7 @@ class RegisterPageState extends State<RegisterPage> {
       ))
           .user;
     } on PlatformException catch (e) {
+      print(e);
       //メールアドレスが使われていた場合実行
       if (e.code == "ERROR_EMAIL_ALREADY_IN_USE") {
         // トーストを表示
@@ -127,7 +139,7 @@ class RegisterPageState extends State<RegisterPage> {
     }
 
     if (user != null) {
-      //emailとパスワードを端末に保存
+      //emailとパスワードを端末に保存(自動ログイン用)
       await prefs.setString('email', _emailController.text);
       await prefs.setString('password', _passwordController.text);
       print(prefs.getString('email'));
@@ -138,7 +150,7 @@ class RegisterPageState extends State<RegisterPage> {
         Firestore.instance
             .collection('users')
             .document(user.email)
-            .setData(<String, dynamic>{'email': user.email});
+            .setData(<String, dynamic>{'email': user.email, 'name': _userNameController.text});
       });
       await Navigator.pushAndRemoveUntil<dynamic>(
           context,
@@ -147,6 +159,8 @@ class RegisterPageState extends State<RegisterPage> {
           ),
           (_) => false
       );
+    } else{
+      print("can't register");
     }
   }
 
