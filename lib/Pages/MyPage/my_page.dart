@@ -73,8 +73,16 @@ class MyPageState extends State<MyPage> {
   }
 
   String getColorCode(double max, double distance) {
-    int tmp = ((1 - distance / max) * 100).round();
-    return '00' + tmp.toString().padLeft(2, '0') + 'c4';
+    double distanceRatio = distance / max;
+    if(distanceRatio >= 0.75){
+      return '21576E';
+    } else if(distanceRatio >= 0.5){
+      return '307FA1';
+    } else if(distanceRatio >= 0.25){
+      return '419DC4';
+    } else {
+      return '9BD1E8';
+    }
   }
 
   @override
@@ -101,9 +109,10 @@ class MyPageState extends State<MyPage> {
                     onDayPressed: onDayPressed,
                     weekendTextStyle: TextStyle(color: Colors.red),
                     thisMonthDayBorderColor: Colors.grey,
+                    dayButtonColor: hex.HexColor('EBEDF0'),
                     weekFormat: false,
                     height: 420.0,
-                    todayButtonColor: Colors.white,
+                    todayButtonColor: hex.HexColor('EBEDF0'),
                     selectedDateTime: _currentDate,
                     daysHaveCircularBorder: false,
                     customGridViewPhysics: NeverScrollableScrollPhysics(),
@@ -170,19 +179,44 @@ class MyPageState extends State<MyPage> {
   } // 追加
 
   Event createEvent(DateTime date, double distance, String colorCode) {
-    return Event(
-      date: date,
-      title: distance.toString(),
-      icon: Container(
-        color: hex.HexColor(colorCode),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Text(date.day.toString()),
-            Text(distance.toString() + "km"),
-          ],
+    if(colorCode == '9BD1E8'){
+      return Event(
+        date: date,
+        title: distance.toString(),
+        icon: Container(
+          color: hex.HexColor(colorCode),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(date.day.toString()),
+              Text(distance.toString() + "km"),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      return Event(
+        date: date,
+        title: distance.toString(),
+        icon: Container(
+          color: hex.HexColor(colorCode),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(date.day.toString(),
+                style: TextStyle(
+                    color: Colors.white
+                ),
+              ),
+              Text(distance.toString() + "km",
+                style: TextStyle(
+                    color: Colors.white
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
   } // 追加
 }
