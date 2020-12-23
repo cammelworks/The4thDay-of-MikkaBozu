@@ -30,7 +30,7 @@ class JoinButton extends StatelessWidget {
     );
   }
 
-  void _joinTeam() {
+  void _joinTeam() async {
     //teamに自分の情報を追加
     Firestore.instance
         .collection('teams')
@@ -46,5 +46,18 @@ class JoinButton extends StatelessWidget {
         .collection('teams')
         .document(_teamName)
         .setData(<String, dynamic>{'team_name': _teamName});
+    
+    // チームの参加人数を取得
+    DocumentSnapshot snapshot = await Firestore.instance
+        .collection('teams')
+        .document(_teamName)
+        .get();
+    
+    // チームの参加人数を1増やしてプッシュ
+    int userNum = (snapshot.data['user_num'] as int) + 1;
+    Firestore.instance
+      .collection('teams')
+      .document(_teamName)
+      .updateData(<String, num>{'user_num': userNum});
   }
 }
