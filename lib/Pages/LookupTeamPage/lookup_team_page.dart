@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
+import 'package:the4thdayofmikkabozu/Pages/LookupTeamPage/team_card.dart';
 import 'package:the4thdayofmikkabozu/Pages/LookupTeamPage/join_button.dart';
 
 class LookupTeamPage extends StatefulWidget {
@@ -96,37 +97,38 @@ class LookupTeamPageState extends State<LookupTeamPage> {
                       shrinkWrap: true,
                       itemCount: snapshots.data.length,
                       itemBuilder: (context, int index) {
-                        return Container(
-                          child: Column(
-                            children: [
-                              Text(
-                                "チーム名 " + snapshots.data[index].data["team_name"].toString(),
-                                style: TextStyle(
-                                  fontSize: 20,
-                                ),
-                              ),
-                              Visibility(
-                                visible: snapshots.data[index].data["team_overview"]!=null,
-                                child: Text(
-                                  "概要 " + snapshots.data[index].data["team_overview"].toString(),
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                ),
-                              ),
-                              Visibility(
-                                visible: snapshots.data[index].data["goal"]!=null,
-                                child: Text(
-                                  "目標 " + snapshots.data[index].data["goal"].toString() + "km",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                ),
-                              ),
-                              JoinButton(snapshots.data[index].data["team_name"].toString()),
-                            ],
-                          ),
-                        );
+//                        return Container(
+//                          child: Column(
+//                            children: [
+//                              Text(
+//                                "チーム名 " + snapshots.data[index].data["team_name"].toString(),
+//                                style: TextStyle(
+//                                  fontSize: 20,
+//                                ),
+//                              ),
+//                              Visibility(
+//                                visible: snapshots.data[index].data["team_overview"]!=null,
+//                                child: Text(
+//                                  "概要 " + snapshots.data[index].data["team_overview"].toString(),
+//                                  style: TextStyle(
+//                                    fontSize: 20,
+//                                  ),
+//                                ),
+//                              ),
+//                              Visibility(
+//                                visible: snapshots.data[index].data["goal"]!=null,
+//                                child: Text(
+//                                  "目標 " + snapshots.data[index].data["goal"].toString() + "km",
+//                                  style: TextStyle(
+//                                    fontSize: 20,
+//                                  ),
+//                                ),
+//                              ),
+//                              JoinButton(snapshots.data[index].data["team_name"].toString()),
+//                            ],
+//                          ),
+//                        );
+                        return TeamCard(snapshots.data[index]);
                       }
                   ),
                 ),
