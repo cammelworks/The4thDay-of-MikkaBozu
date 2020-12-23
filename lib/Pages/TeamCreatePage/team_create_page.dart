@@ -124,6 +124,7 @@ class TeamCreatePageState extends State<TeamCreatePage> {
           'team_name': _nameController.text,
           'goal': int.parse(_goalController.text),
           'team_overview': _overviewController.text,
+          'user_num': 1,
         });
 
     Firestore.instance
