@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
+import 'package:the4thdayofmikkabozu/Pages/TeamMainPage/team_main_page.dart';
 
 class TeamCreatePage extends StatefulWidget {
   final String title = 'チーム作成';
@@ -89,7 +90,11 @@ class TeamCreatePageState extends State<TeamCreatePage> {
                                   _nameController.text)) {
                                 createTeam();
                                 updateDataUserData();
-                                Navigator.pop(context);
+                                Navigator.push<dynamic>(
+                                    context,
+                                    MaterialPageRoute<dynamic>(
+                                      builder: (context) => TeamMainPage(),
+                                    ));
                               } else {
                                 Fluttertoast.showToast(
                                   msg: 'すでに使用されています',
