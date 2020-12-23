@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:the4thdayofmikkabozu/Pages/LookupTeamPage/team_card.dart';
+import 'package:the4thdayofmikkabozu/Pages/TeamCreatePage/team_create_page.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
 class LookupTeamPage extends StatefulWidget {
@@ -29,53 +30,82 @@ class LookupTeamPageState extends State<LookupTeamPage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Form(
-                key: _formKey,
+      body: Column(
+        children: [
+          Expanded(
+            child: Container(
+              child: SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
-                    TextFormField(
-                      controller: _teamNameField,
-                      decoration: InputDecoration(
-                        labelText: '参加したいチーム名を入力してください',
-                        suffixIcon: IconButton(
-                          icon: Icon(Icons.search),
-                          onPressed: () async {
-                            print(_formKey.currentState.validate());
-                            if (_formKey.currentState.validate()) {
-                              // 再レンダリング
-                              setState(() {});
-                            }
-                            //キーボードを閉じる
-                            FocusScope.of(context)
-                                .requestFocus(new FocusNode());
-                          },
-                        ),
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: <Widget>[
+                          TextFormField(
+                            controller: _teamNameField,
+                            decoration: InputDecoration(
+                              labelText: '参加したいチーム名を入力してください',
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.search),
+                                onPressed: () async {
+                                  print(_formKey.currentState.validate());
+                                  if (_formKey.currentState.validate()) {
+                                    // 再レンダリング
+                                    setState(() {});
+                                  }
+                                  //キーボードを閉じる
+                                  FocusScope.of(context)
+                                      .requestFocus(new FocusNode());
+                                },
+                              ),
+                            ),
+                            //エンターアイコンを変更
+                            textInputAction: TextInputAction.search,
+                            onFieldSubmitted: (String value) async {
+                              if (_formKey.currentState.validate())
+                                setState(() {});
+                              ;
+                            },
+                            validator: (String value) {
+                              if (value.isEmpty) {
+                                return 'チーム名を入力してください';
+                              }
+                              return null;
+                            },
+                          ),
+                        ],
                       ),
-                      //エンターアイコンを変更
-                      textInputAction: TextInputAction.search,
-                      onFieldSubmitted: (String value) async {
-                        if (_formKey.currentState.validate()) setState(() {});
-                        ;
-                      },
-                      validator: (String value) {
-                        if (value.isEmpty) {
-                          return 'チーム名を入力してください';
-                        }
-                        return null;
-                      },
                     ),
+                    _showsearchResults(),
                   ],
                 ),
               ),
-              _showsearchResults(),
-            ],
+            ),
           ),
-        ),
+          Center(
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 32.0),
+              child: ButtonTheme(
+                minWidth: 200.0,
+                height: 50.0,
+                buttonColor: Colors.white,
+                child: RaisedButton(
+                  child: const Text('新規作成'),
+                  shape: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                  onPressed: () async {
+                    await Navigator.push<dynamic>(
+                        context,
+                        MaterialPageRoute<dynamic>(
+                          builder: (context) => TeamCreatePage(),
+                        ));
+                  },
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

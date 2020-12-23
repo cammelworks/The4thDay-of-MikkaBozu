@@ -21,30 +21,6 @@ class TeamMainPageState extends State<TeamMainPage> {
         title: const Text(
           'チーム関連ページ',
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            color: Colors.white,
-            onPressed: () async {
-              await Navigator.push<dynamic>(
-                  context,
-                  MaterialPageRoute<dynamic>(
-                    builder: (context) => LookupTeamPage(),
-                  ));
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.add),
-            color: Colors.white,
-            onPressed: () async {
-              await Navigator.push<dynamic>(
-                  context,
-                  MaterialPageRoute<dynamic>(
-                    builder: (context) => TeamCreatePage(),
-                  ));
-            },
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -70,6 +46,17 @@ class TeamMainPageState extends State<TeamMainPage> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await Navigator.push<dynamic>(
+              context,
+              MaterialPageRoute<dynamic>(
+                builder: (context) => LookupTeamPage(),
+              ));
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.blue,
       ),
       drawer: Sidemenu(),
     );
