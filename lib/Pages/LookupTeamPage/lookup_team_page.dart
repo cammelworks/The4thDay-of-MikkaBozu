@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:the4thdayofmikkabozu/Pages/LookupTeamPage/team_card.dart';
-import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
-import 'package:the4thdayofmikkabozu/Pages/LookupTeamPage/join_button.dart';
 import 'package:the4thdayofmikkabozu/Pages/TeamCreatePage/team_create_page.dart';
+import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
 class LookupTeamPage extends StatefulWidget {
   final String title = 'チーム検索';
@@ -85,7 +84,7 @@ class LookupTeamPageState extends State<LookupTeamPage> {
           ),
           Center(
             child: Container(
-              margin: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 64.0),
+              margin: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 32.0),
               child: ButtonTheme(
                 minWidth: 200.0,
                 height: 50.0,
