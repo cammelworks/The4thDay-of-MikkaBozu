@@ -90,11 +90,9 @@ class TeamCreatePageState extends State<TeamCreatePage> {
                                   _nameController.text)) {
                                 createTeam();
                                 updateDataUserData();
-                                Navigator.push<dynamic>(
-                                    context,
-                                    MaterialPageRoute<dynamic>(
-                                      builder: (context) => TeamMainPage(),
-                                    ));
+                                // 2ページ前に戻る
+                                int count = 0;
+                                Navigator.of(context).popUntil((_) => count++ >= 2);
                               } else {
                                 Fluttertoast.showToast(
                                   msg: 'すでに使用されています',

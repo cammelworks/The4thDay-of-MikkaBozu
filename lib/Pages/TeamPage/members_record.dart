@@ -215,7 +215,10 @@ class MembersRecord extends StatelessWidget {
         }
       }
     }
-
-    return (dResult);
+    // 直近の日曜日の0時を返す
+    int year = dResult.year;
+    int month = dResult.month;
+    int day = dResult.day;
+    return (DateTime(year, month, day));
   }
 }
