@@ -135,14 +135,14 @@ class MeasurementPageState extends State<MeasurementPage> {
           .setData(<String, dynamic>{'distance': _distance, 'time': _timeInt, 'timestamp': Timestamp.now()});
     } else{
       // 同じ日のデータがある
-      _distance = (_distance * 10).round() / 10 + (_record.data["distance"] as double);
+      double _distanceTmp = (_distance * 10).round() / 10 + (_record.data["distance"] as double);
       int _time = _timeInt + (_record.data["time"] as int);
       Firestore.instance
           .collection('users')
           .document(userData.userEmail)
           .collection('records')
           .document()
-          .setData(<String, dynamic>{'distance': _distance, 'time': _time, 'timestamp': Timestamp.now()});
+          .setData(<String, dynamic>{'distance': _distanceTmp, 'time': _time, 'timestamp': Timestamp.now()});
     }
   }
 
