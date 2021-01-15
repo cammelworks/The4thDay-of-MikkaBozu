@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
@@ -81,9 +82,38 @@ class ChatPageState extends State<ChatPage> {
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot documentSnapshot) {
     return Container(
-      padding: EdgeInsets.all(5.0),
-      child: Text(
-        documentSnapshot.data["message"].toString()
+      padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
+      child: Row(
+          children: <Widget>[
+            Icon(
+              Icons.account_circle,
+              size: 50,
+            ),
+            Padding(padding: EdgeInsets.only(left: 10),),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Text(
+                      documentSnapshot.data["sender"].toString(),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.only(left: 12),),
+                    Text(
+                      convertDate(documentSnapshot.data["timestamp"] as Timestamp),
+                      style: TextStyle(
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
+                Text(documentSnapshot.data["message"].toString()),
+              ],
+            ),
+          ]
       ),
     );
   }
@@ -100,5 +130,15 @@ class ChatPageState extends State<ChatPage> {
           "timestamp":Timestamp.now()
         });
     _chatField.text = "";
+  }
+
+  String convertDate(Timestamp timestamp){
+    DateTime dateTime = timestamp.toDate();
+    String month = dateTime.month.toString();
+    String day = dateTime.day.toString();
+    String hour = dateTime.hour.toString();
+    String minute = dateTime.minute.toString();
+
+    return month + "/" + day + " " + hour + ":" + minute;
   }
 }
