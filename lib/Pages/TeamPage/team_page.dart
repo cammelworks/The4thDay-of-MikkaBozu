@@ -44,7 +44,7 @@ class TeamPageState extends State<TeamPage> {
             await Navigator.push<dynamic>(
                 context,
                 MaterialPageRoute<dynamic>(
-                  builder: (context) => ChatPage(),
+                  builder: (context) => ChatPage(_teamName),
                 ));
           },
           child: Icon(Icons.chat),

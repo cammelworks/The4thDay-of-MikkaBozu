@@ -64,7 +64,6 @@ class LookupTeamPageState extends State<LookupTeamPage> {
                             onFieldSubmitted: (String value) async {
                               if (_formKey.currentState.validate())
                                 setState(() {});
-                              ;
                             },
                             validator: (String value) {
                               if (value.isEmpty) {
