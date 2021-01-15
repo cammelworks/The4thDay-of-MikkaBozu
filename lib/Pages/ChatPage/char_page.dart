@@ -49,30 +49,44 @@ class ChatPageState extends State<ChatPage> {
                   }),
             ),
           ),
-          Form(
-            key: _formKey,
-            child: Column(
-              children: <Widget>[
-                TextFormField(
-                  controller: _chatField,
-                  decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.send),
-                      onPressed: () async {
-
-                        if (_formKey.currentState.validate()) {
-                          pushMessage();
-                          // 再レンダリング
-                          setState(() {});
-                        }
-                        //キーボードを閉じる
-                        FocusScope.of(context)
-                            .requestFocus(FocusNode());
-                      },
-                    ),
-                  ),
+          Container(
+            color: Colors.primaries[5],
+            child: Container(
+              margin: EdgeInsets.fromLTRB(3, 3, 3, 3),
+              padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.primaries[5],
+                  width: 2,
                 ),
-              ],
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white
+              ),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    TextFormField(
+                      controller: _chatField,
+                      decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.send),
+                          onPressed: () async {
+                            if (_formKey.currentState.validate()) {
+                              pushMessage();
+                              // 再レンダリング
+                              setState(() {});
+                            }
+                            //キーボードを閉じる
+                            FocusScope.of(context)
+                                .requestFocus(FocusNode());
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ],
