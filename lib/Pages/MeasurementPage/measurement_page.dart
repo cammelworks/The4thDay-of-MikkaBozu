@@ -21,6 +21,8 @@ class MeasurementPageState extends State<MeasurementPage> {
   Position prevPosition;
   Timer _timer;
   double _distance = 0;
+  int _timeInt = 0;
+  String _timeStr = "00:00:00";
   static const platform = const MethodChannel("Java.Foreground");
 
   @override
@@ -50,7 +52,7 @@ class MeasurementPageState extends State<MeasurementPage> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    MeasurementPanel(_distance),
+                    MeasurementPanel(_distance, _timeStr),
                     Center(
                       child: MeasurementButton(_value, () async {
                         if (_value == 0) {
@@ -84,6 +86,22 @@ class MeasurementPageState extends State<MeasurementPage> {
 
   void countTime(Timer timer) {
     _getLocation();
+    _timeInt++;
+    _convertIntToTime();
+  }
+
+  // 時間表示をStringに成形する
+  void _convertIntToTime(){
+    // 129 -> 00:02:09
+    int timeTmp = _timeInt;
+    int hour = (timeTmp / 3600).floor();
+    timeTmp = timeTmp % 3600;
+    int minute = (timeTmp / 60).floor();
+    timeTmp = timeTmp % 60;
+    int second = timeTmp;
+    _timeStr = hour.toString().padLeft(2, "0") + ":"
+        + minute.toString().padLeft(2, "0") + ":"
+        + second.toString().padLeft(2, "0");
   }
 
   Future<void> _getLocation() async {
@@ -104,21 +122,32 @@ class MeasurementPageState extends State<MeasurementPage> {
     setState(() {});
   }
 
-  // 走った距離をデータベースにプッシュする
+  // 走った距離と時間をデータベースにプッシュする
   Future<void> _pushRecord() async {
-    dynamic _recordDistance = await _confirmTodayRecord();
-    print((_recordDistance as double));
-    _distance = (_distance * 10).round() / 10 + (_recordDistance as double);
-    Firestore.instance
-        .collection('users')
-        .document(userData.userEmail)
-        .collection('records')
-        .document()
-        .setData(<String, dynamic>{'distance': _distance, 'timestamp': Timestamp.now()});
+    DocumentSnapshot _record = await _confirmTodayRecord();
+    if(_record == null){
+      //同じ日のデータがない
+      Firestore.instance
+          .collection('users')
+          .document(userData.userEmail)
+          .collection('records')
+          .document()
+          .setData(<String, dynamic>{'distance': _distance, 'time': _timeInt, 'timestamp': Timestamp.now()});
+    } else{
+      // 同じ日のデータがある
+      _distance = (_distance * 10).round() / 10 + (_record.data["distance"] as double);
+      int _time = _timeInt + (_record.data["time"] as int);
+      Firestore.instance
+          .collection('users')
+          .document(userData.userEmail)
+          .collection('records')
+          .document()
+          .setData(<String, dynamic>{'distance': _distance, 'time': _time, 'timestamp': Timestamp.now()});
+    }
   }
 
   // 同じ日の記録があるか確認する
-  Future<dynamic> _confirmTodayRecord() async {
+  Future<DocumentSnapshot> _confirmTodayRecord() async {
     QuerySnapshot snapshots = await Firestore.instance
         .collection('users')
         .document(userData.userEmail)
@@ -126,7 +155,7 @@ class MeasurementPageState extends State<MeasurementPage> {
         .orderBy("timestamp", descending: true)
         .getDocuments();
     if(snapshots.documents.length == 0){
-      return 0.0;
+      return null;
     }
     // 直近の記録の日付を確認する
     DateTime time = (snapshots.documents[0].data['timestamp'] as Timestamp).toDate();
@@ -142,9 +171,9 @@ class MeasurementPageState extends State<MeasurementPage> {
           .collection('records')
           .document(snapshots.documents[0].documentID)
           .delete();
-      return snapshots.documents[0].data['distance'];
+      return snapshots.documents[0];
     } else{
-      return 0.0;
+      return null;
     }
   }
 }
