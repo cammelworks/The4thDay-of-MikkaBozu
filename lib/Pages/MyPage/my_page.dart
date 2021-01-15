@@ -21,13 +21,16 @@ class MyPageState extends State<MyPage> {
   DateTime _currentDate = DateTime.now();
   EventList<Event> _markedDateMap = EventList<Event>();
   bool _shouldShowRecord = false;
-  String _selectedRecord = "";
+  String _selectedRecordDistance = "";
+  String _selectedRecordTime = "";
 
   void onDayPressed(DateTime date, List<Event> events) {
     this.setState(() => _currentDate = date);
     if (events.length > 0) {
       _shouldShowRecord = true;
-      _selectedRecord = events[0].title + "km";
+      List<String> tmp = events[0].title.split(",");
+      _selectedRecordDistance = tmp[0] + "km";
+      _selectedRecordTime = tmp[1];
     } else {
       _shouldShowRecord = false;
     }
@@ -58,10 +61,31 @@ class MyPageState extends State<MyPage> {
           (snapshots.documents[i].data['timestamp'] as Timestamp).toDate();
       double distance = snapshots.documents[i].data['distance'] as double;
       double roundedDistance = (distance / 100).round() / 10;
+      String time = "";
+      try{
+        int timeInt = snapshots.documents[i].data['time'] as int;
+        time = _convertIntToTime(timeInt);
+      }catch(e){
+        time = " ";
+      }
       addEvent(
-          getDate(date), roundedDistance, getColorCode(max_distance, distance));
+          getDate(date), roundedDistance, time, getColorCode(max_distance, distance));
     }
     this.setState(() {});
+  }
+
+  // 時間表示をStringに成形する
+  String _convertIntToTime(int time){
+    // 129 -> 00:02:09
+    int timeTmp = time;
+    int hour = (timeTmp / 3600).floor();
+    timeTmp = timeTmp % 3600;
+    int minute = (timeTmp / 60).floor();
+    timeTmp = timeTmp % 60;
+    int second = timeTmp;
+    return hour.toString().padLeft(2, "0") + ":"
+        + minute.toString().padLeft(2, "0") + ":"
+        + second.toString().padLeft(2, "0");
   }
 
   // 時間情報を取り除く
@@ -139,7 +163,7 @@ class MyPageState extends State<MyPage> {
                       color: Colors.white,
                       border: Border.all(color: Colors.blue, width: 1.0)),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Container(
                           padding:
@@ -155,9 +179,18 @@ class MyPageState extends State<MyPage> {
                           )),
                       Container(
                           padding:
-                              EdgeInsets.fromLTRB(10, 6, size.width / 10, 6),
+                              EdgeInsets.fromLTRB(10, 6, 10, 6),
                           child: Text(
-                            _selectedRecord,
+                            _selectedRecordDistance,
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          )),
+                      Container(
+                          padding:
+                            EdgeInsets.fromLTRB(10, 6, size.width / 10, 6),
+                          child: Text(
+                            _selectedRecordTime,
                             style: TextStyle(
                               fontSize: 20,
                             ),
@@ -174,15 +207,15 @@ class MyPageState extends State<MyPage> {
     );
   }
 
-  void addEvent(DateTime date, double distance, String colorCode) {
-    _markedDateMap.add(date, createEvent(date, distance, colorCode));
+  void addEvent(DateTime date, double distance, String time, String colorCode) {
+    _markedDateMap.add(date, createEvent(date, distance, time, colorCode));
   } // 追加
 
-  Event createEvent(DateTime date, double distance, String colorCode) {
+  Event createEvent(DateTime date, double distance, String time, String colorCode) {
     if(colorCode == '9BD1E8'){
       return Event(
         date: date,
-        title: distance.toString(),
+        title: distance.toString() + "," + time,
         icon: Container(
           color: hex.HexColor(colorCode),
           child: Column(
@@ -197,7 +230,7 @@ class MyPageState extends State<MyPage> {
     } else {
       return Event(
         date: date,
-        title: distance.toString(),
+        title: distance.toString() + "," + time,
         icon: Container(
           color: hex.HexColor(colorCode),
           child: Column(

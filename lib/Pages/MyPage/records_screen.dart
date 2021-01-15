@@ -69,28 +69,61 @@ class RecordsScreen extends StatelessWidget {
               itemCount: snapshot.data.documents.length,
               itemBuilder: (context, int index) {
                 Size size = MediaQuery.of(context).size;
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.only(left: size.width / 4),
-                      width: size.width / 2,
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        _timestampToString(
-                            snapshot.data.documents[index]["timestamp"]),
+                try{
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.only(left: size.width / 4),
+                        width: size.width / 2,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          _timestampToString(
+                              snapshot.data.documents[index]["timestamp"]),
+                        ),
                       ),
-                    ),
-                    Container(
-                      width: size.width / 2,
-                      padding: EdgeInsets.fromLTRB(6, 6, size.width / 4, 6),
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        _convertUnit(snapshot.data.documents[index]["distance"]),
+                      Container(
+                        width: size.width / 2,
+                        padding: EdgeInsets.fromLTRB(6, 6, size.width / 4, 6),
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          _convertUnit(snapshot.data.documents[index]["distance"]),
+                        ),
                       ),
-                    ),
-                  ],
-                );
+                      Container(
+                        width: size.width / 2,
+                        padding: EdgeInsets.fromLTRB(6, 6, size.width / 4, 6),
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          _convertIntToTime(snapshot.data.documents[index]["time"] as int),
+                        ),
+                      ),
+                    ],
+                  );
+                } catch(e){
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.only(left: size.width / 4),
+                        width: size.width / 2,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          _timestampToString(
+                              snapshot.data.documents[index]["timestamp"]),
+                        ),
+                      ),
+                      Container(
+                        width: size.width / 2,
+                        padding: EdgeInsets.fromLTRB(6, 6, size.width / 4, 6),
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          _convertUnit(snapshot.data.documents[index]["distance"]),
+                        ),
+                      ),
+                    ],
+                  );
+                }
               },
             ),
           );
@@ -111,5 +144,19 @@ class RecordsScreen extends StatelessWidget {
     int month = time.month;
     int day = time.day;
     return month.toString() + "/" + day.toString();
+  }
+
+  // 時間表示をStringに成形する
+  String _convertIntToTime(int time){
+    // 129 -> 00:02:09
+    int timeTmp = time;
+    int hour = (timeTmp / 3600).floor();
+    timeTmp = timeTmp % 3600;
+    int minute = (timeTmp / 60).floor();
+    timeTmp = timeTmp % 60;
+    int second = timeTmp;
+    return hour.toString().padLeft(2, "0") + ":"
+        + minute.toString().padLeft(2, "0") + ":"
+        + second.toString().padLeft(2, "0");
   }
 }
