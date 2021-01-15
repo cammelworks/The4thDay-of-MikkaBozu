@@ -11,33 +11,26 @@ class JoinButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: ButtonTheme(
-        minWidth: 200.0,
-        height: 50.0,
-        buttonColor: Colors.white,
-        child: RaisedButton(
-            child: const Text('参加'),
-            shape: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10.0)),
-            ),
-            onPressed: () async {
-              //チームに参加
-              _joinTeam();
-              //前のページに戻る
-              Navigator.pop(context);
-            }),
-      ),
+      child: FlatButton(
+          child: const Text('参加'),
+          textColor: Theme.of(context).primaryColor,
+          onPressed: () async {
+            //チームに参加
+            _joinTeam();
+            //前のページに戻る
+            Navigator.pop(context);
+          }),
     );
   }
 
-  void _joinTeam() {
+  void _joinTeam() async {
     //teamに自分の情報を追加
     Firestore.instance
         .collection('teams')
         .document(_teamName)
         .collection('users')
         .document(_email)
-        .setData(<String, dynamic>{'email': _email});
+        .setData(<String, dynamic>{'email': _email, 'name': userData.userName});
 
     //自分の情報にチームの情報を追加
     Firestore.instance
@@ -46,5 +39,18 @@ class JoinButton extends StatelessWidget {
         .collection('teams')
         .document(_teamName)
         .setData(<String, dynamic>{'team_name': _teamName});
+    
+    // チームの参加人数を取得
+    DocumentSnapshot snapshot = await Firestore.instance
+        .collection('teams')
+        .document(_teamName)
+        .get();
+    
+    // チームの参加人数を1増やしてプッシュ
+    int userNum = (snapshot.data['user_num'] as int) + 1;
+    Firestore.instance
+      .collection('teams')
+      .document(_teamName)
+      .updateData(<String, num>{'user_num': userNum});
   }
 }
