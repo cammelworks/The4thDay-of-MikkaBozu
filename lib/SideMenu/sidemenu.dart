@@ -64,10 +64,6 @@ class SidemenuState extends State<Sidemenu> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
                                 FlatButton(
-                                  child: Text("キャンセル"),
-                                  onPressed: () => Navigator.pop(context),
-                                ),
-                                FlatButton(
                                   child: Text("変更"),
                                   onPressed: () {
                                     if (_formKey.currentState.validate()) {
@@ -85,6 +81,10 @@ class SidemenuState extends State<Sidemenu> {
                                       Navigator.pop(context);
                                     }
                                   }
+                                ),
+                                FlatButton(
+                                  child: Text("キャンセル"),
+                                  onPressed: () => Navigator.pop(context),
                                 ),
                               ],
                             ),
