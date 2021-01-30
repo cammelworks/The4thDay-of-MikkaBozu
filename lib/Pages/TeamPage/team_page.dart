@@ -88,6 +88,7 @@ class TeamPageState extends State<TeamPage> {
   }
 
   void LeaveTeam() async {
+    //チームからユーザ情報を削除
     Firestore.instance
         .collection('teams')
         .document(_teamName)
@@ -95,6 +96,7 @@ class TeamPageState extends State<TeamPage> {
         .document(userData.userEmail)
         .delete();
 
+    //ユーザからチーム情報を削除
     Firestore.instance
         .collection('users')
         .document(userData.userEmail)
