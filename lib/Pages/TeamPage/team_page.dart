@@ -72,7 +72,7 @@ class TeamPageState extends State<TeamPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     OverviewManager(_teamName),
-                    GoalManager(_teamName),
+                    GoalManager(_teamName, IsAdmin),
                     Container(
                       height: 10.0,
                     ),

@@ -5,8 +5,9 @@ import 'package:flutter_picker/flutter_picker.dart';
 
 class GoalManager extends StatelessWidget {
   String _teamName;
+  bool isAdmin;
 
-  GoalManager(this._teamName);
+  GoalManager(this._teamName, this.isAdmin);
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +27,15 @@ class GoalManager extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Center(child: _showGoal()),
-            IconButton(
-                icon: Icon(Icons.mode_edit),
-                onPressed: () async {
-                  //目標変更
-                  showPickerNumber(context);
-                }),
+            Visibility(
+              visible: isAdmin,
+              child: IconButton(
+                  icon: Icon(Icons.mode_edit),
+                  onPressed: () async {
+                    //目標変更
+                    showPickerNumber(context);
+                  }),
+            ),
           ],
         ),
       ],
