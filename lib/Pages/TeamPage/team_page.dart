@@ -22,13 +22,18 @@ class TeamPageState extends State<TeamPage> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: getAdmin(),
-      builder: (BuildContext context, AsyncSnapshot<String> adminSnapshot) {
+    return StreamBuilder<DocumentSnapshot>(
+      stream: Firestore.instance
+          .collection('teams')
+          .document(_teamName)
+          .snapshots(),
+      builder: (BuildContext context,
+          AsyncSnapshot<DocumentSnapshot> adminSnapshot) {
         if (!adminSnapshot.hasData) {
           return Text('Loading...');
         }
-        bool IsAdmin = userData.userEmail == adminSnapshot.data;
+        bool isAdmin =
+            userData.userEmail == adminSnapshot.data['admin'].toString();
         return Scaffold(
           appBar: AppBar(
             title: Text(_teamName),
@@ -65,19 +70,22 @@ class TeamPageState extends State<TeamPage> {
               ),
             ],
           ),
-          body: Center(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 20.0),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    OverviewManager(_teamName),
-                    GoalManager(_teamName, IsAdmin),
-                    Container(
-                      height: 10.0,
-                    ),
-                    MembersRecord(_teamName),
-                  ]),
+          body: SingleChildScrollView(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      OverviewManager(_teamName, isAdmin),
+                      GoalManager(_teamName, isAdmin),
+                      Container(
+                        height: 10.0,
+                      ),
+                      MembersRecord(
+                          _teamName, adminSnapshot.data['admin'].toString()),
+                    ]),
+              ),
             ),
           ),
           floatingActionButton: FloatingActionButton(

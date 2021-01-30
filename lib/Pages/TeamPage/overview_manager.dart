@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_picker/flutter_picker.dart';
 
 class OverviewManager extends StatelessWidget {
   String _teamName;
+  bool isAdmin;
 
-  OverviewManager(this._teamName);
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _overviewController = TextEditingController();
+
+  OverviewManager(this._teamName, this.isAdmin);
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +37,7 @@ class OverviewManager extends StatelessWidget {
   Widget _showOverview() {
     //Firestoreから目標を取得して表示
     return StreamBuilder<DocumentSnapshot>(
-      //表示したいFiresotreの保存先を指定
+        //表示したいFiresotreの保存先を指定
         stream: Firestore.instance
             .collection('teams')
             .document((_teamName))
@@ -45,11 +48,77 @@ class OverviewManager extends StatelessWidget {
           //データが取れていない時の処理
           if (!snapshot.hasData) return const Text('Loading...');
           if (snapshot.data["team_overview"] != null) {
-            return Text(
-              snapshot.data["team_overview"].toString(),
-              style: TextStyle(
-                fontSize: 20,
-              ),
+            return Row(
+              children: <Widget>[
+                Text(
+                  snapshot.data["team_overview"].toString(),
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+                Visibility(
+                  visible: isAdmin,
+                  child: IconButton(
+                      icon: Icon(Icons.mode_edit),
+                      onPressed: () async {
+                        showDialog<dynamic>(
+                          context: context,
+                          builder: (context) {
+                            return Form(
+                              key: _formKey,
+                              child: SimpleDialog(
+                                title: Text("チーム概要の変更"),
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 8.0, right: 8.0),
+                                    child: TextFormField(
+                                      controller: _overviewController,
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        labelText: '変更する概要を入力してください',
+                                      ),
+                                      validator: (String value) {
+                                        if (value.isEmpty) {
+                                          return '概要が入力されていません';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      FlatButton(
+                                          child: Text("変更"),
+                                          onPressed: () {
+                                            if (_formKey.currentState
+                                                .validate()) {
+                                              Firestore.instance
+                                                  .collection('teams')
+                                                  .document(_teamName)
+                                                  .updateData(<String, dynamic>{
+                                                'team_overview':
+                                                    _overviewController.text
+                                              });
+                                              _overviewController.text = "";
+                                              Navigator.pop(context);
+                                            }
+                                          }),
+                                      FlatButton(
+                                        child: Text("キャンセル"),
+                                        onPressed: () => Navigator.pop(context),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      }),
+                ),
+              ],
             );
           } else {
             return Container();
