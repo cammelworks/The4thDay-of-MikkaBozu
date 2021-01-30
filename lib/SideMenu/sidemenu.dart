@@ -74,7 +74,7 @@ class SidemenuState extends State<Sidemenu> {
                                       Firestore.instance
                                           .collection('users')
                                           .document(userData.userEmail)
-                                          .setData(<String, dynamic>{
+                                          .updateData(<String, dynamic>{
                                         'name': _userNameController.text
                                       });
                                       userData.userName = _userNameController.text;
