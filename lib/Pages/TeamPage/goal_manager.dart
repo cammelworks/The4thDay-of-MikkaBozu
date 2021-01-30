@@ -5,9 +5,9 @@ import 'package:flutter_picker/flutter_picker.dart';
 
 class GoalManager extends StatelessWidget {
   String _teamName;
-  bool isAdmin;
+  bool _isAdmin;
 
-  GoalManager(this._teamName, this.isAdmin);
+  GoalManager(this._teamName, this._isAdmin);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class GoalManager extends StatelessWidget {
           children: <Widget>[
             Center(child: _showGoal()),
             Visibility(
-              visible: isAdmin,
+              visible: _isAdmin,
               child: IconButton(
                   icon: Icon(Icons.mode_edit),
                   onPressed: () async {
@@ -60,23 +60,16 @@ class GoalManager extends StatelessWidget {
 
   void _setGoal(dynamic goal) {
     //Firebaseのteamsに目標を設定する
-    Firestore.instance
-        .collection('teams')
-        .document(_teamName)
-        .updateData(<String, dynamic>{'goal': goal});
+    Firestore.instance.collection('teams').document(_teamName).updateData(<String, dynamic>{'goal': goal});
   }
 
   Widget _showGoal() {
     //Firestoreから目標を取得して表示
     return StreamBuilder<DocumentSnapshot>(
         //表示したいFiresotreの保存先を指定
-        stream: Firestore.instance
-            .collection('teams')
-            .document((_teamName))
-            .snapshots(),
+        stream: Firestore.instance.collection('teams').document((_teamName)).snapshots(),
         //streamが更新されるたびに呼ばれる
-        builder:
-            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           //データが取れていない時の処理
           if (!snapshot.hasData) return const Text('Loading...');
           if (snapshot.data["goal"] != null) {

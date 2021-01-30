@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 
 class OverviewManager extends StatelessWidget {
   String _teamName;
-  bool isAdmin;
+  bool _isAdmin;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _overviewController = TextEditingController();
 
-  OverviewManager(this._teamName, this.isAdmin);
+  OverviewManager(this._teamName, this._isAdmin);
 
   @override
   Widget build(BuildContext context) {
@@ -38,13 +38,9 @@ class OverviewManager extends StatelessWidget {
     //Firestoreから目標を取得して表示
     return StreamBuilder<DocumentSnapshot>(
         //表示したいFiresotreの保存先を指定
-        stream: Firestore.instance
-            .collection('teams')
-            .document((_teamName))
-            .snapshots(),
+        stream: Firestore.instance.collection('teams').document((_teamName)).snapshots(),
         //streamが更新されるたびに呼ばれる
-        builder:
-            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           //データが取れていない時の処理
           if (!snapshot.hasData) return const Text('Loading...');
           if (snapshot.data["team_overview"] != null) {
@@ -57,7 +53,7 @@ class OverviewManager extends StatelessWidget {
                   ),
                 ),
                 Visibility(
-                  visible: isAdmin,
+                  visible: _isAdmin,
                   child: IconButton(
                       icon: Icon(Icons.mode_edit),
                       onPressed: () async {
@@ -70,8 +66,7 @@ class OverviewManager extends StatelessWidget {
                                 title: Text("チーム概要の変更"),
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 8.0, right: 8.0),
+                                    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                                     child: TextFormField(
                                       controller: _overviewController,
                                       decoration: InputDecoration(
@@ -92,15 +87,9 @@ class OverviewManager extends StatelessWidget {
                                       FlatButton(
                                           child: Text("変更"),
                                           onPressed: () {
-                                            if (_formKey.currentState
-                                                .validate()) {
-                                              Firestore.instance
-                                                  .collection('teams')
-                                                  .document(_teamName)
-                                                  .updateData(<String, dynamic>{
-                                                'team_overview':
-                                                    _overviewController.text
-                                              });
+                                            if (_formKey.currentState.validate()) {
+                                              Firestore.instance.collection('teams').document(_teamName).updateData(
+                                                  <String, dynamic>{'team_overview': _overviewController.text});
                                               _overviewController.text = "";
                                               Navigator.pop(context);
                                             }

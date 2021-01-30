@@ -22,11 +22,7 @@ class MembersRecord extends StatelessWidget {
   Widget getMembers(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
         //表示したいFiresotreの保存先を指定
-        stream: Firestore.instance
-            .collection('teams')
-            .document(_teamName)
-            .collection('users')
-            .snapshots(),
+        stream: Firestore.instance.collection('teams').document(_teamName).collection('users').snapshots(),
         //streamが更新されるたびに呼ばれる
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           //データが取れていない時の処理
@@ -42,13 +38,11 @@ class MembersRecord extends StatelessWidget {
                 // 個人の記録の取得
                 return FutureBuilder(
                     future: getMemberRecord(snapshot.data, goalSnapshot.data),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<Map> memberSnapshot) {
+                    builder: (BuildContext context, AsyncSnapshot<Map> memberSnapshot) {
                       if (memberSnapshot.hasData) {
                         print(memberSnapshot.data);
                         int achievedMemberNum = 0;
-                        memberSnapshot.data
-                            .forEach((dynamic key, dynamic value) {
+                        memberSnapshot.data.forEach((dynamic key, dynamic value) {
                           if (value[0] as bool) {
                             achievementNum++;
                           }
@@ -64,9 +58,7 @@ class MembersRecord extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              achievementNum.toString() +
-                                  "/" +
-                                  snapshot.data.documents.length.toString(),
+                              achievementNum.toString() + "/" + snapshot.data.documents.length.toString(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 30,
@@ -77,13 +69,11 @@ class MembersRecord extends StatelessWidget {
                                 Padding(
                                   padding: EdgeInsets.all(5.0),
                                   child: new LinearPercentIndicator(
-                                    width:
-                                        MediaQuery.of(context).size.width - 50,
+                                    width: MediaQuery.of(context).size.width - 50,
                                     animation: true,
                                     lineHeight: 20.0,
                                     animationDuration: 2000,
-                                    percent: achievementNum /
-                                        snapshot.data.documents.length,
+                                    percent: achievementNum / snapshot.data.documents.length,
 //                                  center: Text(achievementNum.toString() + "/" + snapshot.data.documents.length.toString()),
                                     linearStrokeCap: LinearStrokeCap.roundAll,
                                     progressColor: hex.HexColor("f17300"),
@@ -111,15 +101,11 @@ class MembersRecord extends StatelessWidget {
                                   shrinkWrap: true,
                                   itemCount: snapshot.data.documents.length,
                                   itemBuilder: (context, int index) {
-                                    String userEmail = snapshot
-                                        .data.documents[index].documentID
-                                        .toString();
+                                    String userEmail = snapshot.data.documents[index].documentID.toString();
                                     String userName = "Guest";
                                     print(memberSnapshot.data[userEmail][1]);
-                                    if (memberSnapshot.data[userEmail][1] !=
-                                        "null") {
-                                      userName = memberSnapshot.data[userEmail]
-                                          [1] as String;
+                                    if (memberSnapshot.data[userEmail][1] != "null") {
+                                      userName = memberSnapshot.data[userEmail][1] as String;
                                     }
                                     return ListTile(
                                       leading: Icon(
@@ -127,8 +113,7 @@ class MembersRecord extends StatelessWidget {
                                         size: 50,
                                       ),
                                       trailing: Visibility(
-                                        visible: memberSnapshot.data[userEmail]
-                                            [0] as bool,
+                                        visible: memberSnapshot.data[userEmail][0] as bool,
                                         child: Image.asset(
                                           'images/flag-icon.png',
                                           height: 30.0,
@@ -150,8 +135,7 @@ class MembersRecord extends StatelessWidget {
                                       onTap: () => Navigator.push<dynamic>(
                                           context,
                                           MaterialPageRoute<dynamic>(
-                                            builder: (context) =>
-                                                MemberPage(userEmail, userName),
+                                            builder: (context) => MemberPage(userEmail, userName),
                                           )),
                                     );
                                   },
@@ -173,10 +157,7 @@ class MembersRecord extends StatelessWidget {
   }
 
   Future<int> getGoal() async {
-    var snapshot = await Firestore.instance
-        .collection('teams')
-        .document((_teamName))
-        .get();
+    var snapshot = await Firestore.instance.collection('teams').document((_teamName)).get();
     return snapshot.data['goal'] as int;
   }
 
@@ -190,17 +171,12 @@ class MembersRecord extends StatelessWidget {
           .collection('users')
           .document(data.documents[i].documentID)
           .collection('records')
-          .where("timestamp",
-              isGreaterThanOrEqualTo:
-                  Timestamp.fromDate(getLastSundayDataTime()))
+          .where("timestamp", isGreaterThanOrEqualTo: Timestamp.fromDate(getLastSundayDataTime()))
           .getDocuments();
-      DocumentSnapshot userSnapshot = await Firestore.instance
-          .collection('users')
-          .document(data.documents[i].documentID)
-          .get();
+      DocumentSnapshot userSnapshot =
+          await Firestore.instance.collection('users').document(data.documents[i].documentID).get();
       for (int j = 0; j < recordSnapshots.documents.length; j++) {
-        totalDistance +=
-            recordSnapshots.documents[j].data['distance'] as double;
+        totalDistance += recordSnapshots.documents[j].data['distance'] as double;
       }
       // 目標を達成しているかの確認
       if (((totalDistance / 100.0).round() / 10) >= goal) {
@@ -208,8 +184,7 @@ class MembersRecord extends StatelessWidget {
       } else {
         hasMemberAchieved.add(false);
       }
-      hasMemberAchieved
-          .add(userSnapshot.data['name'].toString()); //0にbool,1にname
+      hasMemberAchieved.add(userSnapshot.data['name'].toString()); //0にbool,1にname
       userMap[data.documents[i].documentID] = hasMemberAchieved;
     }
     return userMap;
