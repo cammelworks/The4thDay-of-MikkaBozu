@@ -23,6 +23,34 @@ class TeamPageState extends State<TeamPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_teamName),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.exit_to_app,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              showDialog<dynamic>(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    content: Text("「" + _teamName + "」" + "を抜けますか?"),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text("はい"),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                      FlatButton(
+                        child: Text("キャンセル"),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: Center(
         child: Padding(
