@@ -22,68 +22,85 @@ class TeamPageState extends State<TeamPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_teamName),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.exit_to_app,
-              color: Colors.white,
-            ),
-            onPressed: () async {
-              showDialog<dynamic>(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    content: Text("「" + _teamName + "」" + "を抜けますか?"),
-                    actions: <Widget>[
-                      FlatButton(
-                        child: Text("はい"),
-                        onPressed: () {
-                          LeaveTeam();
-                          int count = 0;
-                          Navigator.of(context).popUntil((_) => count++ >= 2);
-                        }
-                      ),
-                      FlatButton(
-                        child: Text("キャンセル"),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                    ],
+    return StreamBuilder<DocumentSnapshot>(
+      stream: Firestore.instance
+          .collection('teams')
+          .document(_teamName)
+          .snapshots(),
+      builder: (BuildContext context,
+          AsyncSnapshot<DocumentSnapshot> adminSnapshot) {
+        if (!adminSnapshot.hasData) {
+          return Text('Loading...');
+        }
+        bool isAdmin =
+            userData.userEmail == adminSnapshot.data['admin'].toString();
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(_teamName),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(
+                  Icons.exit_to_app,
+                  color: Colors.white,
+                ),
+                onPressed: () async {
+                  showDialog<dynamic>(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        content: Text("「" + _teamName + "」" + "を抜けますか?"),
+                        actions: <Widget>[
+                          FlatButton(
+                              child: Text("はい"),
+                              onPressed: () {
+                                LeaveTeam();
+                                int count = 0;
+                                Navigator.of(context)
+                                    .popUntil((_) => count++ >= 2);
+                              }),
+                          FlatButton(
+                            child: Text("キャンセル"),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                        ],
+                      );
+                    },
                   );
                 },
-              );
-            },
+              ),
+            ],
           ),
-        ],
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 20.0),
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                OverviewManager(_teamName),
-                GoalManager(_teamName),
-                Container(
-                  height: 10.0,
-                ),
-                MembersRecord(_teamName),
-              ]),
-        ),
-      ),
-        floatingActionButton:FloatingActionButton(
-          onPressed: () async {
-            await Navigator.push<dynamic>(
-                context,
-                MaterialPageRoute<dynamic>(
-                  builder: (context) => ChatPage(_teamName),
-                ));
-          },
-          child: Icon(Icons.chat),
-          backgroundColor: Colors.blue,
-        ),
+          body: SingleChildScrollView(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      OverviewManager(_teamName, isAdmin),
+                      GoalManager(_teamName, isAdmin),
+                      Container(
+                        height: 10.0,
+                      ),
+                      MembersRecord(
+                          _teamName, adminSnapshot.data['admin'].toString()),
+                    ]),
+              ),
+            ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () async {
+              await Navigator.push<dynamic>(
+                  context,
+                  MaterialPageRoute<dynamic>(
+                    builder: (context) => ChatPage(_teamName),
+                  ));
+            },
+            child: Icon(Icons.chat),
+            backgroundColor: Colors.blue,
+          ),
+        );
+      },
     );
   }
 
@@ -105,10 +122,8 @@ class TeamPageState extends State<TeamPage> {
         .delete();
 
     // チームの参加人数を取得
-    DocumentSnapshot snapshot = await Firestore.instance
-        .collection('teams')
-        .document(_teamName)
-        .get();
+    DocumentSnapshot snapshot =
+        await Firestore.instance.collection('teams').document(_teamName).get();
 
     // チームの参加人数を1増やしてプッシュ
     int userNum = (snapshot.data['user_num'] as int) - 1;
@@ -116,5 +131,13 @@ class TeamPageState extends State<TeamPage> {
         .collection('teams')
         .document(_teamName)
         .updateData(<String, num>{'user_num': userNum});
+  }
+
+  Future<String> getAdmin() async {
+    var snapshot = await Firestore.instance
+        .collection('teams')
+        .document((_teamName))
+        .get();
+    return snapshot.data['admin'].toString();
   }
 }
