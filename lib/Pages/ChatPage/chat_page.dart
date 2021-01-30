@@ -33,7 +33,11 @@ class ChatPageState extends State<ChatPage> {
             child: SingleChildScrollView(
               child: StreamBuilder<QuerySnapshot>(
                 //表示したいFirestoreの保存先を指定
-                  stream: Firestore.instance.collection('teams').document(_teamName).collection('chats').snapshots(),
+                  stream: Firestore.instance.collection('teams')
+                      .document(_teamName)
+                      .collection('chats')
+                      .orderBy("timestamp", descending: false)
+                      .snapshots(),
                   //streamが更新されるたびに呼ばれる
                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     //データが取れていない時の処理
@@ -109,12 +113,29 @@ class ChatPageState extends State<ChatPage> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Text(
-                      documentSnapshot.data["sender"].toString(),
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    // メールアドレスからユーザー名を取得する
+                    StreamBuilder<DocumentSnapshot>(
+                      //表示したいFirestoreの保存先を指定
+                        stream: Firestore.instance.collection('users')
+                            .document(documentSnapshot.data["sender"].toString())
+                            .snapshots(),
+                        //streamが更新されるたびに呼ばれる
+                        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+                          //データが取れていない時の処理
+                          if (!snapshot.hasData) return const Text('Loading...');
+                          String name;
+                          if(snapshot.data['name'] != null){
+                            name = snapshot.data['name'].toString();
+                          } else {
+                            name = "Guest";
+                          }
+                          return Text(
+                            name,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            )
+                          );
+                        }),
                     Padding(padding: EdgeInsets.only(left: 12),),
                     Text(
                       convertDate(documentSnapshot.data["timestamp"] as Timestamp),
@@ -140,7 +161,7 @@ class ChatPageState extends State<ChatPage> {
         .document()
         .setData(<String, dynamic>{
           'message': _chatField.text,
-          "sender": userData.userName,
+          "sender": userData.userEmail,
           "timestamp":Timestamp.now()
         });
     _chatField.text = "";
