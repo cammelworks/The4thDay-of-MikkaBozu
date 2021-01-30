@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:the4thdayofmikkabozu/Pages/ChatPage/char_page.dart';
 import 'package:the4thdayofmikkabozu/Pages/TeamPage/goal_manager.dart';
 import 'package:the4thdayofmikkabozu/Pages/TeamPage/members_record.dart';
 import 'package:the4thdayofmikkabozu/Pages/TeamPage/overview_manager.dart';
+import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
 class TeamPage extends StatefulWidget {
   String _teamName;
@@ -29,7 +31,7 @@ class TeamPageState extends State<TeamPage> {
               Icons.exit_to_app,
               color: Colors.white,
             ),
-            onPressed: () {
+            onPressed: () async {
               showDialog<dynamic>(
                 context: context,
                 builder: (context) {
@@ -38,7 +40,11 @@ class TeamPageState extends State<TeamPage> {
                     actions: <Widget>[
                       FlatButton(
                         child: Text("はい"),
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () {
+                          LeaveTeam();
+                          int count = 0;
+                          Navigator.of(context).popUntil((_) => count++ >= 2);
+                        }
                       ),
                       FlatButton(
                         child: Text("キャンセル"),
@@ -79,5 +85,34 @@ class TeamPageState extends State<TeamPage> {
           backgroundColor: Colors.blue,
         ),
     );
+  }
+
+  void LeaveTeam() async {
+    Firestore.instance
+        .collection('teams')
+        .document(_teamName)
+        .collection("users")
+        .document(userData.userEmail)
+        .delete();
+
+    Firestore.instance
+        .collection('users')
+        .document(userData.userEmail)
+        .collection("teams")
+        .document(_teamName)
+        .delete();
+
+    // チームの参加人数を取得
+    DocumentSnapshot snapshot = await Firestore.instance
+        .collection('teams')
+        .document(_teamName)
+        .get();
+
+    // チームの参加人数を1増やしてプッシュ
+    int userNum = (snapshot.data['user_num'] as int) - 1;
+    Firestore.instance
+        .collection('teams')
+        .document(_teamName)
+        .updateData(<String, num>{'user_num': userNum});
   }
 }
