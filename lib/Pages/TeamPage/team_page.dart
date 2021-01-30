@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:the4thdayofmikkabozu/Pages/ChatPage/chat_page.dart';
 import 'package:the4thdayofmikkabozu/Pages/TeamPage/goal_manager.dart';
 import 'package:the4thdayofmikkabozu/Pages/TeamPage/members_record.dart';
 import 'package:the4thdayofmikkabozu/Pages/TeamPage/overview_manager.dart';
+import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
 class TeamPage extends StatefulWidget {
   String _teamName;
@@ -23,6 +25,38 @@ class TeamPageState extends State<TeamPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_teamName),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.exit_to_app,
+              color: Colors.white,
+            ),
+            onPressed: () async {
+              showDialog<dynamic>(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    content: Text("「" + _teamName + "」" + "を抜けますか?"),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text("はい"),
+                        onPressed: () {
+                          LeaveTeam();
+                          int count = 0;
+                          Navigator.of(context).popUntil((_) => count++ >= 2);
+                        }
+                      ),
+                      FlatButton(
+                        child: Text("キャンセル"),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: Center(
         child: Padding(
@@ -51,5 +85,36 @@ class TeamPageState extends State<TeamPage> {
           backgroundColor: Colors.blue,
         ),
     );
+  }
+
+  void LeaveTeam() async {
+    //チームからユーザ情報を削除
+    Firestore.instance
+        .collection('teams')
+        .document(_teamName)
+        .collection("users")
+        .document(userData.userEmail)
+        .delete();
+
+    //ユーザからチーム情報を削除
+    Firestore.instance
+        .collection('users')
+        .document(userData.userEmail)
+        .collection("teams")
+        .document(_teamName)
+        .delete();
+
+    // チームの参加人数を取得
+    DocumentSnapshot snapshot = await Firestore.instance
+        .collection('teams')
+        .document(_teamName)
+        .get();
+
+    // チームの参加人数を1増やしてプッシュ
+    int userNum = (snapshot.data['user_num'] as int) - 1;
+    Firestore.instance
+        .collection('teams')
+        .document(_teamName)
+        .updateData(<String, num>{'user_num': userNum});
   }
 }
