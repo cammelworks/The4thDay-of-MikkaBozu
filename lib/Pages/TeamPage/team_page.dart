@@ -23,21 +23,48 @@ class TeamPageState extends State<TeamPage> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<DocumentSnapshot>(
-      stream: Firestore.instance
-          .collection('teams')
-          .document(_teamName)
-          .snapshots(),
-      builder: (BuildContext context,
-          AsyncSnapshot<DocumentSnapshot> adminSnapshot) {
+      stream: Firestore.instance.collection('teams').document(_teamName).snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> adminSnapshot) {
         if (!adminSnapshot.hasData) {
           return Text('Loading...');
         }
-        bool isAdmin =
-            userData.userEmail == adminSnapshot.data['admin'].toString();
+        bool isAdmin = userData.userEmail == adminSnapshot.data['admin'].toString();
         return Scaffold(
           appBar: AppBar(
             title: Text(_teamName),
             actions: <Widget>[
+              Visibility(
+                visible: isAdmin,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.delete_forever,
+                    color: Colors.white,
+                  ),
+                  onPressed: () async {
+                    showDialog<dynamic>(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          content: Text("「" + _teamName + "」" + "を削除しますか?"),
+                          actions: <Widget>[
+                            FlatButton(
+                                child: Text("はい"),
+                                onPressed: () {
+                                  DeleteTeam();
+                                  int count = 0;
+                                  Navigator.of(context).popUntil((_) => count++ >= 2);
+                                }),
+                            FlatButton(
+                              child: Text("キャンセル"),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
               IconButton(
                 icon: Icon(
                   Icons.exit_to_app,
@@ -55,8 +82,7 @@ class TeamPageState extends State<TeamPage> {
                               onPressed: () {
                                 LeaveTeam();
                                 int count = 0;
-                                Navigator.of(context)
-                                    .popUntil((_) => count++ >= 2);
+                                Navigator.of(context).popUntil((_) => count++ >= 2);
                               }),
                           FlatButton(
                             child: Text("キャンセル"),
@@ -74,17 +100,14 @@ class TeamPageState extends State<TeamPage> {
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.only(top: 20.0),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      OverviewManager(_teamName, isAdmin),
-                      GoalManager(_teamName, isAdmin),
-                      Container(
-                        height: 10.0,
-                      ),
-                      MembersRecord(
-                          _teamName, adminSnapshot.data['admin'].toString()),
-                    ]),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+                  OverviewManager(_teamName, isAdmin),
+                  GoalManager(_teamName, isAdmin),
+                  Container(
+                    height: 10.0,
+                  ),
+                  MembersRecord(_teamName, adminSnapshot.data['admin'].toString()),
+                ]),
               ),
             ),
           ),
@@ -122,22 +145,52 @@ class TeamPageState extends State<TeamPage> {
         .delete();
 
     // チームの参加人数を取得
-    DocumentSnapshot snapshot =
-        await Firestore.instance.collection('teams').document(_teamName).get();
+    DocumentSnapshot snapshot = await Firestore.instance.collection('teams').document(_teamName).get();
 
     // チームの参加人数を1減らしてプッシュ
     int userNum = (snapshot.data['user_num'] as int) - 1;
-    Firestore.instance
-        .collection('teams')
-        .document(_teamName)
-        .updateData(<String, num>{'user_num': userNum});
+    Firestore.instance.collection('teams').document(_teamName).updateData(<String, num>{'user_num': userNum});
   }
 
   Future<String> getAdmin() async {
-    var snapshot = await Firestore.instance
-        .collection('teams')
-        .document((_teamName))
-        .get();
+    var snapshot = await Firestore.instance.collection('teams').document((_teamName)).get();
     return snapshot.data['admin'].toString();
+  }
+
+  Future<void> DeleteTeam() async {
+    var membersEmails = <String>[];
+
+    //teamからusersサブコレクションを削除
+    await Firestore.instance
+        .collection('teams')
+        .document(_teamName)
+        .collection('users')
+        .getDocuments()
+        .then((snapshot) {
+      for (DocumentSnapshot ds in snapshot.documents) {
+        var test = ds.data['email'].toString();
+        print(test);
+        membersEmails.add(ds.data['email'].toString());
+        ds.reference.delete();
+      }
+    });
+    //teamからchatsサブコレクションを削除
+    await Firestore.instance
+        .collection('teams')
+        .document(_teamName)
+        .collection('chats')
+        .getDocuments()
+        .then((snapshot) {
+      for (DocumentSnapshot ds in snapshot.documents) {
+        ds.reference.delete();
+      }
+    });
+    //teamsからチームを削除
+    Firestore.instance.collection('teams').document(_teamName).delete();
+
+    //該当ユーザーからチームを消す
+    membersEmails.forEach((var memberEmail) {
+      Firestore.instance.collection('users').document(memberEmail).collection('teams').document(_teamName).delete();
+    });
   }
 }
