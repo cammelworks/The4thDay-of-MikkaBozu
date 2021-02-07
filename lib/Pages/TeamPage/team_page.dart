@@ -48,7 +48,7 @@ class TeamPageState extends State<TeamPage> {
                           FlatButton(
                               child: Text("はい"),
                               onPressed: () {
-                                // LeaveTeam();
+                                DeleteTeam();
                                 int count = 0;
                                 Navigator.of(context).popUntil((_) => count++ >= 2);
                               }),
@@ -152,5 +152,22 @@ class TeamPageState extends State<TeamPage> {
   Future<String> getAdmin() async {
     var snapshot = await Firestore.instance.collection('teams').document((_teamName)).get();
     return snapshot.data['admin'].toString();
+  }
+
+  void DeleteTeam() {
+    //teamからusersサブコレクションを削除
+    Firestore.instance.collection('teams').document(_teamName).collection('users').getDocuments().then((snapshot) {
+      for (DocumentSnapshot ds in snapshot.documents) {
+        ds.reference.delete();
+      }
+    });
+    //teamからchatsサブコレクションを削除
+    Firestore.instance.collection('teams').document(_teamName).collection('chats').getDocuments().then((snapshot) {
+      for (DocumentSnapshot ds in snapshot.documents) {
+        ds.reference.delete();
+      }
+    });
+    //teamsからチームを削除
+    Firestore.instance.collection('teams').document(_teamName).delete();
   }
 }
