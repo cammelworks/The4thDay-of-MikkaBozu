@@ -33,34 +33,37 @@ class TeamPageState extends State<TeamPage> {
           appBar: AppBar(
             title: Text(_teamName),
             actions: <Widget>[
-              IconButton(
-                icon: Icon(
-                  Icons.delete_forever,
-                  color: Colors.white,
+              Visibility(
+                visible: isAdmin,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.delete_forever,
+                    color: Colors.white,
+                  ),
+                  onPressed: () async {
+                    showDialog<dynamic>(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          content: Text("「" + _teamName + "」" + "を削除しますか?"),
+                          actions: <Widget>[
+                            FlatButton(
+                                child: Text("はい"),
+                                onPressed: () {
+                                  DeleteTeam();
+                                  int count = 0;
+                                  Navigator.of(context).popUntil((_) => count++ >= 2);
+                                }),
+                            FlatButton(
+                              child: Text("キャンセル"),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
                 ),
-                onPressed: () async {
-                  showDialog<dynamic>(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        content: Text("「" + _teamName + "」" + "を削除しますか?"),
-                        actions: <Widget>[
-                          FlatButton(
-                              child: Text("はい"),
-                              onPressed: () {
-                                DeleteTeam();
-                                int count = 0;
-                                Navigator.of(context).popUntil((_) => count++ >= 2);
-                              }),
-                          FlatButton(
-                            child: Text("キャンセル"),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
               ),
               IconButton(
                 icon: Icon(
@@ -154,20 +157,40 @@ class TeamPageState extends State<TeamPage> {
     return snapshot.data['admin'].toString();
   }
 
-  void DeleteTeam() {
+  Future<void> DeleteTeam() async {
+    var membersEmails = <String>[];
+
     //teamからusersサブコレクションを削除
-    Firestore.instance.collection('teams').document(_teamName).collection('users').getDocuments().then((snapshot) {
+    await Firestore.instance
+        .collection('teams')
+        .document(_teamName)
+        .collection('users')
+        .getDocuments()
+        .then((snapshot) {
       for (DocumentSnapshot ds in snapshot.documents) {
+        var test = ds.data['email'].toString();
+        print(test);
+        membersEmails.add(ds.data['email'].toString());
         ds.reference.delete();
       }
     });
     //teamからchatsサブコレクションを削除
-    Firestore.instance.collection('teams').document(_teamName).collection('chats').getDocuments().then((snapshot) {
+    await Firestore.instance
+        .collection('teams')
+        .document(_teamName)
+        .collection('chats')
+        .getDocuments()
+        .then((snapshot) {
       for (DocumentSnapshot ds in snapshot.documents) {
         ds.reference.delete();
       }
     });
     //teamsからチームを削除
     Firestore.instance.collection('teams').document(_teamName).delete();
+
+    //該当ユーザーからチームを消す
+    membersEmails.forEach((var memberEmail) {
+      Firestore.instance.collection('users').document(memberEmail).collection('teams').document(_teamName).delete();
+    });
   }
 }
