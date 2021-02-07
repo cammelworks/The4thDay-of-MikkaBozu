@@ -4,10 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:the4thdayofmikkabozu/Pages/MemberPage/member_page.dart';
 import 'package:the4thdayofmikkabozu/hex_color.dart' as hex;
+import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
+import 'package:the4thdayofmikkabozu/Pages/TeamPage/team_page.dart';
 
 class MembersRecord extends StatelessWidget {
   String _teamName;
   String _adminEmail;
+  // ポップアップメニューボタンの選択肢リスト
+  var _States = ['管理者の譲渡'];
 
   MembersRecord(this._teamName, this._adminEmail);
 
@@ -28,7 +32,6 @@ class MembersRecord extends StatelessWidget {
           //データが取れていない時の処理
           if (!snapshot.hasData) return const Text('Loading...');
           final Size size = MediaQuery.of(context).size;
-          int achievementNum = 0;
 
           //チームの目標の取得
           return FutureBuilder(
@@ -40,8 +43,7 @@ class MembersRecord extends StatelessWidget {
                     future: getMemberRecord(snapshot.data, goalSnapshot.data),
                     builder: (BuildContext context, AsyncSnapshot<Map> memberSnapshot) {
                       if (memberSnapshot.hasData) {
-                        print(memberSnapshot.data);
-                        int achievedMemberNum = 0;
+                        int achievementNum = 0;
                         memberSnapshot.data.forEach((dynamic key, dynamic value) {
                           if (value[0] as bool) {
                             achievementNum++;
@@ -74,7 +76,6 @@ class MembersRecord extends StatelessWidget {
                                     lineHeight: 20.0,
                                     animationDuration: 2000,
                                     percent: achievementNum / snapshot.data.documents.length,
-//                                  center: Text(achievementNum.toString() + "/" + snapshot.data.documents.length.toString()),
                                     linearStrokeCap: LinearStrokeCap.roundAll,
                                     progressColor: hex.HexColor("f17300"),
                                     trailing: Image.asset(
@@ -103,7 +104,6 @@ class MembersRecord extends StatelessWidget {
                                   itemBuilder: (context, int index) {
                                     String userEmail = snapshot.data.documents[index].documentID.toString();
                                     String userName = "Guest";
-                                    print(memberSnapshot.data[userEmail][1]);
                                     if (memberSnapshot.data[userEmail][1] != "null") {
                                       userName = memberSnapshot.data[userEmail][1] as String;
                                     }
@@ -123,12 +123,39 @@ class MembersRecord extends StatelessWidget {
                                       title: Row(
                                         children: <Widget>[
                                           Text(userName),
+                                          Spacer(),
+                                          // 管理者に星アイコンを表示する
                                           Visibility(
                                             visible: userEmail == _adminEmail,
                                             child: Icon(
                                               Icons.star,
                                               color: Colors.amber,
                                             ),
+                                          ),
+                                          // 自分以外のメンバーにポップアップメニューを表示する
+                                          Visibility(
+                                            visible: userEmail != _adminEmail && userData.userEmail == _adminEmail,
+                                            child: PopupMenuButton<String>(
+                                              icon: Icon(Icons.more_horiz),
+                                              onSelected: (String s) {
+                                                // ダイアログを表示する
+                                                showDialog<dynamic>(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return showChangeAdminDialog(context, userEmail, userName);
+                                                  },
+                                                );
+                                                print(userEmail);
+                                              },
+                                              itemBuilder: (BuildContext context) {
+                                                return _States.map((String s) {
+                                                  return PopupMenuItem(
+                                                    child: Text(s),
+                                                    value: s,
+                                                  );
+                                                }).toList();
+                                              },
+                                            )
                                           ),
                                         ],
                                       ),
@@ -209,5 +236,34 @@ class MembersRecord extends StatelessWidget {
     int month = dResult.month;
     int day = dResult.day;
     return (DateTime(year, month, day));
+  }
+
+  Widget showChangeAdminDialog(BuildContext context, String userEmail, String userName){
+    return AlertDialog(
+      content: Text(userName + 'に管理者権限を渡しますか？'),
+      actions: <Widget>[
+        FlatButton(
+            child: Text("はい"),
+            onPressed: () {
+              changeAdmin(userEmail);
+              Navigator.push<dynamic>(
+                  context,
+                  MaterialPageRoute<dynamic>(
+                    builder: (context) => TeamPage(_teamName),
+                  ));
+            }),
+        FlatButton(
+          child: Text("キャンセル"),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ],
+    );
+  }
+
+  void changeAdmin(String userEmail) async{
+    Firestore.instance
+        .collection('teams')
+        .document(_teamName)
+        .updateData(<String, String>{'admin': userEmail});
   }
 }
