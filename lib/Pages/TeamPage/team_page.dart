@@ -125,7 +125,7 @@ class TeamPageState extends State<TeamPage> {
     DocumentSnapshot snapshot =
         await Firestore.instance.collection('teams').document(_teamName).get();
 
-    // チームの参加人数を1増やしてプッシュ
+    // チームの参加人数を1減らしてプッシュ
     int userNum = (snapshot.data['user_num'] as int) - 1;
     Firestore.instance
         .collection('teams')
