@@ -74,22 +74,35 @@ class TeamPageState extends State<TeamPage> {
                   showDialog<dynamic>(
                     context: context,
                     builder: (context) {
-                      return AlertDialog(
-                        content: Text("「" + _teamName + "」" + "を抜けますか?"),
-                        actions: <Widget>[
-                          FlatButton(
+                      if (isAdmin) {
+                        return AlertDialog(
+                          title: Text("管理者はチームから抜けられません"),
+                          content: Text("チームメンバーに管理者権限を渡してください"),
+                          actions: <Widget>[
+                            FlatButton(
                               child: Text("はい"),
-                              onPressed: () {
-                                LeaveTeam();
-                                int count = 0;
-                                Navigator.of(context).popUntil((_) => count++ >= 2);
-                              }),
-                          FlatButton(
-                            child: Text("キャンセル"),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                        ],
-                      );
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return AlertDialog(
+                          content: Text("「" + _teamName + "」" + "を抜けますか?"),
+                          actions: <Widget>[
+                            FlatButton(
+                                child: Text("はい"),
+                                onPressed: () {
+                                  LeaveTeam();
+                                  int count = 0;
+                                  Navigator.of(context).popUntil((_) => count++ >= 2);
+                                }),
+                            FlatButton(
+                              child: Text("キャンセル"),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                          ],
+                        );
+                      }
                     },
                   );
                 },
