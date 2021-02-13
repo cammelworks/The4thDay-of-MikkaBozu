@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:the4thdayofmikkabozu/SideMenu/signout_button.dart';
+import 'package:the4thdayofmikkabozu/Pages/IconSelectPage/icon_select_page.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
 class Sidemenu extends StatefulWidget{
@@ -99,6 +100,16 @@ class SidemenuState extends State<Sidemenu> {
                 child: Container(),
               ),
             ],
+          ),
+          RaisedButton(
+            onPressed: () async {
+              await Navigator.push<dynamic>(
+                  context,
+                  MaterialPageRoute<dynamic>(
+                    builder: (context) => IconSelectPage(),
+                  ));
+            },
+            child: Icon(Icons.add),
           ),
           Container(
             child: SignoutButton(),
