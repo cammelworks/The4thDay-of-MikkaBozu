@@ -28,7 +28,10 @@ class TeamPageState extends State<TeamPage> {
         if (!adminSnapshot.hasData) {
           return Text('Loading...');
         }
+
         bool isAdmin = userData.userEmail == adminSnapshot.data['admin'].toString();
+        int _userNum = adminSnapshot.data['user_num'] as int;
+
         return Scaffold(
           appBar: AppBar(
             title: Text(_teamName),
@@ -74,22 +77,54 @@ class TeamPageState extends State<TeamPage> {
                   showDialog<dynamic>(
                     context: context,
                     builder: (context) {
-                      return AlertDialog(
-                        content: Text("「" + _teamName + "」" + "を抜けますか?"),
-                        actions: <Widget>[
-                          FlatButton(
-                              child: Text("はい"),
-                              onPressed: () {
-                                LeaveTeam();
-                                int count = 0;
-                                Navigator.of(context).popUntil((_) => count++ >= 2);
-                              }),
-                          FlatButton(
-                            child: Text("キャンセル"),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                        ],
-                      );
+                      if (_userNum == 1) {
+                        return AlertDialog(
+                          content: Text('あなたがチームを抜けると「' + _teamName + '」が削除されます。\n よろしいですか？'),
+                          actions: <Widget>[
+                            FlatButton(
+                                child: Text("はい"),
+                                onPressed: () {
+                                  DeleteTeam();
+                                  int count = 0;
+                                  Navigator.of(context).popUntil((_) => count++ >= 2);
+                                }),
+                            FlatButton(
+                              child: Text('キャンセル'),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                          ],
+                        );
+                      } else {
+                        if (isAdmin) {
+                          return AlertDialog(
+                            title: Text('管理者はチームから抜けられません'),
+                            content: Text('チームメンバーに管理者権限を渡してください'),
+                            actions: <Widget>[
+                              FlatButton(
+                                child: Text('はい'),
+                                onPressed: () => Navigator.pop(context),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return AlertDialog(
+                            content: Text("「" + _teamName + "」" + "を抜けますか?"),
+                            actions: <Widget>[
+                              FlatButton(
+                                  child: Text("はい"),
+                                  onPressed: () {
+                                    LeaveTeam();
+                                    int count = 0;
+                                    Navigator.of(context).popUntil((_) => count++ >= 2);
+                                  }),
+                              FlatButton(
+                                child: Text("キャンセル"),
+                                onPressed: () => Navigator.pop(context),
+                              ),
+                            ],
+                          );
+                        }
+                      }
                     },
                   );
                 },
@@ -192,5 +227,13 @@ class TeamPageState extends State<TeamPage> {
     membersEmails.forEach((var memberEmail) {
       Firestore.instance.collection('users').document(memberEmail).collection('teams').document(_teamName).delete();
     });
+  }
+
+  Future<bool> CheckIsLastmenber() async {
+    // チームの参加人数を取得
+    QuerySnapshot snapshot =
+        await Firestore.instance.collection('teams').document(_teamName).collection('users').getDocuments();
+
+    return snapshot.documents.length == 1;
   }
 }
