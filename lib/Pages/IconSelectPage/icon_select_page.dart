@@ -101,14 +101,6 @@ class IconSelectPageState extends State<IconSelectPage> {
         .updateData(<String, String>{
           'icon_url': downloadURL
         });
+    userData.iconUrl = downloadURL;
   }
-
-  //Container(
-//  button(
-//    image: icon
-//    onPressed: Dialog(
-//      onPressed: firestoreに追加
-//    )
-//  )
-// )
 }
