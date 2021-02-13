@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:the4thdayofmikkabozu/Pages/IconSelectPage/icon_select_page.dart';
 import 'package:the4thdayofmikkabozu/SideMenu/signout_button.dart';
@@ -25,11 +26,32 @@ class SidemenuState extends State<Sidemenu> {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
               child: Center(
-                child: CircleAvatar(
-                  radius: 60,
-                  backgroundColor: Colors.white,
-                  backgroundImage: AssetImage('images/bouzu.png'),
-                ),
+                child: Stack(children: <Widget>[
+                  CircleAvatar(
+                    radius: 60,
+                    backgroundColor: Colors.white,
+                    backgroundImage: AssetImage('images/bouzu.png'),
+                  ),
+                  Positioned(
+                    right: -20,
+                    bottom: -4,
+                    child: RaisedButton(
+                      shape: CircleBorder(),
+                      color: Colors.grey,
+                      onPressed: () async {
+                        await Navigator.push<dynamic>(
+                            context,
+                            MaterialPageRoute<dynamic>(
+                              builder: (context) => IconSelectPage(),
+                            ));
+                      },
+                      child: Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ]),
               ),
             ),
           ),
@@ -101,16 +123,6 @@ class SidemenuState extends State<Sidemenu> {
                 child: Container(),
               ),
             ],
-          ),
-          RaisedButton(
-            onPressed: () async {
-              await Navigator.push<dynamic>(
-                  context,
-                  MaterialPageRoute<dynamic>(
-                    builder: (context) => IconSelectPage(),
-                  ));
-            },
-            child: Icon(Icons.add),
           ),
           Container(
             child: SignoutButton(),
