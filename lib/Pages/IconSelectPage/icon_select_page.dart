@@ -72,9 +72,9 @@ class IconSelectPageState extends State<IconSelectPage> {
                         child: Text("はい"),
                         onPressed: () {
                           registerIcon(downloadURL);
-                          // 2ページ戻る
+                          // 3ページ戻る
                           int count = 0;
-                          Navigator.of(context).popUntil((_) => count++ >= 2);
+                          Navigator.of(context).popUntil((_) => count++ >= 3);
                         }),
                     FlatButton(
                       child: Text("キャンセル"),
@@ -84,7 +84,6 @@ class IconSelectPageState extends State<IconSelectPage> {
                 );
               },
             );
-            print(downloadURL);
           },
           icon: img,
           iconSize: size.width / 4,

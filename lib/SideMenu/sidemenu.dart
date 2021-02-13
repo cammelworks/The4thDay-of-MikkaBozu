@@ -27,11 +27,7 @@ class SidemenuState extends State<Sidemenu> {
               padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
               child: Center(
                 child: Stack(children: <Widget>[
-                  CircleAvatar(
-                    radius: 60,
-                    backgroundColor: Colors.white,
-                    backgroundImage: AssetImage('images/bouzu.png'),
-                  ),
+                  showIcon(),
                   Positioned(
                     right: -20,
                     bottom: -4,
@@ -130,5 +126,21 @@ class SidemenuState extends State<Sidemenu> {
         ],
       ),
     );
+  }
+
+  Widget showIcon(){
+    if(userData.iconUrl != null){
+      return CircleAvatar(
+        radius: 60,
+        backgroundColor: Colors.white,
+        backgroundImage: NetworkImage(userData.iconUrl),
+      );
+    } else{
+      return CircleAvatar(
+        radius: 60,
+        backgroundColor: Colors.white,
+        backgroundImage: AssetImage('images/account_circle.png'),
+      );
+    }
   }
 }
