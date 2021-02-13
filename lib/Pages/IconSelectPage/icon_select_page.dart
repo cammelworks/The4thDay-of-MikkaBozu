@@ -17,21 +17,30 @@ class IconSelectPageState extends State<IconSelectPage> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
       body: SingleChildScrollView(
         child: FutureBuilder(
-          future: getImages(),
+          future: getImages(size),
           builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot){
             if (snapshot.hasData) {
-              return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: snapshot.data
+              return Center(
+                // 一覧表示
+                child: Wrap(
+                    children: snapshot.data
+                ),
               );
             } else {
-              return Text("データが存在しません");
+              return Container(
+                height: size.height,
+                width: size.width,
+                child: Center(
+                    child:CircularProgressIndicator()
+                ),
+              );
             }
           },
         ),
@@ -39,24 +48,26 @@ class IconSelectPageState extends State<IconSelectPage> {
     );
   }
 
-  Future<List<Widget>> getImages() async {
-    var images = List<Widget>();
+  Future<List<Widget>> getImages(Size size) async {
+    var imagesList = List<Widget>();
     await Future.forEach(iconsName, (String element) async {
       String downloadURL = await firebase_storage.FirebaseStorage.
         instance.ref().child('icons/256/$element.png').
         getDownloadURL() as String;
       Image img = new Image.network(downloadURL);
-      images.add(
+
+      imagesList.add(
         new IconButton(
           onPressed: (){
             // ダイアログを表示
             print(downloadURL);
           },
           icon: img,
+          iconSize: size.width / 4,
         )
       );
     });
-    return images;
+    return imagesList;
   }
 
   //Container(
