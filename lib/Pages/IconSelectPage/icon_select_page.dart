@@ -10,6 +10,8 @@ class IconSelectPage extends StatefulWidget {
 }
 
 class IconSelectPageState extends State<IconSelectPage> {
+  final List<String> iconsName =
+    ['daruma', 'heddohon', 'jitensya', 'kaba', 'neko', 'niku', 'ninjin', 'niwatori', 'onigiri', 'ookami'];
   //コンストラクタ
   IconSelectPageState();
 
@@ -22,9 +24,12 @@ class IconSelectPageState extends State<IconSelectPage> {
       body: SingleChildScrollView(
         child: FutureBuilder(
           future: getImages(),
-          builder: (BuildContext context, AsyncSnapshot<Image> snapshot){
+          builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot){
             if (snapshot.hasData) {
-              return snapshot.data;
+              return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: snapshot.data
+              );
             } else {
               return Text("データが存在しません");
             }
@@ -34,14 +39,32 @@ class IconSelectPageState extends State<IconSelectPage> {
     );
   }
 
-  Future<Image> getImages() async {
-    String downloadURL = await firebase_storage.FirebaseStorage.
-      instance.
-      ref().
-      child('icons/256/daruma.png').
-      getDownloadURL() as String;
-    print(downloadURL);
-    Image img = new Image.network(downloadURL);
-    return img;
+  Future<List<Widget>> getImages() async {
+    var images = List<Widget>();
+    await Future.forEach(iconsName, (String element) async {
+      String downloadURL = await firebase_storage.FirebaseStorage.
+        instance.ref().child('icons/256/$element.png').
+        getDownloadURL() as String;
+      Image img = new Image.network(downloadURL);
+      images.add(
+        new IconButton(
+          onPressed: (){
+            // ダイアログを表示
+            print(downloadURL);
+          },
+          icon: img,
+        )
+      );
+    });
+    return images;
   }
+
+  //Container(
+//  button(
+//    image: icon
+//    onPressed: Dialog(
+//      onPressed: firestoreに追加
+//    )
+//  )
+// )
 }
