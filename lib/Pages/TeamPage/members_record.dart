@@ -3,9 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:the4thdayofmikkabozu/Pages/MemberPage/member_page.dart';
+import 'package:the4thdayofmikkabozu/Pages/TeamPage/team_page.dart';
 import 'package:the4thdayofmikkabozu/hex_color.dart' as hex;
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
-import 'package:the4thdayofmikkabozu/Pages/TeamPage/team_page.dart';
 
 class MembersRecord extends StatelessWidget {
   String _teamName;
@@ -30,7 +30,12 @@ class MembersRecord extends StatelessWidget {
         //streamが更新されるたびに呼ばれる
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           //データが取れていない時の処理
-          if (!snapshot.hasData) return const Text('Loading...');
+          if (!snapshot.hasData)
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(child: CircularProgressIndicator()),
+            );
+          ;
           final Size size = MediaQuery.of(context).size;
 
           //チームの目標の取得
@@ -131,29 +136,28 @@ class MembersRecord extends StatelessWidget {
                                           ),
                                           // 自分以外のメンバーにポップアップメニューを表示する
                                           Visibility(
-                                            visible: userEmail != _adminEmail && userData.userEmail == _adminEmail,
-                                            child: PopupMenuButton<String>(
-                                              icon: Icon(Icons.more_horiz),
-                                              onSelected: (String s) {
-                                                // ダイアログを表示する
-                                                showDialog<dynamic>(
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return showChangeAdminDialog(context, userEmail, userName);
-                                                  },
-                                                );
-                                                print(userEmail);
-                                              },
-                                              itemBuilder: (BuildContext context) {
-                                                return _States.map((String s) {
-                                                  return PopupMenuItem(
-                                                    child: Text(s),
-                                                    value: s,
+                                              visible: userEmail != _adminEmail && userData.userEmail == _adminEmail,
+                                              child: PopupMenuButton<String>(
+                                                icon: Icon(Icons.more_horiz),
+                                                onSelected: (String s) {
+                                                  // ダイアログを表示する
+                                                  showDialog<dynamic>(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return showChangeAdminDialog(context, userEmail, userName);
+                                                    },
                                                   );
-                                                }).toList();
-                                              },
-                                            )
-                                          ),
+                                                  print(userEmail);
+                                                },
+                                                itemBuilder: (BuildContext context) {
+                                                  return _States.map((String s) {
+                                                    return PopupMenuItem(
+                                                      child: Text(s),
+                                                      value: s,
+                                                    );
+                                                  }).toList();
+                                                },
+                                              )),
                                         ],
                                       ),
                                       onTap: () => Navigator.push<dynamic>(
@@ -169,11 +173,17 @@ class MembersRecord extends StatelessWidget {
                           ],
                         );
                       } else {
-                        return Text("record loading...");
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(child: CircularProgressIndicator()),
+                        );
                       }
                     });
               } else {
-                return Text("goal loading...");
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(child: CircularProgressIndicator()),
+                );
               }
             },
           );
@@ -252,7 +262,7 @@ class MembersRecord extends StatelessWidget {
     return (DateTime(year, month, day));
   }
 
-  Widget showChangeAdminDialog(BuildContext context, String userEmail, String userName){
+  Widget showChangeAdminDialog(BuildContext context, String userEmail, String userName) {
     return AlertDialog(
       content: Text(userName + 'に管理者権限を渡しますか？'),
       actions: <Widget>[
@@ -274,10 +284,7 @@ class MembersRecord extends StatelessWidget {
     );
   }
 
-  void changeAdmin(String userEmail) async{
-    Firestore.instance
-        .collection('teams')
-        .document(_teamName)
-        .updateData(<String, String>{'admin': userEmail});
+  void changeAdmin(String userEmail) async {
+    Firestore.instance.collection('teams').document(_teamName).updateData(<String, String>{'admin': userEmail});
   }
 }

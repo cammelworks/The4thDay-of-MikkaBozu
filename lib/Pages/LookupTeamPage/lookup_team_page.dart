@@ -54,16 +54,14 @@ class LookupTeamPageState extends State<LookupTeamPage> {
                                     setState(() {});
                                   }
                                   //キーボードを閉じる
-                                  FocusScope.of(context)
-                                      .requestFocus(new FocusNode());
+                                  FocusScope.of(context).requestFocus(new FocusNode());
                                 },
                               ),
                             ),
                             //エンターアイコンを変更
                             textInputAction: TextInputAction.search,
                             onFieldSubmitted: (String value) async {
-                              if (_formKey.currentState.validate())
-                                setState(() {});
+                              if (_formKey.currentState.validate()) setState(() {});
                             },
                             validator: (String value) {
                               if (value.isEmpty) {
@@ -113,8 +111,7 @@ class LookupTeamPageState extends State<LookupTeamPage> {
     if (_teamNameField.text != "") {
       return FutureBuilder(
         future: _search(),
-        builder: (BuildContext context,
-            AsyncSnapshot<List<DocumentSnapshot>> snapshots) {
+        builder: (BuildContext context, AsyncSnapshot<List<DocumentSnapshot>> snapshots) {
           final Size size = MediaQuery.of(context).size;
           if (snapshots.hasData) {
             if (snapshots.data.length == 0) {
@@ -133,7 +130,10 @@ class LookupTeamPageState extends State<LookupTeamPage> {
               );
             }
           } else {
-            return Text("検索中");
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(child: CircularProgressIndicator()),
+            );
           }
         },
       );
@@ -146,8 +146,7 @@ class LookupTeamPageState extends State<LookupTeamPage> {
     //結果を格納するリストを初期化する
     List<DocumentSnapshot> result = [];
     // 全チームを検索する
-    QuerySnapshot docs =
-        await Firestore.instance.collection("teams").getDocuments();
+    QuerySnapshot docs = await Firestore.instance.collection("teams").getDocuments();
     // すでに参加しているチームをリストに格納する
     await docs.documents.forEach((doc) {
       if (_teamSearch(doc)) {
@@ -160,11 +159,7 @@ class LookupTeamPageState extends State<LookupTeamPage> {
   // 自分が所属しているチームを検索して配列に格納する
   void _searchJoinedTeam() async {
     _joinedTeamList = [];
-    var docs = await Firestore.instance
-        .collection('users')
-        .document(_email)
-        .collection("teams")
-        .getDocuments();
+    var docs = await Firestore.instance.collection('users').document(_email).collection("teams").getDocuments();
     docs.documents.forEach((var document) {
       _joinedTeamList.add(document.data["team_name"].toString());
     });
@@ -179,9 +174,7 @@ class LookupTeamPageState extends State<LookupTeamPage> {
       if (snapshot.data["team_name"].toString().contains(_teamNameField.text)) {
         return true;
       } else if (snapshot.data["team_overview"] != null &&
-          snapshot.data["team_overview"]
-              .toString()
-              .contains(_teamNameField.text)) {
+          snapshot.data["team_overview"].toString().contains(_teamNameField.text)) {
         return true;
       }
       // ヒットなし

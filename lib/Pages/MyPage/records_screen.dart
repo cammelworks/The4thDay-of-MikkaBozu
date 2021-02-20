@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
 class RecordsScreen extends StatelessWidget {
@@ -40,7 +40,7 @@ class RecordsScreen extends StatelessWidget {
             ],
           ),
           Container(
-            height: size.height*(7/10),
+            height: size.height * (7 / 10),
             child: getRecords(),
           ),
         ],
@@ -51,7 +51,7 @@ class RecordsScreen extends StatelessWidget {
   //走った距離を取得する関数
   Widget getRecords() {
     return StreamBuilder<QuerySnapshot>(
-      //表示したいFiresotreの保存先を指定
+        //表示したいFiresotreの保存先を指定
         stream: Firestore.instance
             .collection('users')
             .document(_email)
@@ -61,7 +61,8 @@ class RecordsScreen extends StatelessWidget {
         //streamが更新されるたびに呼ばれる
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           //データが取れていない時の処理
-          if (!snapshot.hasData) return const Text('Loading...');
+          if (!snapshot.hasData) return Expanded(child: Center(child: CircularProgressIndicator()));
+          ;
 
           return Scrollbar(
             child: ListView.builder(
@@ -69,7 +70,7 @@ class RecordsScreen extends StatelessWidget {
               itemCount: snapshot.data.documents.length,
               itemBuilder: (context, int index) {
                 Size size = MediaQuery.of(context).size;
-                try{
+                try {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -78,8 +79,7 @@ class RecordsScreen extends StatelessWidget {
                         width: size.width / 2,
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          _timestampToString(
-                              snapshot.data.documents[index]["timestamp"]),
+                          _timestampToString(snapshot.data.documents[index]["timestamp"]),
                         ),
                       ),
                       Container(
@@ -100,7 +100,7 @@ class RecordsScreen extends StatelessWidget {
                       ),
                     ],
                   );
-                } catch(e){
+                } catch (e) {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -109,8 +109,7 @@ class RecordsScreen extends StatelessWidget {
                         width: size.width / 2,
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          _timestampToString(
-                              snapshot.data.documents[index]["timestamp"]),
+                          _timestampToString(snapshot.data.documents[index]["timestamp"]),
                         ),
                       ),
                       Container(
@@ -147,7 +146,7 @@ class RecordsScreen extends StatelessWidget {
   }
 
   // 時間表示をStringに成形する
-  String _convertIntToTime(int time){
+  String _convertIntToTime(int time) {
     // 129 -> 00:02:09
     int timeTmp = time;
     int hour = (timeTmp / 3600).floor();
@@ -155,8 +154,10 @@ class RecordsScreen extends StatelessWidget {
     int minute = (timeTmp / 60).floor();
     timeTmp = timeTmp % 60;
     int second = timeTmp;
-    return hour.toString().padLeft(2, "0") + ":"
-        + minute.toString().padLeft(2, "0") + ":"
-        + second.toString().padLeft(2, "0");
+    return hour.toString().padLeft(2, "0") +
+        ":" +
+        minute.toString().padLeft(2, "0") +
+        ":" +
+        second.toString().padLeft(2, "0");
   }
 }

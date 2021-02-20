@@ -71,7 +71,12 @@ class GoalManager extends StatelessWidget {
         //streamが更新されるたびに呼ばれる
         builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           //データが取れていない時の処理
-          if (!snapshot.hasData) return const Text('Loading...');
+          if (!snapshot.hasData)
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(child: CircularProgressIndicator()),
+            );
+          ;
           if (snapshot.data["goal"] != null) {
             return Text(
               "週" + snapshot.data["goal"].toString() + "km",
