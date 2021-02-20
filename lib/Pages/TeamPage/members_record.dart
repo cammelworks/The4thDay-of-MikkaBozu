@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:the4thdayofmikkabozu/Pages/MemberPage/member_page.dart';
-import 'package:the4thdayofmikkabozu/Pages/TeamPage/team_page.dart';
 import 'package:the4thdayofmikkabozu/hex_color.dart' as hex;
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
@@ -219,22 +218,18 @@ class MembersRecord extends StatelessWidget {
         hasMemberAchieved.add(false);
       }
       hasMemberAchieved.add(userSnapshot.data['name'].toString()); //0にbool,1にname
-      if(userSnapshot.data['icon_url'].toString() != 'null'){
-        hasMemberAchieved.add(
-            CircleAvatar(
-              radius: 25,
-              backgroundColor: Colors.white,
-              backgroundImage: NetworkImage(userSnapshot.data['icon_url'].toString()),
-            )
-        );
+      if (userSnapshot.data['icon_url'].toString() != 'null') {
+        hasMemberAchieved.add(CircleAvatar(
+          radius: 25,
+          backgroundColor: Colors.white,
+          backgroundImage: NetworkImage(userSnapshot.data['icon_url'].toString()),
+        ));
       } else {
-        hasMemberAchieved.add(
-          CircleAvatar(
-            radius: 25,
-            backgroundColor: Colors.white,
-            backgroundImage: AssetImage('images/account_circle.png'),
-          )
-        );
+        hasMemberAchieved.add(CircleAvatar(
+          radius: 25,
+          backgroundColor: Colors.white,
+          backgroundImage: AssetImage('images/account_circle.png'),
+        ));
       }
       userMap[data.documents[i].documentID] = hasMemberAchieved;
     }
@@ -270,11 +265,7 @@ class MembersRecord extends StatelessWidget {
             child: Text("はい"),
             onPressed: () {
               changeAdmin(userEmail);
-              Navigator.push<dynamic>(
-                  context,
-                  MaterialPageRoute<dynamic>(
-                    builder: (context) => TeamPage(_teamName),
-                  ));
+              Navigator.pop(context);
             }),
         FlatButton(
           child: Text("キャンセル"),
