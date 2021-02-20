@@ -108,10 +108,7 @@ class MembersRecord extends StatelessWidget {
                                       userName = memberSnapshot.data[userEmail][1] as String;
                                     }
                                     return ListTile(
-                                      leading: Icon(
-                                        Icons.account_circle,
-                                        size: 50,
-                                      ),
+                                      leading: memberSnapshot.data[userEmail][2] as Widget,
                                       trailing: Visibility(
                                         visible: memberSnapshot.data[userEmail][0] as bool,
                                         child: Image.asset(
@@ -212,6 +209,23 @@ class MembersRecord extends StatelessWidget {
         hasMemberAchieved.add(false);
       }
       hasMemberAchieved.add(userSnapshot.data['name'].toString()); //0にbool,1にname
+      if(userSnapshot.data['icon_url'].toString() != 'null'){
+        hasMemberAchieved.add(
+            CircleAvatar(
+              radius: 25,
+              backgroundColor: Colors.white,
+              backgroundImage: NetworkImage(userSnapshot.data['icon_url'].toString()),
+            )
+        );
+      } else {
+        hasMemberAchieved.add(
+          CircleAvatar(
+            radius: 25,
+            backgroundColor: Colors.white,
+            backgroundImage: AssetImage('images/account_circle.png'),
+          )
+        );
+      }
       userMap[data.documents[i].documentID] = hasMemberAchieved;
     }
     return userMap;

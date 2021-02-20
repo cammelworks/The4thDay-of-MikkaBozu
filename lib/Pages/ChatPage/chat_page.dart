@@ -99,56 +99,71 @@ class ChatPageState extends State<ChatPage> {
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot documentSnapshot) {
+    final Size size = MediaQuery.of(context).size;
     return Container(
       padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
-      child: Row(
-          children: <Widget>[
-            Icon(
-              Icons.account_circle,
-              size: 50,
-            ),
-            Padding(padding: EdgeInsets.only(left: 10),),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: StreamBuilder<DocumentSnapshot>(
+          stream: Firestore.instance.collection('users')
+                  .document(documentSnapshot.data["sender"].toString())
+                  .snapshots(),
+          builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+            if (!snapshot.hasData) return Container(
+              height: size.height,
+              width: size.width,
+              child: Center(
+                  child:CircularProgressIndicator()
+              ),
+            );
+            String name;
+            Widget icon;
+            if(snapshot.data['name'] != null){
+              name = snapshot.data['name'].toString();
+            } else {
+              name = "Guest";
+            }
+            if(snapshot.data['icon_url'].toString() != 'null'){
+              icon = CircleAvatar(
+                      radius: 25,
+                      backgroundColor: Colors.white,
+                      backgroundImage: NetworkImage(snapshot.data['icon_url'].toString()),
+                    );
+            } else {
+              icon = CircleAvatar(
+                      radius: 25,
+                      backgroundColor: Colors.white,
+                      backgroundImage: AssetImage('images/account_circle.png'),
+                     );
+            }
+            return Row(
               children: <Widget>[
-                Row(
+                icon,
+                Padding(padding: EdgeInsets.only(left: 10),),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    // メールアドレスからユーザー名を取得する
-                    StreamBuilder<DocumentSnapshot>(
-                      //表示したいFirestoreの保存先を指定
-                        stream: Firestore.instance.collection('users')
-                            .document(documentSnapshot.data["sender"].toString())
-                            .snapshots(),
-                        //streamが更新されるたびに呼ばれる
-                        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-                          //データが取れていない時の処理
-                          if (!snapshot.hasData) return const Text('Loading...');
-                          String name;
-                          if(snapshot.data['name'] != null){
-                            name = snapshot.data['name'].toString();
-                          } else {
-                            name = "Guest";
-                          }
-                          return Text(
-                            name,
-                            style: TextStyle(
+                    Row(
+                      children: <Widget>[
+                        Text(
+                          name,
+                          style: TextStyle(
                               fontWeight: FontWeight.bold,
-                            )
-                          );
-                        }),
-                    Padding(padding: EdgeInsets.only(left: 12),),
-                    Text(
-                      convertDate(documentSnapshot.data["timestamp"] as Timestamp),
-                      style: TextStyle(
-                        color: Colors.black54,
-                      ),
+                          )
+                        ),
+                        Padding(padding: EdgeInsets.only(left: 12),),
+                        Text(
+                          convertDate(documentSnapshot.data["timestamp"] as Timestamp),
+                          style: TextStyle(
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ],
                     ),
+                    Text(documentSnapshot.data["message"].toString()),
                   ],
-                ),
-                Text(documentSnapshot.data["message"].toString()),
+                )
               ],
-            ),
-          ]
+            );
+          }
       ),
     );
   }

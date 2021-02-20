@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:the4thdayofmikkabozu/Pages/IconSelectPage/icon_select_page.dart';
 import 'package:the4thdayofmikkabozu/SideMenu/signout_button.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
-class Sidemenu extends StatefulWidget{
+class Sidemenu extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => SidemenuState();
 }
@@ -19,11 +21,35 @@ class SidemenuState extends State<Sidemenu> {
         physics: NeverScrollableScrollPhysics(),
         padding: EdgeInsets.zero,
         children: <Widget>[
-          DrawerHeader(
-            decoration: BoxDecoration(
-                color: Colors.pinkAccent,
-                image: DecorationImage(
-                    fit: BoxFit.fill, image: AssetImage('images/bouzu.png'))),
+          Container(
+            color: Colors.blue,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+              child: Center(
+                child: Stack(children: <Widget>[
+                  showIcon(),
+                  Positioned(
+                    right: -20,
+                    bottom: -4,
+                    child: RaisedButton(
+                      shape: CircleBorder(),
+                      color: Colors.grey,
+                      onPressed: () async {
+                        await Navigator.push<dynamic>(
+                            context,
+                            MaterialPageRoute<dynamic>(
+                              builder: (context) => IconSelectPage(),
+                            ));
+                      },
+                      child: Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ]),
+              ),
+            ),
           ),
           Row(
             children: [
@@ -44,8 +70,7 @@ class SidemenuState extends State<Sidemenu> {
                           title: Text("ユーザ名変更"),
                           children: [
                             Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 8.0, right: 8.0),
+                              padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                               child: TextFormField(
                                 controller: _userNameController,
                                 decoration: InputDecoration(
@@ -64,24 +89,19 @@ class SidemenuState extends State<Sidemenu> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
                                 FlatButton(
-                                  child: Text("変更"),
-                                  onPressed: () {
-                                    if (_formKey.currentState.validate()) {
-                                      Firestore.instance
-                                          .collection('users')
-                                          .document(userData.userEmail)
-                                          .updateData(<String, dynamic>{
-                                        'name': _userNameController.text
-                                      });
-                                      userData.userName = _userNameController.text;
-                                      _userNameController.text = "";
-                                      setState(() {
-
-                                      });
-                                      Navigator.pop(context);
-                                    }
-                                  }
-                                ),
+                                    child: Text("変更"),
+                                    onPressed: () {
+                                      if (_formKey.currentState.validate()) {
+                                        Firestore.instance
+                                            .collection('users')
+                                            .document(userData.userEmail)
+                                            .updateData(<String, dynamic>{'name': _userNameController.text});
+                                        userData.userName = _userNameController.text;
+                                        _userNameController.text = "";
+                                        setState(() {});
+                                        Navigator.pop(context);
+                                      }
+                                    }),
                                 FlatButton(
                                   child: Text("キャンセル"),
                                   onPressed: () => Navigator.pop(context),
@@ -106,5 +126,21 @@ class SidemenuState extends State<Sidemenu> {
         ],
       ),
     );
+  }
+
+  Widget showIcon(){
+    if(userData.iconUrl != null){
+      return CircleAvatar(
+        radius: 60,
+        backgroundColor: Colors.white,
+        backgroundImage: NetworkImage(userData.iconUrl),
+      );
+    } else{
+      return CircleAvatar(
+        radius: 60,
+        backgroundColor: Colors.white,
+        backgroundImage: AssetImage('images/account_circle.png'),
+      );
+    }
   }
 }
