@@ -26,7 +26,11 @@ class TeamPageState extends State<TeamPage> {
       stream: Firestore.instance.collection('teams').document(_teamName).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> adminSnapshot) {
         if (!adminSnapshot.hasData) {
-          return Text('Loading...');
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(child: CircularProgressIndicator()),
+          );
+          ;
         }
 
         bool isAdmin = userData.userEmail == adminSnapshot.data['admin'].toString();
