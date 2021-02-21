@@ -21,33 +21,35 @@ class SidemenuState extends State<Sidemenu> {
         physics: NeverScrollableScrollPhysics(),
         padding: EdgeInsets.zero,
         children: <Widget>[
-          Container(
-            color: Colors.blue,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-              child: Center(
-                child: Stack(children: <Widget>[
-                  showIcon(),
-                  Positioned(
-                    right: -20,
-                    bottom: -4,
-                    child: RaisedButton(
-                      shape: CircleBorder(),
-                      color: Colors.grey,
-                      onPressed: () async {
-                        await Navigator.push<dynamic>(
-                            context,
-                            MaterialPageRoute<dynamic>(
-                              builder: (context) => IconSelectPage(),
-                            ));
-                      },
-                      child: Icon(
-                        Icons.add,
-                        color: Colors.white,
+          SafeArea(
+            child: Container(
+              color: Colors.blue,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+                child: Center(
+                  child: Stack(children: <Widget>[
+                    showIcon(),
+                    Positioned(
+                      right: -20,
+                      bottom: -4,
+                      child: RaisedButton(
+                        shape: CircleBorder(),
+                        color: Colors.grey,
+                        onPressed: () async {
+                          await Navigator.push<dynamic>(
+                              context,
+                              MaterialPageRoute<dynamic>(
+                                builder: (context) => IconSelectPage(),
+                              ));
+                        },
+                        child: Icon(
+                          Icons.add,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                  ),
-                ]),
+                  ]),
+                ),
               ),
             ),
           ),
@@ -128,14 +130,14 @@ class SidemenuState extends State<Sidemenu> {
     );
   }
 
-  Widget showIcon(){
-    if(userData.iconUrl != null){
+  Widget showIcon() {
+    if (userData.iconUrl != null) {
       return CircleAvatar(
         radius: 60,
         backgroundColor: Colors.white,
         backgroundImage: NetworkImage(userData.iconUrl),
       );
-    } else{
+    } else {
       return CircleAvatar(
         radius: 60,
         backgroundColor: Colors.white,
