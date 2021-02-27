@@ -288,7 +288,7 @@ class MembersRecord extends StatelessWidget {
         FlatButton(
             child: Text("はい"),
             onPressed: () {
-//              banMember(userEmail);
+              banMember(userEmail);
               Navigator.pop(context);
             }),
         FlatButton(
@@ -299,7 +299,14 @@ class MembersRecord extends StatelessWidget {
     );
   }
 
-  void changeAdmin(String userEmail) async {
+  void changeAdmin(String userEmail){
     Firestore.instance.collection('teams').document(_teamName).updateData(<String, String>{'admin': userEmail});
+  }
+
+  void banMember(String userEmail){
+    // teamNameの中のUsersからuserEmailを削除
+    Firestore.instance.collection('teams').document(_teamName).collection('users').document(userEmail).delete();
+    // userEmailの中のTeamsからteamNameを削除
+    Firestore.instance.collection('users').document(userEmail).collection('teams').document(_teamName).delete();
   }
 }
