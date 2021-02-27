@@ -71,6 +71,7 @@ golden_test/failures/
 **/ios/Flutter/flutter_export_environment.sh
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
+**/ios/build/
 
 # Web related
 lib/generated_plugin_registrant.dart

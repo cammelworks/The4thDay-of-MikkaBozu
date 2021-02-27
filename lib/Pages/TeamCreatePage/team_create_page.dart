@@ -1,8 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
-import 'package:the4thdayofmikkabozu/Pages/TeamMainPage/team_main_page.dart';
 
 class TeamCreatePage extends StatefulWidget {
   final String title = 'チーム作成';
@@ -49,7 +48,7 @@ class TeamCreatePageState extends State<TeamCreatePage> {
                   TextFormField(
                     controller: _overviewController,
                     decoration:
-                    const InputDecoration(labelText: 'チームの概要を入力してください'),
+                        const InputDecoration(labelText: 'チームの概要を入力してください'),
                     validator: (String value) {
                       if (value.isEmpty) {
                         return '登録にはチームの概要が必要です';
@@ -61,11 +60,11 @@ class TeamCreatePageState extends State<TeamCreatePage> {
                     controller: _goalController,
                     keyboardType: TextInputType.number,
                     decoration:
-                    const InputDecoration(labelText: 'チームの目標を入力してください'),
+                        const InputDecoration(labelText: 'チームの目標を入力してください'),
                     validator: (String value) {
                       if (value.isEmpty) {
                         return '登録にはチームの目標が必要です';
-                      } else if (_goalController.text.contains(',')){
+                      } else if (_goalController.text.contains(',')) {
                         return '目標に","を含めないでください';
                       }
                       return null;
@@ -92,7 +91,8 @@ class TeamCreatePageState extends State<TeamCreatePage> {
                                 updateDataUserData();
                                 // 2ページ前に戻る
                                 int count = 0;
-                                Navigator.of(context).popUntil((_) => count++ >= 2);
+                                Navigator.of(context)
+                                    .popUntil((_) => count++ >= 2);
                               } else {
                                 Fluttertoast.showToast(
                                   msg: 'すでに使用されています',
@@ -124,11 +124,12 @@ class TeamCreatePageState extends State<TeamCreatePage> {
         .collection('teams')
         .document(_nameController.text)
         .setData(<String, dynamic>{
-          'team_name': _nameController.text,
-          'goal': int.parse(_goalController.text),
-          'team_overview': _overviewController.text,
-          'user_num': 1,
-        });
+      'team_name': _nameController.text,
+      'goal': int.parse(_goalController.text),
+      'team_overview': _overviewController.text,
+      'user_num': 1,
+      'admin': _email,
+    });
 
     Firestore.instance
         .collection('teams')
@@ -146,10 +147,10 @@ class TeamCreatePageState extends State<TeamCreatePage> {
         .collection('teams')
         .document(_nameController.text)
         .setData(<String, dynamic>{
-          'team_name': _nameController.text,
-          'goal': int.parse(_goalController.text),
-          'team_overview': _overviewController.text,
-        });
+      'team_name': _nameController.text,
+      'goal': int.parse(_goalController.text),
+      'team_overview': _overviewController.text,
+    });
   }
 
   Future<bool> checkUniqueTeamName(String candidateName) async {

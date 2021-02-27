@@ -89,6 +89,9 @@ class MyHomePageState extends State<MyHomePage> {
       if(snapshot.data['name'] != null){
         userName = snapshot.data['name'].toString();
       }
+      if(snapshot.data['icon_url'] != null){
+        userData.iconUrl = snapshot.data['icon_url'].toString();
+      }
       userData.userName = userName;
       userData.userEmail = _user.email;
       userData.firebaseUser = _user;
