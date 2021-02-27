@@ -69,6 +69,7 @@ class MeasurementPageState extends State<MeasurementPage> {
                             platform.invokeMethod<dynamic>("OFF");
                           }
                           _timer.cancel();
+                          await _pushMessage();
                           await _pushRecord();
                         } else {
                           Navigator.pop(context);
@@ -174,6 +175,18 @@ class MeasurementPageState extends State<MeasurementPage> {
       return snapshots.documents[0];
     } else{
       return null;
+    }
+  }
+
+  void _pushMessage() async {
+    QuerySnapshot snapshot = await Firestore.instance.collection('users')
+        .document(userData.userEmail).collection('teams').getDocuments();
+    double roundedDistance = (_distance / 100).round() / 10;
+    String message = userData.userName + 'さんが' + roundedDistance.toString() + 'Km走りました';
+    for(int i = 0; i < snapshot.documents.length; i++){
+      Firestore.instance.collection('teams').document(snapshot.documents[i].data['team_name'].toString())
+          .collection('chats').document().setData(
+          <String, dynamic>{'message': message, "sender": 'bot@gmail.com', "timestamp": Timestamp.now()});
     }
   }
 }
