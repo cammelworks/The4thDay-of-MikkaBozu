@@ -10,7 +10,7 @@ class MembersRecord extends StatelessWidget {
   String _teamName;
   String _adminEmail;
   // ポップアップメニューボタンの選択肢リスト
-  var _States = ['管理者の譲渡'];
+  var _States = ['管理者の譲渡', 'メンバーを追放'];
 
   MembersRecord(this._teamName, this._adminEmail);
 
@@ -143,7 +143,13 @@ class MembersRecord extends StatelessWidget {
                                                   showDialog<dynamic>(
                                                     context: context,
                                                     builder: (context) {
-                                                      return showChangeAdminDialog(context, userEmail, userName);
+                                                      if(s == '管理者の譲渡') {
+                                                        return showChangeAdminDialog(context, userEmail, userName);
+                                                      } else if(s == 'メンバーを追放'){
+                                                        return showBanDialog(context, userEmail, userName);
+                                                      } else{
+                                                        return null;
+                                                      }
                                                     },
                                                   );
                                                   print(userEmail);
@@ -275,7 +281,32 @@ class MembersRecord extends StatelessWidget {
     );
   }
 
-  void changeAdmin(String userEmail) async {
+  Widget showBanDialog(BuildContext context, String userEmail, String userName){
+    return AlertDialog(
+      content: Text(userName + 'を追放しますか？'),
+      actions: <Widget>[
+        FlatButton(
+            child: Text("はい"),
+            onPressed: () {
+              banMember(userEmail);
+              Navigator.pop(context);
+            }),
+        FlatButton(
+          child: Text("キャンセル"),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ],
+    );
+  }
+
+  void changeAdmin(String userEmail){
     Firestore.instance.collection('teams').document(_teamName).updateData(<String, String>{'admin': userEmail});
+  }
+
+  void banMember(String userEmail){
+    // teamNameの中のUsersからuserEmailを削除
+    Firestore.instance.collection('teams').document(_teamName).collection('users').document(userEmail).delete();
+    // userEmailの中のTeamsからteamNameを削除
+    Firestore.instance.collection('users').document(userEmail).collection('teams').document(_teamName).delete();
   }
 }
