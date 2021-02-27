@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:the4thdayofmikkabozu/Pages/LookupTeamPage/lookup_team_page.dart';
-import 'package:the4thdayofmikkabozu/Pages/TeamCreatePage/team_create_page.dart';
 import 'package:the4thdayofmikkabozu/Pages/TeamPage/team_page.dart';
 import 'package:the4thdayofmikkabozu/SideMenu/sidemenu.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
@@ -33,7 +32,12 @@ class TeamMainPageState extends State<TeamMainPage> {
                   //streamが更新されるたびに呼ばれる
                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     //データが取れていない時の処理
-                    if (!snapshot.hasData) return const Text('Loading...');
+                    if (!snapshot.hasData)
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    ;
                     return Scrollbar(
                       child: ListView.builder(
                           padding: EdgeInsets.zero,
