@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
@@ -17,7 +18,7 @@ class Sidemenu extends StatefulWidget {
 class SidemenuState extends State<Sidemenu> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _userNameController = TextEditingController();
-  File file;
+  String file;
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -130,11 +131,15 @@ class SidemenuState extends State<Sidemenu> {
               ),
             ],
           ),
-          if (file != null)
+          if (file != '')
             Container(
               height: 300,
               width: 300,
-              child: Image.file(file),
+              child: CircleAvatar(
+                radius: 60,
+                backgroundColor: Colors.white,
+                backgroundImage: NetworkImage(file),
+              ),
             ),
           RaisedButton(
               child: const Text('アイコン追加'),
@@ -213,9 +218,31 @@ class SidemenuState extends State<Sidemenu> {
     } else if (result == 1) {
       imageFile = await ImageUpload(ImageSource.gallery).getImageFromDevice();
     }
-    setState(() {
-      file = imageFile;
+    setState(() async {
+      file = await upload(imageFile);
+      print(file);
     });
+  }
+
+  //storageに保存
+  Future<String> upload(File file) async {
+    final StorageReference ref = FirebaseStorage.instance.ref();
+    final StorageTaskSnapshot storedImage =
+        await ref.child('icons').child(userData.userEmail.replaceAll('@', '')).putFile(File(file.path)).onComplete;
+    final String downloadUrl = await loadImage(storedImage);
+    return downloadUrl;
+  }
+
+  //url取得
+  Future<String> loadImage(StorageTaskSnapshot storedImage) async {
+    if (storedImage.error == null) {
+      print('storageに保存しました');
+      final String downloadUrl = await storedImage.ref.getDownloadURL() as String;
+      print(downloadUrl);
+      return downloadUrl;
+    } else {
+      return null;
+    }
   }
 }
 
