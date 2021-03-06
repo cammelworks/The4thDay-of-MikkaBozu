@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:the4thdayofmikkabozu/SideMenu/signout_button.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
@@ -238,7 +239,7 @@ class ImageUpload {
 
   Future<File> getImageFromDevice() async {
     // 撮影/選択したFileが返ってくる
-    final imageFile = await ImagePicker().getImage(source: source);
+    var imageFile = await ImagePicker().getImage(source: source);
     // Androidで撮影せずに閉じた場合はnullになる
     if (imageFile == null) {
       return null;
@@ -246,6 +247,25 @@ class ImageUpload {
     //画像を圧縮
     final File compressedFile = await FlutterNativeImage.compressImage(imageFile.path, quality: quality);
 
-    return compressedFile;
+    return _handleImageCrop(compressedFile);
+  }
+
+  Future<File> _handleImageCrop(File file) async {
+    var croppedFile = await ImageCropper.cropImage(
+        sourcePath: file.path,
+        cropStyle: CropStyle.circle,
+        aspectRatioPresets: [
+          CropAspectRatioPreset.square,
+        ],
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: '切り抜き',
+            toolbarColor: Colors.blue,
+            toolbarWidgetColor: Colors.white,
+            activeControlsWidgetColor: Colors.blue,
+            initAspectRatio: CropAspectRatioPreset.original),
+        iosUiSettings: IOSUiSettings(
+          minimumAspectRatio: 1.0,
+        ));
+    return croppedFile;
   }
 }
