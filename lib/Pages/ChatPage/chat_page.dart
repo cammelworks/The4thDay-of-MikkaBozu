@@ -30,7 +30,7 @@ class ChatPageState extends State<ChatPage> {
         body: Column(
           children: <Widget>[
             Expanded(
-              child: SingleChildScrollView(
+              child: Container(
                 child: StreamBuilder<QuerySnapshot>(
                     //表示したいFirestoreの保存先を指定
                     stream: Firestore.instance
@@ -43,13 +43,11 @@ class ChatPageState extends State<ChatPage> {
                     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       //データが取れていない時の処理
                       if (!snapshot.hasData) return const Text('Loading...');
-                      return Scrollbar(
-                        child: ListView.builder(
-                            padding: EdgeInsets.zero,
-                            shrinkWrap: true,
-                            itemCount: snapshot.data.documents.length,
-                            itemBuilder: (context, index) => _buildListItem(context, snapshot.data.documents[index])),
-                      );
+                      return ListView.builder(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          itemCount: snapshot.data.documents.length,
+                          itemBuilder: (context, index) => _buildListItem(context, snapshot.data.documents[index]));
                     }),
               ),
             ),
