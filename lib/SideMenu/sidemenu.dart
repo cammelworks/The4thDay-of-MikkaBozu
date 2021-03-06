@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:the4thdayofmikkabozu/Pages/IconSelectPage/icon_select_page.dart';
 import 'package:the4thdayofmikkabozu/SideMenu/signout_button.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
@@ -18,7 +17,6 @@ class Sidemenu extends StatefulWidget {
 class SidemenuState extends State<Sidemenu> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _userNameController = TextEditingController();
-  String file;
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -44,11 +42,7 @@ class SidemenuState extends State<Sidemenu> {
                           shape: CircleBorder(),
                           color: Colors.grey,
                           onPressed: () async {
-                            await Navigator.push<dynamic>(
-                                context,
-                                MaterialPageRoute<dynamic>(
-                                  builder: (context) => IconSelectPage(),
-                                ));
+                            showBottomSheet();
                           },
                           child: Icon(
                             Icons.add,
@@ -131,24 +125,6 @@ class SidemenuState extends State<Sidemenu> {
               ),
             ],
           ),
-          if (file != '')
-            Container(
-              height: 300,
-              width: 300,
-              child: CircleAvatar(
-                radius: 60,
-                backgroundColor: Colors.white,
-                backgroundImage: NetworkImage(file),
-              ),
-            ),
-          RaisedButton(
-              child: const Text('アイコン追加'),
-              shape: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              ),
-              onPressed: () async {
-                showBottomSheet();
-              }),
           Container(
             child: SignoutButton(),
           ),
@@ -219,8 +195,7 @@ class SidemenuState extends State<Sidemenu> {
       imageFile = await ImageUpload(ImageSource.gallery).getImageFromDevice();
     }
     setState(() async {
-      file = await upload(imageFile);
-      print(file);
+      registerIcon(await upload(imageFile));
     });
   }
 
@@ -238,11 +213,20 @@ class SidemenuState extends State<Sidemenu> {
     if (storedImage.error == null) {
       print('storageに保存しました');
       final String downloadUrl = await storedImage.ref.getDownloadURL() as String;
-      print(downloadUrl);
       return downloadUrl;
     } else {
       return null;
     }
+  }
+
+  void registerIcon(String downloadURL) {
+    Firestore.instance
+        .collection('users')
+        .document(userData.userEmail)
+        .updateData(<String, String>{'icon_url': downloadURL});
+    setState(() {
+      userData.iconUrl = downloadURL;
+    });
   }
 }
 
