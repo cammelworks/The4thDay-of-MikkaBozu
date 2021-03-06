@@ -195,9 +195,7 @@ class SidemenuState extends State<Sidemenu> {
     } else if (result == 1) {
       imageFile = await ImageUpload(ImageSource.gallery).getImageFromDevice();
     }
-    setState(() async {
-      registerIcon(await upload(imageFile));
-    });
+    registerIcon(await upload(imageFile));
   }
 
   //storageに保存
@@ -220,7 +218,7 @@ class SidemenuState extends State<Sidemenu> {
     }
   }
 
-  void registerIcon(String downloadURL) {
+  Future<void> registerIcon(String downloadURL) {
     Firestore.instance
         .collection('users')
         .document(userData.userEmail)
