@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -39,9 +40,21 @@ class MyHomePage extends StatefulWidget {
 class MyHomePageState extends State<MyHomePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser _user = null;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  String _message;
   @override
   void initState() {
     super.initState();
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        setState(() {
+          _message = "onMessage: $message";
+        });
+        print("onMessage: $message");
+      },
+
+      /// 省略
+    );
   }
 
   @override
