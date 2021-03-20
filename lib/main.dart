@@ -1,19 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:the4thdayofmikkabozu/PageView/page_view.dart';
 import 'package:the4thdayofmikkabozu/Pages/MyPage/signin_screen.dart';
-import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 import 'package:the4thdayofmikkabozu/permission.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((_) {
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) {
     runApp(MyApp());
   });
 }
@@ -41,35 +39,26 @@ class MyHomePage extends StatefulWidget {
 class MyHomePageState extends State<MyHomePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser _user = null;
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  String _token;
   @override
   void initState() {
     super.initState();
-    _firebaseMessaging.getToken().then((String token) {
-      assert(token != null);
-      setState(() {
-        _token = token;
-      });
-      print("token: $_token");
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: FutureBuilder(
-          future: showButton(),
-          builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-            if (snapshot.hasData && snapshot.data) {
-              return MyPageView();
-            } else if (snapshot.connectionState != ConnectionState.done) {
-              return Center(child: CircularProgressIndicator());
-            } else if(snapshot.hasData && !snapshot.data){
-              return SigninScreen();
-            }
-          },
-        ));
+      future: showButton(),
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        if (snapshot.hasData && snapshot.data) {
+          return MyPageView();
+        } else if (snapshot.connectionState != ConnectionState.done) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasData && !snapshot.data) {
+          return SigninScreen();
+        }
+      },
+    ));
   }
 
   //ログインの有無によって表示を変える関数
@@ -90,16 +79,13 @@ class MyHomePageState extends State<MyHomePage> {
       ))
           .user;
 
-      var snapshot = await Firestore.instance
-          .collection('users')
-          .document(_user.email)
-          .get();
+      var snapshot = await Firestore.instance.collection('users').document(_user.email).get();
 
       String userName = "Guest";
-      if(snapshot.data['name'] != null){
+      if (snapshot.data['name'] != null) {
         userName = snapshot.data['name'].toString();
       }
-      if(snapshot.data['icon_url'] != null){
+      if (snapshot.data['icon_url'] != null) {
         userData.iconUrl = snapshot.data['icon_url'].toString();
       }
       userData.userName = userName;
