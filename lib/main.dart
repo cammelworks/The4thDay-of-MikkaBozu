@@ -7,6 +7,7 @@ import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 import 'package:the4thdayofmikkabozu/permission.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() {
@@ -40,9 +41,18 @@ class MyHomePage extends StatefulWidget {
 class MyHomePageState extends State<MyHomePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser _user = null;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  String _token;
   @override
   void initState() {
     super.initState();
+    _firebaseMessaging.getToken().then((String token) {
+      assert(token != null);
+      setState(() {
+        _token = token;
+      });
+      print("token: $_token");
+    });
   }
 
   @override
