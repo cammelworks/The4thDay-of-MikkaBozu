@@ -8,8 +8,7 @@ class MeasurementPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Padding(
-      padding: EdgeInsets.fromLTRB(
-          size.width / 20, size.height / 10, size.width / 20, size.height / 10),
+      padding: EdgeInsets.fromLTRB(size.width / 20, size.height / 10, size.width / 20, size.height / 10),
       child: Column(
         children: <Widget>[
           //時間表示のボックス
@@ -30,9 +29,7 @@ class MeasurementPanel extends StatelessWidget {
                   child: Center(
                     child: Text(
                       _time,
-                      style: TextStyle(
-                        fontSize: size.width / 7,
-                      ),
+                      style: TextStyle(fontSize: size.width / 6, fontFamily: 'BebasNeue'),
                     ),
                   ),
                 ),
@@ -60,9 +57,7 @@ class MeasurementPanel extends StatelessWidget {
                   child: Center(
                     child: Text(
                       _convertUnit(),
-                      style: TextStyle(
-                        fontSize: size.width / 6,
-                      ),
+                      style: TextStyle(fontSize: size.width / 6, fontFamily: 'BebasNeue'),
                     ),
                   ),
                 ),
