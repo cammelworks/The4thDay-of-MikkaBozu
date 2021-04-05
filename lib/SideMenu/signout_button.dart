@@ -13,15 +13,17 @@ class SignoutButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        margin: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
         child: ButtonTheme(
           minWidth: 200.0,
           height: 50.0,
           buttonColor: Colors.white,
           child: RaisedButton(
               child: const Text('サインアウト'),
-              shape: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              // shape: OutlineInputBorder(
+              //   borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              // ),
+              shape: const StadiumBorder(
+                side: BorderSide(color: Colors.blue),
               ),
               onPressed: () async {
                 await signOut();
