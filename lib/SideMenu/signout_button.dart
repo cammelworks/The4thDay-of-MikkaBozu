@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 import 'package:the4thdayofmikkabozu/main.dart';
+import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
 class SignoutButton extends StatelessWidget {
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -13,7 +13,7 @@ class SignoutButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        margin: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 0.0),
+        margin: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
         child: ButtonTheme(
           minWidth: 200.0,
           height: 50.0,
@@ -35,8 +35,7 @@ class SignoutButton extends StatelessWidget {
                     MaterialPageRoute<dynamic>(
                       builder: (context) => MyHomePage(),
                     ),
-                    (_)=>false
-                );
+                    (_) => false);
               }),
         ),
       ),

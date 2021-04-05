@@ -57,74 +57,81 @@ class SidemenuState extends State<Sidemenu> {
               ),
             ),
           ),
-          Row(
-            children: [
-              Expanded(
-                child: Container(),
-              ),
-              Container(child: Text(userData.userName)),
-              IconButton(
-                icon: const Icon(Icons.edit),
-                color: Colors.grey,
-                onPressed: () {
-                  showDialog<dynamic>(
-                    context: context,
-                    builder: (context) {
-                      return Form(
-                        key: _formKey,
-                        child: SimpleDialog(
-                          title: Text("ユーザ名変更"),
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                              child: TextFormField(
-                                controller: _userNameController,
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: '変更するユーザ名を入力してください',
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(),
+                ),
+                Container(
+                    child: Text(
+                  userData.userName,
+                  style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 2.0),
+                )),
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  color: Colors.grey,
+                  onPressed: () {
+                    showDialog<dynamic>(
+                      context: context,
+                      builder: (context) {
+                        return Form(
+                          key: _formKey,
+                          child: SimpleDialog(
+                            title: Text("ユーザ名変更"),
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                                child: TextFormField(
+                                  controller: _userNameController,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: '変更するユーザ名を入力してください',
+                                  ),
+                                  validator: (String value) {
+                                    if (value.isEmpty) {
+                                      return 'ユーザ名が入力されていません';
+                                    }
+                                    return null;
+                                  },
                                 ),
-                                validator: (String value) {
-                                  if (value.isEmpty) {
-                                    return 'ユーザ名が入力されていません';
-                                  }
-                                  return null;
-                                },
                               ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                FlatButton(
-                                    child: Text("変更"),
-                                    onPressed: () {
-                                      if (_formKey.currentState.validate()) {
-                                        Firestore.instance
-                                            .collection('users')
-                                            .document(userData.userEmail)
-                                            .updateData(<String, dynamic>{'name': _userNameController.text});
-                                        userData.userName = _userNameController.text;
-                                        _userNameController.text = "";
-                                        setState(() {});
-                                        Navigator.pop(context);
-                                      }
-                                    }),
-                                FlatButton(
-                                  child: Text("キャンセル"),
-                                  onPressed: () => Navigator.pop(context),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
-              Expanded(
-                child: Container(),
-              ),
-            ],
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  FlatButton(
+                                      child: Text("変更"),
+                                      onPressed: () {
+                                        if (_formKey.currentState.validate()) {
+                                          Firestore.instance
+                                              .collection('users')
+                                              .document(userData.userEmail)
+                                              .updateData(<String, dynamic>{'name': _userNameController.text});
+                                          userData.userName = _userNameController.text;
+                                          _userNameController.text = "";
+                                          setState(() {});
+                                          Navigator.pop(context);
+                                        }
+                                      }),
+                                  FlatButton(
+                                    child: Text("キャンセル"),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+                Expanded(
+                  child: Container(),
+                ),
+              ],
+            ),
           ),
           Container(
             child: SignoutButton(),
