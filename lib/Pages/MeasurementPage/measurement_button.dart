@@ -3,7 +3,20 @@ import 'package:flutter/material.dart';
 typedef UserCallback = void Function();
 
 class MeasurementButton extends StatelessWidget {
-  final List<String> buttonStateList = ['START', 'STOP', 'My Page'];
+  final List<Icon> buttonStateList = [
+    Icon(
+      Icons.directions_run,
+      size: 60,
+    ),
+    Icon(
+      Icons.stop,
+      size: 60,
+    ),
+    Icon(
+      Icons.home,
+      size: 60,
+    )
+  ];
   int _value;
   final UserCallback callback;
 
@@ -13,14 +26,14 @@ class MeasurementButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return ButtonTheme(
-      minWidth: size.width / 2,
-      height: size.height / 4,
+      // minWidth: size.width / 2,
+      height: 100,
       child: RaisedButton(
-        child: Text(buttonStateList[_value]),
+        child: buttonStateList[_value],
         color: Colors.white,
         shape: CircleBorder(
           side: BorderSide(
-            color: Colors.black,
+            color: Colors.white,
             style: BorderStyle.solid,
           ),
         ),
