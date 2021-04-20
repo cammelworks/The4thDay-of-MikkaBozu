@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -23,6 +24,7 @@ class MyPageState extends State<MyPage> {
   bool _shouldShowRecord = false;
   String _selectedRecordDistance = "";
   String _selectedRecordTime = "";
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   void onDayPressed(DateTime date, List<Event> events) {
     this.setState(() => _currentDate = date);
@@ -42,6 +44,12 @@ class MyPageState extends State<MyPage> {
       await addRecordedDate();
     });
     super.initState();
+    _firebaseMessaging.getToken().then((String token) {
+      assert(token != null);
+      setState(() {
+        _registerToken(token);
+      });
+    });
   }
 
   Future<void> addRecordedDate() async {
@@ -242,4 +250,23 @@ class MyPageState extends State<MyPage> {
       );
     }
   } // 追加
+
+  void _registerToken(String token) async {
+    QuerySnapshot snapshot =
+        await Firestore.instance.collection('users').document(userData.userEmail).collection('tokens').getDocuments();
+
+    snapshot.documents.forEach((document) {
+      if (document.data['token'] == token) {
+        return;
+      }
+    });
+
+    // tokenをプッシュ
+    Firestore.instance
+        .collection('users')
+        .document(userData.userEmail)
+        .collection('tokens')
+        .document()
+        .setData(<String, dynamic>{'token': token});
+  }
 }

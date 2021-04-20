@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,18 +22,8 @@ class RegisterPageState extends State<RegisterPage> {
   final TextEditingController _userNameController = TextEditingController();
   bool _isHidden = true;
 
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  String _token;
-
   void initState() {
     super.initState();
-    _firebaseMessaging.getToken().then((String token) {
-      assert(token != null);
-      setState(() {
-        _token = token;
-      });
-      print("token: $_token");
-    });
   }
 
   void _toggleVisibility() {
@@ -168,12 +157,6 @@ class RegisterPageState extends State<RegisterPage> {
           'email': user.email,
           'name': _userNameController.text,
         });
-        Firestore.instance
-            .collection('users')
-            .document(user.email)
-            .collection('tokens')
-            .document()
-            .setData(<String, dynamic>{'token': _token});
       });
       await Navigator.pushAndRemoveUntil<dynamic>(
           context,
