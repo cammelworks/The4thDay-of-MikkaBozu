@@ -255,11 +255,11 @@ class MyPageState extends State<MyPage> {
     QuerySnapshot snapshot =
         await Firestore.instance.collection('users').document(userData.userEmail).collection('tokens').getDocuments();
 
-    snapshot.documents.forEach((document) {
+    for (var document in snapshot.documents) {
       if (document.data['token'] == token) {
         return;
       }
-    });
+    }
 
     // tokenをプッシュ
     Firestore.instance
