@@ -164,10 +164,16 @@ class RegisterPageState extends State<RegisterPage> {
 
       setState(() {
         //Firestoreにemailをpush
+        Firestore.instance.collection('users').document(user.email).setData(<String, dynamic>{
+          'email': user.email,
+          'name': _userNameController.text,
+        });
         Firestore.instance
             .collection('users')
             .document(user.email)
-            .setData(<String, dynamic>{'email': user.email, 'name': _userNameController.text, 'token': _token});
+            .collection('tokens')
+            .document()
+            .setData(<String, dynamic>{'token': _token});
       });
       await Navigator.pushAndRemoveUntil<dynamic>(
           context,
