@@ -22,10 +22,6 @@ class RegisterPageState extends State<RegisterPage> {
   final TextEditingController _userNameController = TextEditingController();
   bool _isHidden = true;
 
-  void initState() {
-    super.initState();
-  }
-
   void _toggleVisibility() {
     setState(() {
       _isHidden = !_isHidden;
