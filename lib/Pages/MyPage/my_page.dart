@@ -50,6 +50,13 @@ class MyPageState extends State<MyPage> {
         _registerToken(token);
       });
     });
+    _firebaseMessaging.configure(
+      onMessage:(Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        print("title: $message['notification']['title']");
+        // 通知の表示
+      },
+    );
   }
 
   Future<void> addRecordedDate() async {
