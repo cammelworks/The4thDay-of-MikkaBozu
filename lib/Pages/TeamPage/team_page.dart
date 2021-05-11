@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:the4thdayofmikkabozu/Pages/ChatPage/chat_page.dart';
+import 'package:the4thdayofmikkabozu/Pages/TeamPage/achievement_bar.dart';
 import 'package:the4thdayofmikkabozu/Pages/TeamPage/goal_manager.dart';
 import 'package:the4thdayofmikkabozu/Pages/TeamPage/members_record.dart';
 import 'package:the4thdayofmikkabozu/Pages/TeamPage/overview_manager.dart';
@@ -141,11 +142,39 @@ class TeamPageState extends State<TeamPage> {
                 padding: const EdgeInsets.only(top: 20.0),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
                   OverviewManager(_teamName, isAdmin),
-                  GoalManager(_teamName, isAdmin),
-                  Container(
-                    height: 10.0,
-                  ),
-                  MembersRecord(_teamName, adminSnapshot.data['admin'].toString()),
+                  Card(
+                      child: Column(
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20.0, 0, 0, 0),
+                            child: Text(
+                              '到達度',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Image.asset(
+                            'images/road.png',
+                            height: 100.0,
+                            width: 100.0,
+                          ),
+                          GoalManager(_teamName, isAdmin),
+                        ],
+                      ),
+                      AchivementBar(_teamName, adminSnapshot.data['admin'].toString()),
+                    ],
+                  )),
+                  Card(child: MembersRecord(_teamName, adminSnapshot.data['admin'].toString())),
                 ]),
               ),
             ),
