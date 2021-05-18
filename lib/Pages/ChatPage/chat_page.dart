@@ -17,10 +17,20 @@ class ChatPageState extends State<ChatPage> {
   String _teamName;
   //コンストラクタ
   ChatPageState(this._teamName);
+  ScrollController _scrollController;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _chatField = TextEditingController();
 
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () {
+      _scrollController.animateTo(0.0 ,duration: const
+      Duration(milliseconds: 300),curve: Curves.easeOut);
+    });
+    super.initState();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +47,7 @@ class ChatPageState extends State<ChatPage> {
                         .collection('teams')
                         .document(_teamName)
                         .collection('chats')
-                        .orderBy("timestamp", descending: false)
+                        .orderBy("timestamp", descending: true)
                         .snapshots(),
                     //streamが更新されるたびに呼ばれる
                     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -46,6 +56,8 @@ class ChatPageState extends State<ChatPage> {
                       return ListView.builder(
                           padding: EdgeInsets.zero,
                           shrinkWrap: true,
+                          reverse: true,
+                          controller: _scrollController,
                           itemCount: snapshot.data.documents.length,
                           itemBuilder: (context, index) => _buildListItem(context, snapshot.data.documents[index]));
                     }),
