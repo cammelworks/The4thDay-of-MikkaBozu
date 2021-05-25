@@ -4,11 +4,14 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:the4thdayofmikkabozu/PageView/page_view.dart';
 import 'package:the4thdayofmikkabozu/Pages/MyPage/signin_screen.dart';
 import 'package:the4thdayofmikkabozu/permission.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
+import 'package:path_provider/path_provider.Dart';
+import 'package:audioplayer/audioplayer.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,6 +45,8 @@ class MyHomePageState extends State<MyHomePage> {
   FirebaseUser _user = null;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   String _message;
+  AudioPlayer _audioPlayer = AudioPlayer();
+
   @override
   void initState() {
     super.initState();
@@ -56,9 +61,11 @@ class MyHomePageState extends State<MyHomePage> {
         });
         print("onMessage: $message");
       },
-
-      /// 省略
     );
+  }
+
+  Future<ByteData> loadAsset() async {
+    return await rootBundle.load('sounds/notification.mp3');
   }
 
   @override
@@ -85,6 +92,12 @@ class MyHomePageState extends State<MyHomePage> {
 
     //位置情報の許可が出ているか確認する
     Permission().checkPermission();
+
+    final dir = await getApplicationDocumentsDirectory();
+    File file = new File('${dir.path}/notification.mp3');
+    await file.writeAsBytes((await loadAsset()).buffer.asUint8List());
+    _audioPlayer.
+    await _audioPlayer.play(file.path, isLocal: true);
 
     if (_user != null) {
       return true;
