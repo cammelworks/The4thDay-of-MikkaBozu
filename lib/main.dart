@@ -46,11 +46,13 @@ class MyHomePageState extends State<MyHomePage> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   String _message;
   AudioPlayer _audioPlayer = AudioPlayer();
+  File _audioFile;
 
   @override
   void initState() {
     super.initState();
-
+    // 通知音の初期化
+    initAudio();
     _firebaseMessaging.requestNotificationPermissions(
         const IosNotificationSettings(sound: true, badge: true, alert: true));
 
@@ -59,13 +61,11 @@ class MyHomePageState extends State<MyHomePage> {
         setState(() {
           _message = "onMessage: $message";
         });
+        // 通知音を鳴らす
+        await _audioPlayer.play(_audioFile.path, isLocal: true);
         print("onMessage: $message");
       },
     );
-  }
-
-  Future<ByteData> loadAsset() async {
-    return await rootBundle.load('sounds/notification.mp3');
   }
 
   @override
@@ -92,12 +92,6 @@ class MyHomePageState extends State<MyHomePage> {
 
     //位置情報の許可が出ているか確認する
     Permission().checkPermission();
-
-    final dir = await getApplicationDocumentsDirectory();
-    File file = new File('${dir.path}/notification.mp3');
-    await file.writeAsBytes((await loadAsset()).buffer.asUint8List());
-    _audioPlayer.
-    await _audioPlayer.play(file.path, isLocal: true);
 
     if (_user != null) {
       return true;
@@ -126,5 +120,17 @@ class MyHomePageState extends State<MyHomePage> {
       //初回起動 or サインアウト後
       return false;
     }
+  }
+
+  void initAudio() async {
+    final dir = await getApplicationDocumentsDirectory();
+    // 通知音を保存するファイルの作成
+    _audioFile = new File('${dir.path}/notification.mp3');
+    // 作成したファイルに書き込む
+    await _audioFile.writeAsBytes((await loadAsset()).buffer.asUint8List());
+  }
+
+  Future<ByteData> loadAsset() async {
+    return await rootBundle.load('sounds/notification.mp3');
   }
 }
