@@ -3,4 +3,5 @@ import 'package:firebase_auth/firebase_auth.dart';
 String userEmail;
 String userName;
 String iconUrl;
+Map<String, bool> hasNewChat={};
 FirebaseUser firebaseUser;
