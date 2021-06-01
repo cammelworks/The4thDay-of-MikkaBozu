@@ -15,6 +15,7 @@ class ChatPage extends StatefulWidget {
 
 class ChatPageState extends State<ChatPage> {
   String _teamName;
+  String _email = userData.userEmail;
   //コンストラクタ
   ChatPageState(this._teamName);
   ScrollController _scrollController;
@@ -24,10 +25,8 @@ class ChatPageState extends State<ChatPage> {
 
   @override
   void initState() {
-    Future.delayed(Duration.zero, () {
-      _scrollController.animateTo(0.0 ,duration: const
-      Duration(milliseconds: 300),curve: Curves.easeOut);
-    });
+    Future.delayed(Duration.zero, () {});
+    updateLastVisited();
     super.initState();
   }
   
@@ -105,6 +104,17 @@ class ChatPageState extends State<ChatPage> {
             ),
           ],
         ));
+  }
+
+  void updateLastVisited(){
+    Firestore.instance
+        .collection('users')
+        .document(_email)
+        .collection('teams')
+        .document(_teamName)
+        .updateData(<String, dynamic>{
+      "last_visited": Timestamp.now(),
+    });
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot documentSnapshot) {
