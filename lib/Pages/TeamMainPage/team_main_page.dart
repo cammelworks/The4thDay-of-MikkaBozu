@@ -28,9 +28,14 @@ class TeamMainPageState extends State<TeamMainPage> {
               height: size.height * (3 / 4),
               child: StreamBuilder<QuerySnapshot>(
                   //表示したいFirestoreの保存先を指定
-                  stream: Firestore.instance.collection('users').document(_email).collection('teams').snapshots(),
+                  stream: Firestore.instance
+                      .collection('users')
+                      .document(_email)
+                      .collection('teams')
+                      .snapshots(),
                   //streamが更新されるたびに呼ばれる
-                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
                     //データが取れていない時の処理
                     if (!snapshot.hasData)
                       return Padding(
@@ -43,8 +48,10 @@ class TeamMainPageState extends State<TeamMainPage> {
                           padding: EdgeInsets.zero,
                           shrinkWrap: true,
                           itemCount: snapshot.data.documents.length,
-                          itemBuilder: (context, index) =>
-                              _buildListItem(context, snapshot.data.documents[index]['team_name'] as String)),
+                          itemBuilder: (context, index) => _buildListItem(
+                              context,
+                              snapshot.data.documents[index]['team_name']
+                                  as String)),
                     );
                   }),
             ),
@@ -74,19 +81,36 @@ class TeamMainPageState extends State<TeamMainPage> {
         minWidth: 200.0,
         height: 50.0,
         buttonColor: Colors.white,
-        child: RaisedButton(
-          child: Text(
-            teamName,
-            style: TextStyle(fontSize: 18),
-          ),
-          shape: OutlineInputBorder(),
-          onPressed: () async {
-            await Navigator.push<dynamic>(
-                context,
-                MaterialPageRoute<dynamic>(
-                  builder: (context) => TeamPage(teamName),
-                ));
-          },
+        child: Stack(
+            overflow: Overflow.visible,
+            children: [
+              RaisedButton(
+                child: Text(
+                  teamName,
+                  style: TextStyle(fontSize: 18),
+                ),
+                shape: OutlineInputBorder(),
+                onPressed: () async {
+                  await Navigator.push<dynamic>(
+                      context,
+                      MaterialPageRoute<dynamic>(
+                        builder: (context) => TeamPage(teamName),
+                      ));
+                },
+              ),
+              Positioned(
+                top: -8,
+                right: 40,
+                child: Visibility(
+                  visible: userData.hasNewChat[teamName],
+                  child: Icon(
+                    Icons.brightness_1,
+                    color: Colors.red,
+                    size: 20,
+                  ),
+                ),
+              )
+            ]
         ),
       ),
     );
