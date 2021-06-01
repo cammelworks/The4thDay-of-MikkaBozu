@@ -115,17 +115,31 @@ class MyHomePageState extends State<MyHomePage> {
 
       await Firestore.instance.collection('users').document(_user.email).collection('teams').getDocuments().then((snapshots) => {
         snapshots.documents.forEach((team) async {
-          // TODO: last_visitedがない場合の条件分岐
-          DateTime  lastVisited = (team.data['last_visited'] as Timestamp).toDate();
+          Timestamp lastVisitedTS = team.data['last_visited'] as Timestamp;
           QuerySnapshot newChat = await Firestore.instance.collection('teams').document(team.data['team_name'].toString()).collection('chats').orderBy("timestamp", descending: true).limit(1).getDocuments();
-          // TODO: チームにチャットがない場合の条件分岐
-          DateTime  newChatTime = (newChat.documents[0].data['timestamp'] as Timestamp).toDate();
-          if(lastVisited.compareTo(newChatTime) < 0){
-            print(team.data['team_name'].toString()+"に未読のチャットがあります");
-            userData.hasNewChat[team.data['team_name'].toString()] = true;
-          } else{
-            print(team.data['team_name'].toString()+"に未読のチャットはありません");
+          Timestamp newChatTimeTS = newChat.documents[0].data['timestamp'] as Timestamp;
+          if(newChatTimeTS == null){
+            //チームにチャットがない場合(絶対に未読にならない)
             userData.hasNewChat[team.data['team_name'].toString()] = false;
+            print("チームのチャットはまだ利用されていません");
+          } else {
+            //チームにチャットがある場合
+            if(lastVisitedTS == null){
+              //チームのチャットページを見たことがない場合(絶対に未読になる)
+              userData.hasNewChat[team.data['team_name'].toString()] = true;
+              print("チームのチャットを見たことがありません");
+            } else{
+              DateTime lastVisited = lastVisitedTS.toDate();
+              DateTime newChatTime = newChatTimeTS.toDate();
+              //チャットページを最後に見た時間と最新のチャットの時間の比較
+              if(lastVisited.compareTo(newChatTime) < 0){
+                print(team.data['team_name'].toString()+"に未読のチャットがあります");
+                userData.hasNewChat[team.data['team_name'].toString()] = true;
+              } else{
+                print(team.data['team_name'].toString()+"に未読のチャットはありません");
+                userData.hasNewChat[team.data['team_name'].toString()] = false;
+              }
+            }
           }
         })
       });
