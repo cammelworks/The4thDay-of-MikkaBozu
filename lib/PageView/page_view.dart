@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:the4thdayofmikkabozu/Pages/MyPage/my_page.dart';
 import 'package:the4thdayofmikkabozu/Pages/RunPage/run_page.dart';
 import 'package:the4thdayofmikkabozu/Pages/TeamMainPage/team_main_page.dart';
+import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
 class MyPageView extends StatefulWidget {
   @override
@@ -33,7 +34,24 @@ class MyPageViewState extends State<MyPageView> {
               title: Text("ラン")
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.people),
+              icon: Stack(
+                overflow: Overflow.visible,
+                children: [
+                  Icon(Icons.people),
+                  Positioned(
+                      top: -8,
+                      left: 20,
+                      child: Visibility(
+                        visible: checkNewChat(),
+                        child: Icon(
+                          Icons.brightness_1,
+                          color: Colors.red,
+                          size: 20,
+                        ),
+                      ),
+                  )
+                ],
+              ),
               title: Text("チーム関連")
           ),
         ],
@@ -45,5 +63,15 @@ class MyPageViewState extends State<MyPageView> {
     setState(() {
       _page = page;
     });
+  }
+
+  bool checkNewChat(){
+    bool res = false;
+    userData.hasNewChat.forEach((key, value) {
+      if(value){
+        res = true;
+      }
+    });
+    return res;
   }
 }
