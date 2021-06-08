@@ -158,7 +158,21 @@ class TeamPageState extends State<TeamPage> {
                     builder: (context) => ChatPage(_teamName),
                   ));
             },
-            child: Icon(Icons.chat),
+            child: Stack(overflow: Overflow.visible, children: [
+              Icon(Icons.chat),
+              Positioned(
+                top: -15,
+                right: -15,
+                child: Visibility(
+                  visible: userData.hasNewChat[_teamName],
+                  child: Icon(
+                    Icons.brightness_1,
+                    color: Colors.red,
+                    size: 20,
+                  ),
+                ),
+              )
+            ]),
             backgroundColor: Colors.blue,
           ),
         );
