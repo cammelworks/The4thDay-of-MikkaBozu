@@ -1,17 +1,18 @@
+import 'dart:io';
+
+import 'package:audioplayer/audioplayer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:io';
+import 'package:path_provider/path_provider.Dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:the4thdayofmikkabozu/PageView/page_view.dart';
 import 'package:the4thdayofmikkabozu/Pages/MyPage/signin_screen.dart';
 import 'package:the4thdayofmikkabozu/permission.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
-import 'package:path_provider/path_provider.Dart';
-import 'package:audioplayer/audioplayer.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,8 +54,8 @@ class MyHomePageState extends State<MyHomePage> {
     super.initState();
     // 通知音の初期化
     initAudio();
-    _firebaseMessaging.requestNotificationPermissions(
-        const IosNotificationSettings(sound: true, badge: true, alert: true));
+    _firebaseMessaging
+        .requestNotificationPermissions(const IosNotificationSettings(sound: true, badge: true, alert: true));
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
@@ -113,40 +114,54 @@ class MyHomePageState extends State<MyHomePage> {
         userData.iconUrl = snapshot.data['icon_url'].toString();
       }
 
-      await Firestore.instance.collection('users').document(_user.email).collection('teams').getDocuments().then((snapshots) => {
-        snapshots.documents.forEach((team) async {
-          Timestamp lastVisitedTS = team.data['last_visited'] as Timestamp;
-          QuerySnapshot newChat = await Firestore.instance.collection('teams').document(team.data['team_name'].toString()).collection('chats').orderBy("timestamp", descending: true).limit(1).getDocuments();
-          Timestamp newChatTimeTS = newChat.documents[0].data['timestamp'] as Timestamp;
-          if(newChatTimeTS == null){
-            //チームにチャットがない場合(絶対に未読にならない)
-            userData.hasNewChat[team.data['team_name'].toString()] = false;
-            print("チームのチャットはまだ利用されていません");
-          } else {
-            //チームにチャットがある場合
-            if(lastVisitedTS == null){
-              //チームのチャットページを見たことがない場合(絶対に未読になる)
-              userData.hasNewChat[team.data['team_name'].toString()] = true;
-              print("チームのチャットを見たことがありません");
-            } else{
-              DateTime lastVisited = lastVisitedTS.toDate();
-              DateTime newChatTime = newChatTimeTS.toDate();
-              //チャットページを最後に見た時間と最新のチャットの時間の比較
-              if(lastVisited.compareTo(newChatTime) < 0){
-                print(team.data['team_name'].toString()+"に未読のチャットがあります");
-                userData.hasNewChat[team.data['team_name'].toString()] = true;
-              } else{
-                print(team.data['team_name'].toString()+"に未読のチャットはありません");
-                userData.hasNewChat[team.data['team_name'].toString()] = false;
-              }
-            }
-          }
-        })
-      });
+      await Firestore.instance
+          .collection('users')
+          .document(_user.email)
+          .collection('teams')
+          .getDocuments()
+          .then((snapshots) => {
+                snapshots.documents.forEach((team) async {
+                  Timestamp lastVisitedTS = team.data['last_visited'] as Timestamp;
+                  QuerySnapshot newChat = await Firestore.instance
+                      .collection('teams')
+                      .document(team.data['team_name'].toString())
+                      .collection('chats')
+                      .orderBy("timestamp", descending: true)
+                      .limit(1)
+                      .getDocuments();
+                  Timestamp newChatTimeTS = newChat.documents[0].data['timestamp'] as Timestamp;
+                  if (newChatTimeTS == null) {
+                    //チームにチャットがない場合(絶対に未読にならない)
+                    userData.hasNewChat[team.data['team_name'].toString()] = false;
+                    print("チームのチャットはまだ利用されていません");
+                  } else {
+                    //チームにチャットがある場合
+                    if (lastVisitedTS == null) {
+                      //チームのチャットページを見たことがない場合(絶対に未読になる)
+                      userData.hasNewChat[team.data['team_name'].toString()] = true;
+                      print("チームのチャットを見たことがありません");
+                    } else {
+                      DateTime lastVisited = lastVisitedTS.toDate();
+                      DateTime newChatTime = newChatTimeTS.toDate();
+                      //チャットページを最後に見た時間と最新のチャットの時間の比較
+                      if (lastVisited.compareTo(newChatTime) < 0) {
+                        print(team.data['team_name'].toString() + "に未読のチャットがあります");
+                        userData.hasNewChat[team.data['team_name'].toString()] = true;
+                      } else {
+                        print(team.data['team_name'].toString() + "に未読のチャットはありません");
+                        userData.hasNewChat[team.data['team_name'].toString()] = false;
+                      }
+                    }
+                  }
+                })
+              });
 
       userData.userName = userName;
       userData.userEmail = _user.email;
       userData.firebaseUser = _user;
+
+      setState(() {});
+
       return true;
     } else {
       //初回起動 or サインアウト後
