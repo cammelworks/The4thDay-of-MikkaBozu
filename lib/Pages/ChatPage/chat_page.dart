@@ -29,7 +29,7 @@ class ChatPageState extends State<ChatPage> {
     updateLastVisited();
     super.initState();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,7 +106,7 @@ class ChatPageState extends State<ChatPage> {
         ));
   }
 
-  void updateLastVisited(){
+  void updateLastVisited() {
     Firestore.instance
         .collection('users')
         .document(_email)
@@ -115,6 +115,8 @@ class ChatPageState extends State<ChatPage> {
         .updateData(<String, dynamic>{
       "last_visited": Timestamp.now(),
     });
+
+    userData.hasNewChat[_teamName] = false;
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot documentSnapshot) {
