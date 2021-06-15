@@ -129,13 +129,13 @@ class MyHomePageState extends State<MyHomePage> {
                       .orderBy("timestamp", descending: true)
                       .limit(1)
                       .getDocuments();
-                  Timestamp newChatTimeTS = newChat.documents[0].data['timestamp'] as Timestamp;
-                  if (newChatTimeTS == null) {
+                  if (newChat.documents.length <= 0) {
                     //チームにチャットがない場合(絶対に未読にならない)
                     userData.hasNewChat[team.data['team_name'].toString()] = false;
                     print("チームのチャットはまだ利用されていません");
                   } else {
                     //チームにチャットがある場合
+                    Timestamp newChatTimeTS = newChat.documents[0].data['timestamp'] as Timestamp;
                     if (lastVisitedTS == null) {
                       //チームのチャットページを見たことがない場合(絶対に未読になる)
                       userData.hasNewChat[team.data['team_name'].toString()] = true;
