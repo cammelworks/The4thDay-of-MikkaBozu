@@ -13,23 +13,24 @@ class OverviewManager extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Center(
-          child: Padding(
-            padding: EdgeInsets.all(20.0),
-            child: Text(
-              '概要',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-                color: Theme.of(context).primaryColor,
-              ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20.0, 0, 0, 0),
+          child: Text(
+            '概要',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: Theme.of(context).primaryColor,
             ),
           ),
         ),
-        Center(child: _showOverview()),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20.0, 0, 0, 0),
+          child: _showOverview(),
+        ),
       ],
     );
   }
