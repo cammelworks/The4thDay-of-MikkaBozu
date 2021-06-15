@@ -190,7 +190,7 @@ class ChatPageState extends State<ChatPage> {
 
   void pushMessage() {
     Firestore.instance.collection('teams').document(_teamName).collection('chats').document().setData(
-        <String, dynamic>{'message': _chatField.text, "sender": userData.userEmail, "timestamp": Timestamp.now()});
+        <String, dynamic>{'message': _chatField.text, "sender": userData.userEmail, "senderName": userData.userName, "timestamp": Timestamp.now()});
     _chatField.text = "";
     updateLastVisited();
   }
