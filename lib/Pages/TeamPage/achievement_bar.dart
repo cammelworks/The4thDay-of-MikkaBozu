@@ -43,42 +43,34 @@ class AchivementBar extends StatelessWidget {
                           }
                         });
                         return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               '到達人数',
                               style: TextStyle(
-                                fontWeight: FontWeight.bold,
                                 fontSize: 20,
-                                color: Theme.of(context).primaryColor,
                               ),
                             ),
                             Text(
                               achievementNum.toString() + "/" + snapshot.data.documents.length.toString(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 30,
+                                fontSize: 40,
                               ),
                             ),
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.all(5.0),
-                                  child: new LinearPercentIndicator(
-                                    width: MediaQuery.of(context).size.width - 50,
-                                    animation: true,
-                                    lineHeight: 20.0,
-                                    animationDuration: 2000,
-                                    percent: achievementNum / snapshot.data.documents.length,
-                                    linearStrokeCap: LinearStrokeCap.roundAll,
-                                    progressColor: hex.HexColor("f17300"),
-                                    trailing: Image.asset(
-                                      'images/flag-icon.png',
-                                      height: 30.0,
-                                      width: 30.0,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                            LinearPercentIndicator(
+                              width: 250,
+                              animation: true,
+                              lineHeight: 20.0,
+                              animationDuration: 2000,
+                              percent: achievementNum / snapshot.data.documents.length,
+                              linearStrokeCap: LinearStrokeCap.roundAll,
+                              progressColor: hex.HexColor("f17300"),
+                              trailing: Image.asset(
+                                'images/flag-icon.png',
+                                height: 30.0,
+                                width: 30.0,
+                              ),
                             ),
                           ],
                         );

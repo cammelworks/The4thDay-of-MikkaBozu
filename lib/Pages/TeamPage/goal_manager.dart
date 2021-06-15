@@ -12,21 +12,18 @@ class GoalManager extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Center(
-          child: Text(
-            '目標',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-              color: Theme.of(context).primaryColor,
-            ),
+        Text(
+          '目標',
+          style: TextStyle(
+            fontSize: 20,
           ),
         ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Center(child: _showGoal()),
+            _showGoal(),
             Visibility(
               visible: _isAdmin,
               child: IconButton(
@@ -76,11 +73,11 @@ class GoalManager extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Center(child: CircularProgressIndicator()),
             );
-          ;
           if (snapshot.data["goal"] != null) {
             return Text(
               "週" + snapshot.data["goal"].toString() + "km",
               style: TextStyle(
+                fontWeight: FontWeight.bold,
                 fontSize: 40,
               ),
             );

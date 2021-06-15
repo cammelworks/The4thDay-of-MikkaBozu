@@ -163,15 +163,28 @@ class TeamPageState extends State<TeamPage> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          Image.asset(
-                            'images/road.png',
-                            height: 100.0,
-                            width: 100.0,
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Image.asset(
+                              'images/road.png',
+                              width: 70.0,
+                            ),
                           ),
                           GoalManager(_teamName, isAdmin),
                         ],
                       ),
-                      AchivementBar(_teamName, adminSnapshot.data['admin'].toString()),
+                      Row(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Image.asset(
+                              'images/icon_111860_256.png',
+                              width: 70.0,
+                            ),
+                          ),
+                          AchivementBar(_teamName, adminSnapshot.data['admin'].toString()),
+                        ],
+                      ),
                     ],
                   )),
                   Card(child: MembersRecord(_teamName, adminSnapshot.data['admin'].toString())),
