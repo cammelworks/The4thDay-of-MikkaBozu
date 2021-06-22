@@ -6,17 +6,21 @@ import 'package:the4thdayofmikkabozu/SideMenu/sidemenu.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
 class TeamMainPage extends StatefulWidget {
-  Function callback;
-  TeamMainPage(this.callback);
+  Function _callback;
+  TeamMainPage(this._callback);
   @override
-  TeamMainPageState createState() => TeamMainPageState(callback);
+  TeamMainPageState createState() => TeamMainPageState();
 }
 
 class TeamMainPageState extends State<TeamMainPage> {
   String _email = userData.userEmail;
-  Function callback;
+  Function _callback;
 
-  TeamMainPageState(this.callback);
+  @override
+  void initState() {
+    _callback = widget._callback;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +98,7 @@ class TeamMainPageState extends State<TeamMainPage> {
                     builder: (context) => TeamPage(teamName),
                   ));
               setState(() {});
-              callback();
+              _callback();
             },
           ),
           Positioned(

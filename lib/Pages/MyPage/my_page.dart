@@ -26,18 +26,6 @@ class MyPageState extends State<MyPage> {
   String _selectedRecordTime = "";
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
-  void onDayPressed(DateTime date, List<Event> events) {
-    this.setState(() => _currentDate = date);
-    if (events.length > 0) {
-      _shouldShowRecord = true;
-      List<String> tmp = events[0].title.split(",");
-      _selectedRecordDistance = tmp[0] + "km";
-      _selectedRecordTime = tmp[1];
-    } else {
-      _shouldShowRecord = false;
-    }
-  }
-
   @override
   void initState() {
     Future(() async {
@@ -209,7 +197,7 @@ class MyPageState extends State<MyPage> {
 
   void addEvent(DateTime date, double distance, String time, String colorCode) {
     _markedDateMap.add(date, createEvent(date, distance, time, colorCode));
-  } // 追加
+  }
 
   Event createEvent(DateTime date, double distance, String time, String colorCode) {
     if (colorCode == '9BD1E8') {
@@ -249,7 +237,19 @@ class MyPageState extends State<MyPage> {
         ),
       );
     }
-  } // 追加
+  }
+
+  void onDayPressed(DateTime date, List<Event> events) {
+    this.setState(() => _currentDate = date);
+    if (events.length > 0) {
+      _shouldShowRecord = true;
+      List<String> tmp = events[0].title.split(",");
+      _selectedRecordDistance = tmp[0] + "km";
+      _selectedRecordTime = tmp[1];
+    } else {
+      _shouldShowRecord = false;
+    }
+  }
 
   void _registerToken(String token) async {
     QuerySnapshot snapshot =

@@ -36,12 +36,6 @@ class MeasurementPageState extends State<MeasurementPage> {
           }
 
           if (snapshot.data == GeolocationStatus.denied) {
-//            return Scaffold(
-//              body: Text(
-//                'Access to location denied',
-//                textAlign: TextAlign.center,
-//              ),
-//            );
             Permission().checkPermission();
           }
           return Scaffold(

@@ -13,7 +13,6 @@ class MeasurementPanel extends StatelessWidget {
       child: Column(
         children: <Widget>[
           //時間表示のボックス
-          //時間測定が追加されたらコメントアウトを外す
           Container(
             height: size.height / 6,
             decoration: BoxDecoration(

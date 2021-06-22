@@ -10,14 +10,12 @@ class ChatPage extends StatefulWidget {
   ChatPage(this._teamName);
 
   @override
-  State<StatefulWidget> createState() => ChatPageState(_teamName);
+  State<StatefulWidget> createState() => ChatPageState();
 }
 
 class ChatPageState extends State<ChatPage> {
   String _teamName;
   String _email = userData.userEmail;
-  //コンストラクタ
-  ChatPageState(this._teamName);
   ScrollController _scrollController;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -25,6 +23,7 @@ class ChatPageState extends State<ChatPage> {
 
   @override
   void initState() {
+    _teamName = widget._teamName;
     Future.delayed(Duration.zero, () {});
     updateLastVisited();
     super.initState();
