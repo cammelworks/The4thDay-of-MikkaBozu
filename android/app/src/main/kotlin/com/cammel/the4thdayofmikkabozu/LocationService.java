@@ -27,7 +27,7 @@ public class LocationService extends Service {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             NotificationManager notificationManager =
                     (NotificationManager)getApplication().getSystemService(Context.NOTIFICATION_SERVICE);
-            NotificationChannel channel = new NotificationChannel(channelId, title, NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel channel = new NotificationChannel(channelId, title, NotificationManager.IMPORTANCE_HIGH);
 
             if(notificationManager != null){
                 notificationManager.createNotificationChannel(channel);

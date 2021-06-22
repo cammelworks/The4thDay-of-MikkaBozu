@@ -200,8 +200,23 @@ class TeamPageState extends State<TeamPage> {
                   MaterialPageRoute<dynamic>(
                     builder: (context) => ChatPage(_teamName),
                   ));
+              setState(() {});
             },
-            child: Icon(Icons.chat),
+            child: Stack(overflow: Overflow.visible, children: [
+              Icon(Icons.chat),
+              Positioned(
+                top: -15,
+                right: -15,
+                child: Visibility(
+                  visible: userData.hasNewChat[_teamName],
+                  child: Icon(
+                    Icons.brightness_1,
+                    color: Colors.red,
+                    size: 20,
+                  ),
+                ),
+              )
+            ]),
             backgroundColor: Colors.blue,
           ),
         );

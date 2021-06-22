@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:the4thdayofmikkabozu/hex_color.dart' as hex;
-import 'package:the4thdayofmikkabozu/user_data.dart';
 
 class MemberPage extends StatefulWidget {
   String _email;
@@ -13,7 +12,7 @@ class MemberPage extends StatefulWidget {
   //コンストラクタ
   MemberPage(this._email, this._name);
   @override
-  State<StatefulWidget> createState() => MemberPageState(_email, _name);
+  State<StatefulWidget> createState() => MemberPageState();
 }
 
 class MemberPageState extends State<MemberPage> {
@@ -24,21 +23,10 @@ class MemberPageState extends State<MemberPage> {
   bool _shouldShowRecord = false;
   String _selectedRecord = "";
 
-  void onDayPressed(DateTime date, List<Event> events) {
-    this.setState(() => _currentDate = date);
-    if (events.length > 0) {
-      _shouldShowRecord = true;
-      _selectedRecord = events[0].title + "km";
-    } else {
-      _shouldShowRecord = false;
-    }
-  }
-
-  //コンストラクタ
-  MemberPageState(this._email, this._name);
-
   @override
   void initState() {
+    _name = widget._name;
+    _email = widget._email;
     Future(() async {
       await addRecordedDate();
     });
@@ -179,7 +167,7 @@ class MemberPageState extends State<MemberPage> {
 
   void addEvent(DateTime date, double distance, String colorCode) {
     _markedDateMap.add(date, createEvent(date, distance, colorCode));
-  } // 追加
+  }
 
   Event createEvent(DateTime date, double distance, String colorCode) {
     if(colorCode == '9BD1E8'){
@@ -221,5 +209,15 @@ class MemberPageState extends State<MemberPage> {
         ),
       );
     }
-  } // 追加
+  }
+
+  void onDayPressed(DateTime date, List<Event> events) {
+    this.setState(() => _currentDate = date);
+    if (events.length > 0) {
+      _shouldShowRecord = true;
+      _selectedRecord = events[0].title + "km";
+    } else {
+      _shouldShowRecord = false;
+    }
+  }
 }

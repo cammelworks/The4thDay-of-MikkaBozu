@@ -12,7 +12,6 @@ class MeasurementPanel extends StatelessWidget {
       child: Column(
         children: <Widget>[
           //時間表示のボックス
-          //時間測定が追加されたらコメントアウトを外す
           Center(
             child: Text(
               _time,
