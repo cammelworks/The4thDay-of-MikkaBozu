@@ -13,23 +13,38 @@ class OverviewManager extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Center(
-          child: Padding(
-            padding: EdgeInsets.all(20.0),
-            child: Text(
-              '概要',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-                color: Theme.of(context).primaryColor,
-              ),
-            ),
+        Text(
+          '概要',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            color: Theme.of(context).primaryColor,
           ),
         ),
-        Center(child: _showOverview()),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              _teamName,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 30,
+              ),
+            ),
+            StreamBuilder(
+                stream: Firestore.instance.collection('teams').document(_teamName).collection('users').snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return CircularProgressIndicator();
+                  }
+                  return Text(snapshot.data.documents.length.toString() + 'メンバー');
+                }),
+          ],
+        ),
+        _showOverview(),
       ],
     );
   }
