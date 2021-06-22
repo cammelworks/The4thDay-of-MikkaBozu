@@ -139,7 +139,11 @@ class TeamPageState extends State<TeamPage> {
           body: SingleChildScrollView(
             child: Center(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                Card(child: OverviewManager(_teamName, isAdmin)),
+                Card(
+                    child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20.0, 0, 20.0, 0),
+                  child: OverviewManager(_teamName, isAdmin),
+                )),
                 Card(
                     child: Column(
                   children: <Widget>[
