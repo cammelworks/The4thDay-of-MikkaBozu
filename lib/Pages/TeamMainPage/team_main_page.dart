@@ -72,109 +72,107 @@ class TeamMainPageState extends State<TeamMainPage> {
                 builder: (context) => TeamPage(teamName),
               ));
         },
-        child: Card(
-          child: Column(
-            children: <Widget>[
-              ListTile(
-                // // ！チームアイコンを表示(後々の実装のため)
-                // leading: Padding(
-                //   padding: const EdgeInsets.all(6.0),
-                //   child: Container(
-                //     clipBehavior: Clip.antiAlias,
-                //     decoration: const BoxDecoration(
-                //       shape: BoxShape.circle,
-                //     ),
-                //     // ！後々アイコンが導入できたらここに画像のリンクもしくは画像を差し替えてください
-                //     child: Image.network(
-                //       'https://picsum.photos/seed/566/600',
-                //     ),
-                //   ),
-                // ),
-                title: Text(
-                  teamName,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-                ),
-                subtitle: StreamBuilder(
-                    stream: Firestore.instance.collection('teams').document(teamName).snapshots(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return const CircularProgressIndicator();
-                      }
-                      return Text(snapshot.data['team_overview'].toString());
-                    }),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 8.0, 0),
-                      child: Container(
-                        child: Row(
-                          children: <Widget>[
-                            Icon(Icons.flag),
-                            StreamBuilder(
-                              stream: Firestore.instance.collection('teams').document(teamName).snapshots(),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) {
-                                  return const CircularProgressIndicator();
-                                }
-                                return Text(
-                                  '週' + snapshot.data['goal'].toString() + 'km',
-                                );
-                              },
-                            )
-                          ],
-                        ),
-                      ),
+        child: Stack(
+          overflow: Overflow.visible,
+          children: <Widget>[
+            Card(
+              child: Column(
+                children: <Widget>[
+                  ListTile(
+                    // // ！チームアイコンを表示(後々の実装のため)
+                    // leading: Padding(
+                    //   padding: const EdgeInsets.all(6.0),
+                    //   child: Container(
+                    //     clipBehavior: Clip.antiAlias,
+                    //     decoration: const BoxDecoration(
+                    //       shape: BoxShape.circle,
+                    //     ),
+                    //     // ！後々アイコンが導入できたらここに画像のリンクもしくは画像を差し替えてください
+                    //     child: Image.network(
+                    //       'https://picsum.photos/seed/566/600',
+                    //     ),
+                    //   ),
+                    // ),
+                    title: Text(
+                      teamName,
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
                     ),
-                    Container(
-                      child: Row(
-                        children: <Widget>[
-                          Icon(Icons.people),
-                          StreamBuilder(
-                            stream: Firestore.instance.collection('teams').document(teamName).snapshots(),
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData)
-                                return const Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Center(child: CircularProgressIndicator()),
-                                );
-                              return Text(
-                                snapshot.data['user_num'].toString() + 'メンバー',
-                              );
-                            },
-                          )
-                        ],
-                      ),
-                    )
-                  ],
+                    subtitle: StreamBuilder(
+                        stream: Firestore.instance.collection('teams').document(teamName).snapshots(),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return const CircularProgressIndicator();
+                          }
+                          return Text(snapshot.data['team_overview'].toString());
+                        }),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 8.0, 0),
+                          child: Container(
+                            child: Row(
+                              children: <Widget>[
+                                Icon(Icons.flag),
+                                StreamBuilder(
+                                  stream: Firestore.instance.collection('teams').document(teamName).snapshots(),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData) {
+                                      return const CircularProgressIndicator();
+                                    }
+                                    return Text(
+                                      '週' + snapshot.data['goal'].toString() + 'km',
+                                    );
+                                  },
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        Container(
+                          child: Row(
+                            children: <Widget>[
+                              Icon(Icons.people),
+                              StreamBuilder(
+                                stream: Firestore.instance.collection('teams').document(teamName).snapshots(),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData)
+                                    return const Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Center(child: CircularProgressIndicator()),
+                                    );
+                                  return Text(
+                                    snapshot.data['user_num'].toString() + 'メンバー',
+                                  );
+                                },
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Positioned(
+              top: 0,
+              right: 20,
+              child: Visibility(
+                visible: userData.hasNewChat[teamName],
+                child: Icon(
+                  Icons.brightness_1,
+                  color: Colors.red,
+                  size: 20,
                 ),
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
       ),
-      // child: ButtonTheme(
-      //   minWidth: 200.0,
-      //   height: 50.0,
-      //   buttonColor: Colors.white,
-      //   child: RaisedButton(
-      //     child: Text(
-      //       teamName,
-      //       style: TextStyle(fontSize: 18),
-      //     ),
-      //     shape: OutlineInputBorder(),
-      //     onPressed: () async {
-      //       await Navigator.push<dynamic>(
-      //           context,
-      //           MaterialPageRoute<dynamic>(
-      //             builder: (context) => TeamPage(teamName),
-      //           ));
-      //     },
-      //   ),
-      // ),
     );
   }
 }
