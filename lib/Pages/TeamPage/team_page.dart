@@ -9,15 +9,15 @@ import 'package:the4thdayofmikkabozu/Pages/TeamPage/overview_manager.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
 class TeamPage extends StatefulWidget {
-  String _teamName;
+  final String _teamName;
   //コンストラクタ
-  TeamPage(this._teamName);
+  const TeamPage(this._teamName);
   @override
   State<StatefulWidget> createState() => TeamPageState(_teamName);
 }
 
 class TeamPageState extends State<TeamPage> {
-  String _teamName;
+  final String _teamName;
   //コンストラクタ
   TeamPageState(this._teamName);
 
@@ -27,15 +27,14 @@ class TeamPageState extends State<TeamPage> {
       stream: Firestore.instance.collection('teams').document(_teamName).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> adminSnapshot) {
         if (!adminSnapshot.hasData) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
+          return const Padding(
+            padding: EdgeInsets.all(8.0),
             child: Center(child: CircularProgressIndicator()),
           );
-          ;
         }
 
-        bool isAdmin = userData.userEmail == adminSnapshot.data['admin'].toString();
-        int _userNum = adminSnapshot.data['user_num'] as int;
+        final bool isAdmin = userData.userEmail == adminSnapshot.data['admin'].toString();
+        final int _userNum = adminSnapshot.data['user_num'] as int;
 
         return Scaffold(
           appBar: AppBar(
@@ -53,17 +52,17 @@ class TeamPageState extends State<TeamPage> {
                       context: context,
                       builder: (context) {
                         return AlertDialog(
-                          content: Text("「" + _teamName + "」" + "を削除しますか?"),
+                          content: Text('「' + _teamName + '」' + 'を削除しますか?'),
                           actions: <Widget>[
                             FlatButton(
-                                child: Text("はい"),
+                                child: const Text('はい'),
                                 onPressed: () {
                                   DeleteTeam();
                                   int count = 0;
                                   Navigator.of(context).popUntil((_) => count++ >= 2);
                                 }),
                             FlatButton(
-                              child: Text("キャンセル"),
+                              child: const Text('キャンセル'),
                               onPressed: () => Navigator.pop(context),
                             ),
                           ],
@@ -87,14 +86,14 @@ class TeamPageState extends State<TeamPage> {
                           content: Text('あなたがチームを抜けると「' + _teamName + '」が削除されます。\n よろしいですか？'),
                           actions: <Widget>[
                             FlatButton(
-                                child: Text("はい"),
+                                child: const Text('はい'),
                                 onPressed: () {
                                   DeleteTeam();
                                   int count = 0;
                                   Navigator.of(context).popUntil((_) => count++ >= 2);
                                 }),
                             FlatButton(
-                              child: Text('キャンセル'),
+                              child: const Text('キャンセル'),
                               onPressed: () => Navigator.pop(context),
                             ),
                           ],
@@ -102,28 +101,28 @@ class TeamPageState extends State<TeamPage> {
                       } else {
                         if (isAdmin) {
                           return AlertDialog(
-                            title: Text('管理者はチームから抜けられません'),
-                            content: Text('チームメンバーに管理者権限を渡してください'),
+                            title: const Text('管理者はチームから抜けられません'),
+                            content: const Text('チームメンバーに管理者権限を渡してください'),
                             actions: <Widget>[
                               FlatButton(
-                                child: Text('はい'),
+                                child: const Text('はい'),
                                 onPressed: () => Navigator.pop(context),
                               ),
                             ],
                           );
                         } else {
                           return AlertDialog(
-                            content: Text("「" + _teamName + "」" + "を抜けますか?"),
+                            content: Text('「' + _teamName + '」を抜けますか?'),
                             actions: <Widget>[
                               FlatButton(
-                                  child: Text("はい"),
+                                  child: const Text('はい'),
                                   onPressed: () {
                                     LeaveTeam();
                                     int count = 0;
                                     Navigator.of(context).popUntil((_) => count++ >= 2);
                                   }),
                               FlatButton(
-                                child: Text("キャンセル"),
+                                child: const Text('キャンセル'),
                                 onPressed: () => Navigator.pop(context),
                               ),
                             ],
@@ -137,30 +136,22 @@ class TeamPageState extends State<TeamPage> {
             ],
           ),
           body: SingleChildScrollView(
-            child: Center(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                Card(
-                    child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20.0, 0, 20.0, 0),
-                  child: OverviewManager(_teamName, isAdmin),
-                )),
-                Card(
-                    child: Column(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+              OverviewManager(_teamName, isAdmin),
+              Card(
+                  child: Padding(
+                padding: const EdgeInsets.fromLTRB(20.0, 0, 20.0, 0),
+                child: Column(
                   children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20.0, 0, 0, 0),
-                          child: Text(
-                            '到達度',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                          ),
-                        )
-                      ],
+                    ListTile(
+                      title: Text(
+                        '到達度',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
                     ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -188,10 +179,10 @@ class TeamPageState extends State<TeamPage> {
                       ],
                     ),
                   ],
-                )),
-                Card(child: MembersRecord(_teamName, adminSnapshot.data['admin'].toString())),
-              ]),
-            ),
+                ),
+              )),
+              Card(child: MembersRecord(_teamName, adminSnapshot.data['admin'].toString())),
+            ]),
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () async {
