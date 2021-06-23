@@ -27,30 +27,24 @@ class TeamMainPageState extends State<TeamMainPage> {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('チーム関連ページ'),
+        title: const Text('チーム一覧'),
       ),
-      body: SingleChildScrollView(
-        child: StreamBuilder<QuerySnapshot>(
-            //表示したいFirestoreの保存先を指定
-            stream: Firestore.instance.collection('users').document(_email).collection('teams').snapshots(),
-            //streamが更新されるたびに呼ばれる
-            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              //データが取れていない時の処理
-              if (!snapshot.hasData)
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(child: CircularProgressIndicator()),
-                );
-              return Scrollbar(
-                isAlwaysShown: true,
-                child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: snapshot.data.documents.length,
-                    itemBuilder: (context, index) =>
-                        _buildListItem(context, snapshot.data.documents[index]['team_name'] as String)),
+      body: StreamBuilder<QuerySnapshot>(
+          //表示したいFirestoreの保存先を指定
+          stream: Firestore.instance.collection('users').document(_email).collection('teams').snapshots(),
+          //streamが更新されるたびに呼ばれる
+          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            //データが取れていない時の処理
+            if (!snapshot.hasData)
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(child: CircularProgressIndicator()),
               );
-            }),
-      ),
+            return ListView.builder(
+                itemCount: snapshot.data.documents.length,
+                itemBuilder: (context, index) =>
+                    _buildListItem(context, snapshot.data.documents[index]['team_name'] as String));
+          }),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await Navigator.push<dynamic>(
@@ -70,27 +64,96 @@ class TeamMainPageState extends State<TeamMainPage> {
     // final Size size = MediaQuery.of(context).size;
     return Container(
       // margin: EdgeInsets.fromLTRB(size.width / 5, 16.0, size.width / 5, 0.0),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          20,
-          20,
-          20,
-          0,
-        ),
-        child: RaisedButton(
-          child: Card(
-            child: Text(
-              teamName,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+      child: GestureDetector(
+        onTap: () async {
+          await Navigator.push<dynamic>(
+              context,
+              MaterialPageRoute<dynamic>(
+                builder: (context) => TeamPage(teamName),
+              ));
+        },
+        child: Card(
+          child: Column(
+            children: <Widget>[
+              ListTile(
+                // // ！チームアイコンを表示(後々の実装のため)
+                // leading: Padding(
+                //   padding: const EdgeInsets.all(6.0),
+                //   child: Container(
+                //     clipBehavior: Clip.antiAlias,
+                //     decoration: const BoxDecoration(
+                //       shape: BoxShape.circle,
+                //     ),
+                //     // ！後々アイコンが導入できたらここに画像のリンクもしくは画像を差し替えてください
+                //     child: Image.network(
+                //       'https://picsum.photos/seed/566/600',
+                //     ),
+                //   ),
+                // ),
+                title: Text(
+                  teamName,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                ),
+                subtitle: StreamBuilder(
+                    stream: Firestore.instance.collection('teams').document(teamName).snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const CircularProgressIndicator();
+                      }
+                      return Text(snapshot.data['team_overview'].toString());
+                    }),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 8.0, 0),
+                      child: Container(
+                        child: Row(
+                          children: <Widget>[
+                            Icon(Icons.flag),
+                            StreamBuilder(
+                              stream: Firestore.instance.collection('teams').document(teamName).snapshots(),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return const CircularProgressIndicator();
+                                }
+                                return Text(
+                                  '週' + snapshot.data['goal'].toString() + 'km',
+                                );
+                              },
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.people),
+                          StreamBuilder(
+                            stream: Firestore.instance.collection('teams').document(teamName).snapshots(),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData)
+                                return const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Center(child: CircularProgressIndicator()),
+                                );
+                              return Text(
+                                snapshot.data['user_num'].toString() + 'メンバー',
+                              );
+                            },
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
           ),
-          onPressed: () async {
-            await Navigator.push<dynamic>(
-                context,
-                MaterialPageRoute<dynamic>(
-                  builder: (context) => TeamPage(teamName),
-                ));
-          },
         ),
       ),
       // child: ButtonTheme(
