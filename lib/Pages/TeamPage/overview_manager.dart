@@ -15,7 +15,7 @@ class OverviewManager extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20.0, 5, 20, 10),
+        padding: const EdgeInsets.fromLTRB(24.0, 8, 24, 16),
         child: Column(
           children: <Widget>[
             Row(

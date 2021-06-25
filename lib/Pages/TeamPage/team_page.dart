@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:the4thdayofmikkabozu/Pages/ChatPage/chat_page.dart';
-import 'package:the4thdayofmikkabozu/Pages/TeamPage/achievement_bar.dart';
-import 'package:the4thdayofmikkabozu/Pages/TeamPage/goal_manager.dart';
-import 'package:the4thdayofmikkabozu/Pages/TeamPage/members_record.dart';
-import 'package:the4thdayofmikkabozu/Pages/TeamPage/overview_manager.dart';
-import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
+import 'package:the4thdayofmikkabozu/user_data.dart' as user_data;
+
+import '../ChatPage/chat_page.dart';
+import 'achievement_card.dart';
+import 'members_record.dart';
+import 'overview_manager.dart';
 
 class TeamPage extends StatefulWidget {
   final String _teamName;
@@ -33,7 +33,7 @@ class TeamPageState extends State<TeamPage> {
           );
         }
 
-        final bool isAdmin = userData.userEmail == adminSnapshot.data['admin'].toString();
+        final bool isAdmin = user_data.userEmail == adminSnapshot.data['admin'].toString();
         final int _userNum = adminSnapshot.data['user_num'] as int;
 
         return Scaffold(
@@ -136,52 +136,14 @@ class TeamPageState extends State<TeamPage> {
             ],
           ),
           body: SingleChildScrollView(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+            child: Column(children: <Widget>[
               OverviewManager(_teamName, isAdmin),
-              Card(
-                  child: Padding(
-                padding: const EdgeInsets.fromLTRB(20.0, 0, 20.0, 0),
-                child: Column(
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(
-                        '到達度',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Image.asset(
-                            'images/road.png',
-                            width: 70.0,
-                          ),
-                        ),
-                        GoalManager(_teamName, isAdmin),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Image.asset(
-                            'images/icon_111860_256.png',
-                            width: 70.0,
-                          ),
-                        ),
-                        AchivementBar(_teamName, adminSnapshot.data['admin'].toString()),
-                      ],
-                    ),
-                  ],
-                ),
-              )),
-              Card(child: MembersRecord(_teamName, adminSnapshot.data['admin'].toString())),
+              AchievementCard(
+                teamName: _teamName,
+                isAdmin: isAdmin,
+                adminEmail: adminSnapshot.data['admin'].toString(),
+              ),
+              MembersRecord(_teamName, adminSnapshot.data['admin'].toString()),
             ]),
           ),
           floatingActionButton: FloatingActionButton(
@@ -199,7 +161,7 @@ class TeamPageState extends State<TeamPage> {
                 top: -15,
                 right: -15,
                 child: Visibility(
-                  visible: userData.hasNewChat[_teamName],
+                  visible: user_data.hasNewChat[_teamName],
                   child: Icon(
                     Icons.brightness_1,
                     color: Colors.red,
@@ -215,38 +177,38 @@ class TeamPageState extends State<TeamPage> {
     );
   }
 
-  void LeaveTeam() async {
+  Future<void> LeaveTeam() async {
     //チームからユーザ情報を削除
     Firestore.instance
         .collection('teams')
         .document(_teamName)
-        .collection("users")
-        .document(userData.userEmail)
+        .collection('users')
+        .document(user_data.userEmail)
         .delete();
 
     //ユーザからチーム情報を削除
     Firestore.instance
         .collection('users')
-        .document(userData.userEmail)
-        .collection("teams")
+        .document(user_data.userEmail)
+        .collection('teams')
         .document(_teamName)
         .delete();
 
     // チームの参加人数を取得
-    DocumentSnapshot snapshot = await Firestore.instance.collection('teams').document(_teamName).get();
+    final DocumentSnapshot snapshot = await Firestore.instance.collection('teams').document(_teamName).get();
 
     // チームの参加人数を1減らしてプッシュ
-    int userNum = (snapshot.data['user_num'] as int) - 1;
+    final int userNum = (snapshot.data['user_num'] as int) - 1;
     Firestore.instance.collection('teams').document(_teamName).updateData(<String, num>{'user_num': userNum});
   }
 
   Future<String> getAdmin() async {
-    var snapshot = await Firestore.instance.collection('teams').document((_teamName)).get();
+    final snapshot = await Firestore.instance.collection('teams').document(_teamName).get();
     return snapshot.data['admin'].toString();
   }
 
   Future<void> DeleteTeam() async {
-    var membersEmails = <String>[];
+    final membersEmails = <String>[];
 
     //teamからusersサブコレクションを削除
     await Firestore.instance
@@ -256,7 +218,7 @@ class TeamPageState extends State<TeamPage> {
         .getDocuments()
         .then((snapshot) {
       for (DocumentSnapshot ds in snapshot.documents) {
-        var test = ds.data['email'].toString();
+        final test = ds.data['email'].toString();
         print(test);
         membersEmails.add(ds.data['email'].toString());
         ds.reference.delete();
@@ -282,9 +244,9 @@ class TeamPageState extends State<TeamPage> {
     });
   }
 
-  Future<bool> CheckIsLastmenber() async {
+  Future<bool> CheckIsLastMember() async {
     // チームの参加人数を取得
-    QuerySnapshot snapshot =
+    final QuerySnapshot snapshot =
         await Firestore.instance.collection('teams').document(_teamName).collection('users').getDocuments();
 
     return snapshot.documents.length == 1;
