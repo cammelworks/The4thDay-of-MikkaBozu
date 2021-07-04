@@ -39,28 +39,31 @@ class MyPageState extends State<MyPage> {
   }
 
   Future<void> addRecordedDate() async {
-    final QuerySnapshot snapshots = await Firestore.instance
+    final QuerySnapshot recordsSnapshots = await Firestore.instance
         .collection('users')
         .document(user_data.userEmail)
         .collection('records')
         .orderBy('distance', descending: true)
         .getDocuments();
 
-    double maxDistance;
-    for (int i = 0; i < snapshots.documents.length; i++) {
+    double maxDistance = 0;
+
+    for (int i = 0; i < recordsSnapshots.documents.length; i++) {
+      // 走った距離の長さ順に並べ替えているのでそのまま値をとる
       if (i == 0) {
-        maxDistance = snapshots.documents[i].data['distance'] as double;
+        maxDistance = recordsSnapshots.documents[i].data['distance'] as double;
       }
-      final DateTime date = (snapshots.documents[i].data['timestamp'] as Timestamp).toDate();
-      final double distance = snapshots.documents[i].data['distance'] as double;
+      final DateTime date = (recordsSnapshots.documents[i].data['timestamp'] as Timestamp).toDate();
+      final double distance = recordsSnapshots.documents[i].data['distance'] as double;
       final double roundedDistance = (distance / 100).round() / 10;
       String time = '';
+      int timeInt = 0;
       try {
-        final int timeInt = snapshots.documents[i].data['time'] as int;
-        time = _convertIntToTime(timeInt);
+        timeInt = recordsSnapshots.documents[i].data['time'] as int;
       } catch (e) {
-        time = ' ';
+        print(e);
       }
+      time = _convertIntToTime(timeInt);
       addEvent(getDate(date), roundedDistance, time, getColorCode(maxDistance, distance));
     }
     setState(() {});
@@ -82,7 +85,11 @@ class MyPageState extends State<MyPage> {
         second.toString().padLeft(2, '0');
   }
 
-  // 時間情報を取り除く
+  void addEvent(DateTime date, double distance, String time, String colorCode) {
+    _markedDateMap.add(date, createEvent(date, distance, time, colorCode));
+  }
+
+  // 時間以下を切り捨てる
   DateTime getDate(DateTime date) {
     final int year = date.year;
     final int month = date.month;
@@ -191,10 +198,6 @@ class MyPageState extends State<MyPage> {
       ),
       drawer: Sidemenu(),
     );
-  }
-
-  void addEvent(DateTime date, double distance, String time, String colorCode) {
-    _markedDateMap.add(date, createEvent(date, distance, time, colorCode));
   }
 
   Event createEvent(DateTime date, double distance, String time, String colorCode) {
