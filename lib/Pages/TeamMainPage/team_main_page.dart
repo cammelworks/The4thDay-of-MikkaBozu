@@ -52,6 +52,7 @@ class TeamMainPageState extends State<TeamMainPage> {
                             MaterialPageRoute<dynamic>(
                               builder: (context) => LookupTeamPage(),
                             ));
+                        setState(() {});
                       },
                       child: Card(
                         child: Container(
