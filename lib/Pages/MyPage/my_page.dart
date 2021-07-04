@@ -7,12 +7,10 @@ import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:the4thdayofmikkabozu/SideMenu/sidemenu.dart';
 import 'package:the4thdayofmikkabozu/hex_color.dart' as hex;
-import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
+import 'package:the4thdayofmikkabozu/user_data.dart' as user_data;
 
 class MyPage extends StatefulWidget {
-  final String title = '記録ページ';
-
-  MyPage();
+  const MyPage();
 
   @override
   State<StatefulWidget> createState() => MyPageState();
@@ -20,10 +18,10 @@ class MyPage extends StatefulWidget {
 
 class MyPageState extends State<MyPage> {
   DateTime _currentDate = DateTime.now();
-  EventList<Event> _markedDateMap = EventList<Event>();
+  final EventList<Event> _markedDateMap = EventList<Event>();
   bool _shouldShowRecord = false;
-  String _selectedRecordDistance = "";
-  String _selectedRecordTime = "";
+  String _selectedRecordDistance = '';
+  String _selectedRecordTime = '';
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   @override
@@ -41,59 +39,59 @@ class MyPageState extends State<MyPage> {
   }
 
   Future<void> addRecordedDate() async {
-    QuerySnapshot snapshots = await Firestore.instance
+    final QuerySnapshot snapshots = await Firestore.instance
         .collection('users')
-        .document(userData.userEmail)
+        .document(user_data.userEmail)
         .collection('records')
-        .orderBy("distance", descending: true)
+        .orderBy('distance', descending: true)
         .getDocuments();
 
-    double max_distance;
+    double maxDistance;
     for (int i = 0; i < snapshots.documents.length; i++) {
       if (i == 0) {
-        max_distance = snapshots.documents[i].data['distance'] as double;
+        maxDistance = snapshots.documents[i].data['distance'] as double;
       }
-      DateTime date = (snapshots.documents[i].data['timestamp'] as Timestamp).toDate();
-      double distance = snapshots.documents[i].data['distance'] as double;
-      double roundedDistance = (distance / 100).round() / 10;
-      String time = "";
+      final DateTime date = (snapshots.documents[i].data['timestamp'] as Timestamp).toDate();
+      final double distance = snapshots.documents[i].data['distance'] as double;
+      final double roundedDistance = (distance / 100).round() / 10;
+      String time = '';
       try {
-        int timeInt = snapshots.documents[i].data['time'] as int;
+        final int timeInt = snapshots.documents[i].data['time'] as int;
         time = _convertIntToTime(timeInt);
       } catch (e) {
-        time = " ";
+        time = ' ';
       }
-      addEvent(getDate(date), roundedDistance, time, getColorCode(max_distance, distance));
+      addEvent(getDate(date), roundedDistance, time, getColorCode(maxDistance, distance));
     }
-    this.setState(() {});
+    setState(() {});
   }
 
   // 時間表示をStringに成形する
   String _convertIntToTime(int time) {
     // 129 -> 00:02:09
     int timeTmp = time;
-    int hour = (timeTmp / 3600).floor();
+    final int hour = (timeTmp / 3600).floor();
     timeTmp = timeTmp % 3600;
-    int minute = (timeTmp / 60).floor();
+    final int minute = (timeTmp / 60).floor();
     timeTmp = timeTmp % 60;
-    int second = timeTmp;
-    return hour.toString().padLeft(2, "0") +
-        ":" +
-        minute.toString().padLeft(2, "0") +
-        ":" +
-        second.toString().padLeft(2, "0");
+    final int second = timeTmp;
+    return hour.toString().padLeft(2, '0') +
+        ':' +
+        minute.toString().padLeft(2, '0') +
+        ':' +
+        second.toString().padLeft(2, '0');
   }
 
   // 時間情報を取り除く
   DateTime getDate(DateTime date) {
-    int year = date.year;
-    int month = date.month;
-    int day = date.day;
-    return (DateTime(year, month, day));
+    final int year = date.year;
+    final int month = date.month;
+    final int day = date.day;
+    return DateTime(year, month, day);
   }
 
   String getColorCode(double max, double distance) {
-    double distanceRatio = distance / max;
+    final double distanceRatio = distance / max;
     if (distanceRatio >= 0.75) {
       return '21576E';
     } else if (distanceRatio >= 0.5) {
@@ -113,10 +111,10 @@ class MyPageState extends State<MyPage> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: const Text('記録ページ'),
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -135,12 +133,12 @@ class MyPageState extends State<MyPage> {
                     todayButtonColor: hex.HexColor('EBEDF0'),
                     selectedDateTime: _currentDate,
                     daysHaveCircularBorder: false,
-                    customGridViewPhysics: NeverScrollableScrollPhysics(),
+                    customGridViewPhysics: const NeverScrollableScrollPhysics(),
                     markedDatesMap: _markedDateMap,
                     markedDateShowIcon: true,
                     markedDateIconMaxShown: 2,
                     markedDateIconMargin: 0,
-                    locale: "ja",
+                    locale: 'ja',
                     todayTextStyle: TextStyle(
                       color: Colors.blue,
                     ),
@@ -163,15 +161,15 @@ class MyPageState extends State<MyPage> {
                           padding: EdgeInsets.fromLTRB(size.width / 10, 20, 10, 20),
                           child: Text(
                             _currentDate.month.toString() + '月' + _currentDate.day.toString() + '日',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 20,
                             ),
                           )),
                       Container(
-                          padding: EdgeInsets.fromLTRB(10, 6, 10, 6),
+                          padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
                           child: Text(
                             _selectedRecordDistance,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 20,
                             ),
                           )),
@@ -179,7 +177,7 @@ class MyPageState extends State<MyPage> {
                           padding: EdgeInsets.fromLTRB(10, 6, size.width / 10, 6),
                           child: Text(
                             _selectedRecordTime,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 20,
                             ),
                           )),
@@ -203,14 +201,14 @@ class MyPageState extends State<MyPage> {
     if (colorCode == '9BD1E8') {
       return Event(
         date: date,
-        title: distance.toString() + "," + time,
+        title: distance.toString() + ',' + time,
         icon: Container(
           color: hex.HexColor(colorCode),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(date.day.toString()),
-              Text(distance.toString() + "km"),
+              Text(distance.toString() + 'km'),
             ],
           ),
         ),
@@ -218,7 +216,7 @@ class MyPageState extends State<MyPage> {
     } else {
       return Event(
         date: date,
-        title: distance.toString() + "," + time,
+        title: distance.toString() + ',' + time,
         icon: Container(
           color: hex.HexColor(colorCode),
           child: Column(
@@ -229,7 +227,7 @@ class MyPageState extends State<MyPage> {
                 style: TextStyle(color: Colors.white),
               ),
               Text(
-                distance.toString() + "km",
+                distance.toString() + 'km',
                 style: TextStyle(color: Colors.white),
               ),
             ],
@@ -240,22 +238,22 @@ class MyPageState extends State<MyPage> {
   }
 
   void onDayPressed(DateTime date, List<Event> events) {
-    this.setState(() => _currentDate = date);
-    if (events.length > 0) {
+    setState(() => _currentDate = date);
+    if (events.isNotEmpty) {
       _shouldShowRecord = true;
-      List<String> tmp = events[0].title.split(",");
-      _selectedRecordDistance = tmp[0] + "km";
+      final List<String> tmp = events[0].title.split(',');
+      _selectedRecordDistance = tmp[0] + 'km';
       _selectedRecordTime = tmp[1];
     } else {
       _shouldShowRecord = false;
     }
   }
 
-  void _registerToken(String token) async {
-    QuerySnapshot snapshot =
-        await Firestore.instance.collection('users').document(userData.userEmail).collection('tokens').getDocuments();
+  Future<void> _registerToken(String token) async {
+    final QuerySnapshot snapshot =
+        await Firestore.instance.collection('users').document(user_data.userEmail).collection('tokens').getDocuments();
 
-    for (var document in snapshot.documents) {
+    for (final document in snapshot.documents) {
       if (document.data['token'] == token) {
         return;
       }
@@ -264,7 +262,7 @@ class MyPageState extends State<MyPage> {
     // tokenをプッシュ
     Firestore.instance
         .collection('users')
-        .document(userData.userEmail)
+        .document(user_data.userEmail)
         .collection('tokens')
         .document()
         .setData(<String, dynamic>{'token': token});
