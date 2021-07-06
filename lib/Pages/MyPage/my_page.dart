@@ -123,78 +123,44 @@ class MyPageState extends State<MyPage> {
       appBar: AppBar(
         title: const Text('記録ページ'),
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                child: Center(
-                  child: CalendarCarousel<Event>(
-                    onDayPressed: onDayPressed,
-                    weekendTextStyle: TextStyle(color: Colors.red),
-                    thisMonthDayBorderColor: Colors.grey,
-                    dayButtonColor: hex.HexColor('EBEDF0'),
-                    weekFormat: false,
-                    height: 420.0,
-                    todayButtonColor: hex.HexColor('EBEDF0'),
-                    selectedDateTime: _currentDate,
-                    daysHaveCircularBorder: false,
-                    customGridViewPhysics: const NeverScrollableScrollPhysics(),
-                    markedDatesMap: _markedDateMap,
-                    markedDateShowIcon: true,
-                    markedDateIconMaxShown: 2,
-                    markedDateIconMargin: 0,
-                    locale: 'ja',
-                    todayTextStyle: TextStyle(
-                      color: Colors.blue,
-                    ),
-                    markedDateIconBuilder: (event) {
-                      return event.icon;
-                    },
-                    todayBorderColor: Colors.green,
-                    markedDateMoreShowTotal: false,
-                  ),
-                ),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: CalendarCarousel<Event>(
+              isScrollable: false,
+              onDayPressed: onDayPressed,
+              weekdayTextStyle: TextStyle(color: Colors.black87),
+              daysTextStyle: TextStyle(color: Colors.black),
+              weekendTextStyle: TextStyle(color: Colors.black),
+              todayButtonColor: Colors.blue,
+              selectedDateTime: _currentDate,
+              selectedDayButtonColor: Colors.black26,
+              selectedDayBorderColor: Colors.transparent,
+              daysHaveCircularBorder: true,
+              customGridViewPhysics: const NeverScrollableScrollPhysics(),
+              markedDatesMap: _markedDateMap,
+              markedDateWidget: Container(
+                height: 10.0,
+                width: 10.0,
+                decoration: const BoxDecoration(color: Colors.greenAccent, shape: BoxShape.circle),
               ),
-              Visibility(
-                visible: _shouldShowRecord,
-                child: Container(
-                  decoration: BoxDecoration(color: Colors.white, border: Border.all(color: Colors.blue, width: 1.0)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Container(
-                          padding: EdgeInsets.fromLTRB(size.width / 10, 20, 10, 20),
-                          child: Text(
-                            _currentDate.month.toString() + '月' + _currentDate.day.toString() + '日',
-                            style: const TextStyle(
-                              fontSize: 20,
-                            ),
-                          )),
-                      Container(
-                          padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
-                          child: Text(
-                            _selectedRecordDistance,
-                            style: const TextStyle(
-                              fontSize: 20,
-                            ),
-                          )),
-                      Container(
-                          padding: EdgeInsets.fromLTRB(10, 6, size.width / 10, 6),
-                          child: Text(
-                            _selectedRecordTime,
-                            style: const TextStyle(
-                              fontSize: 20,
-                            ),
-                          )),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+              // showIconBehindDayText: true,
+              locale: 'ja',
+              todayBorderColor: Colors.transparent,
+            ),
           ),
-        ),
+          Visibility(
+            visible: _shouldShowRecord,
+            child: Card(
+                child: ListTile(
+                    leading: Icon(
+                      Icons.directions_run,
+                      size: 40,
+                    ),
+                    title: Text(_selectedRecordDistance + '  ' + _selectedRecordTime),
+                    subtitle: Text(_currentDate.month.toString() + '月' + _currentDate.day.toString() + '日'))),
+          ),
+        ],
       ),
       drawer: Sidemenu(),
     );
@@ -252,6 +218,7 @@ class MyPageState extends State<MyPage> {
     }
   }
 
+  // todo main.dartに移したい
   Future<void> _registerToken(String token) async {
     final QuerySnapshot snapshot =
         await Firestore.instance.collection('users').document(user_data.userEmail).collection('tokens').getDocuments();
