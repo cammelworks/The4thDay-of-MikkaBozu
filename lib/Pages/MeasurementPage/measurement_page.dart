@@ -35,7 +35,6 @@ class MeasurementPageState extends State<MeasurementPage> {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
-
           if (snapshot.data == GeolocationStatus.denied) {
             Permission().checkPermission();
           }
@@ -43,40 +42,48 @@ class MeasurementPageState extends State<MeasurementPage> {
             appBar: AppBar(
               elevation: 0,
             ),
-            body: Container(
-              decoration: BoxDecoration(color: Colors.blue),
-              child: Center(
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                  MeasurementPanel(_distance, _timeStr),
-                  MapPanel(),
-                  Center(
-                    child: MeasurementButton(_value, () async {
-                      if (_value == 0) {
-                        if (Platform.isAndroid) {
-                          platform.invokeMethod<dynamic>("ON");
-                        }
-                        //countTime()を1秒ごとに実行
-                        _timer = Timer.periodic(
-                          Duration(seconds: 1),
-                          countTime,
-                        );
-                      } else if (_value == 1) {
-                        if (Platform.isAndroid) {
-                          platform.invokeMethod<dynamic>("OFF");
-                        }
-                        _timer.cancel();
-                        await _pushMessage();
-                        await _pushRecord();
-                      } else {
-                        Navigator.pop(context);
-                      }
-                      setState(() {
-                        _value++;
-                      });
-                    }),
+            body: FutureBuilder<Position>(
+              future: _getLocation(),
+              builder: (BuildContext context, AsyncSnapshot<Position> snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                return Container(
+                  decoration: BoxDecoration(color: Colors.blue),
+                  child: Center(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+                      MeasurementPanel(_distance, _timeStr),
+                      MapPanel(snapshot.data),
+                      Center(
+                        child: MeasurementButton(_value, () async {
+                          if (_value == 0) {
+                            if (Platform.isAndroid) {
+                              platform.invokeMethod<dynamic>("ON");
+                            }
+                            //countTime()を1秒ごとに実行
+                            _timer = Timer.periodic(
+                              Duration(seconds: 1),
+                              countTime,
+                            );
+                          } else if (_value == 1) {
+                            if (Platform.isAndroid) {
+                              platform.invokeMethod<dynamic>("OFF");
+                            }
+                            _timer.cancel();
+                            await _pushMessage();
+                            await _pushRecord();
+                          } else {
+                            Navigator.pop(context);
+                          }
+                          setState(() {
+                            _value++;
+                          });
+                        }),
+                      ),
+                    ]),
                   ),
-                ]),
-              ),
+                );
+              }
             ),
           );
         });
@@ -104,7 +111,7 @@ class MeasurementPageState extends State<MeasurementPage> {
         second.toString().padLeft(2, "0");
   }
 
-  Future<void> _getLocation() async {
+  Future<Position> _getLocation() async {
     Position _currentPosition =
         await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high); // ここで精度を「high」に指定している
     if (position == null) {
@@ -120,6 +127,7 @@ class MeasurementPageState extends State<MeasurementPage> {
     _distance += (distance * 10).round() / 10;
     // 画面の更新
     setState(() {});
+    return position;
   }
 
   // 走った距離と時間をデータベースにプッシュする
