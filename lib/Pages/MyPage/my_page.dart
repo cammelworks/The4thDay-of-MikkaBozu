@@ -116,53 +116,71 @@ class MyPageState extends State<MyPage> {
     super.dispose();
   }
 
+  final _tab = <Tab>[
+    const Tab(text: '日'),
+    const Tab(text: '週'),
+    const Tab(text: '月'),
+  ];
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('記録ページ'),
-      ),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: CalendarCarousel<Event>(
-              isScrollable: false,
-              onDayPressed: onDayPressed,
-              weekdayTextStyle: TextStyle(color: Colors.black87),
-              daysTextStyle: TextStyle(color: Colors.black),
-              weekendTextStyle: TextStyle(color: Colors.black),
-              todayButtonColor: Colors.blue,
-              selectedDateTime: _currentDate,
-              selectedDayButtonColor: Colors.black26,
-              selectedDayBorderColor: Colors.transparent,
-              daysHaveCircularBorder: true,
-              customGridViewPhysics: const NeverScrollableScrollPhysics(),
-              markedDatesMap: _markedDateMap,
-              markedDateWidget: Container(
-                height: 10.0,
-                width: 10.0,
-                decoration: const BoxDecoration(color: Colors.greenAccent, shape: BoxShape.circle),
-              ),
-              // showIconBehindDayText: true,
-              locale: 'ja',
-              todayBorderColor: Colors.transparent,
-            ),
+    return DefaultTabController(
+      length: _tab.length,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('記録ページ'),
+          bottom: TabBar(
+            tabs: _tab,
           ),
-          Visibility(
-            visible: _shouldShowRecord,
-            child: Card(
-                child: ListTile(
-                    leading: Icon(
-                      Icons.directions_run,
-                      size: 40,
+        ),
+        body: TabBarView(
+          children: <Widget>[
+            const Text('unko'),
+            const Text('unko'),
+            Column(
+              children: <Widget>[
+                Expanded(
+                  child: CalendarCarousel<Event>(
+                    isScrollable: false,
+                    onDayPressed: onDayPressed,
+                    weekdayTextStyle: TextStyle(color: Colors.black87),
+                    daysTextStyle: TextStyle(color: Colors.black),
+                    weekendTextStyle: TextStyle(color: Colors.black),
+                    todayButtonColor: Colors.blue,
+                    selectedDateTime: _currentDate,
+                    selectedDayButtonColor: Colors.black26,
+                    selectedDayBorderColor: Colors.transparent,
+                    daysHaveCircularBorder: true,
+                    customGridViewPhysics: const NeverScrollableScrollPhysics(),
+                    markedDatesMap: _markedDateMap,
+                    markedDateWidget: Container(
+                      height: 10.0,
+                      width: 10.0,
+                      decoration: const BoxDecoration(color: Colors.greenAccent, shape: BoxShape.circle),
                     ),
-                    title: Text(_selectedRecordDistance + '  ' + _selectedRecordTime),
-                    subtitle: Text(_currentDate.month.toString() + '月' + _currentDate.day.toString() + '日'))),
-          ),
-        ],
+                    // showIconBehindDayText: true,
+                    locale: 'ja',
+                    todayBorderColor: Colors.transparent,
+                  ),
+                ),
+                Visibility(
+                  visible: _shouldShowRecord,
+                  child: Card(
+                      child: ListTile(
+                          leading: Icon(
+                            Icons.directions_run,
+                            size: 40,
+                          ),
+                          title: Text(_selectedRecordDistance + '  ' + _selectedRecordTime),
+                          subtitle: Text(_currentDate.month.toString() + '月' + _currentDate.day.toString() + '日'))),
+                ),
+              ],
+            ),
+          ],
+        ),
+        drawer: Sidemenu(),
       ),
-      drawer: Sidemenu(),
     );
   }
 
