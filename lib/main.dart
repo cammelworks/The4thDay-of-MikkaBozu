@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:the4thdayofmikkabozu/PageView/page_view.dart';
 import 'package:the4thdayofmikkabozu/Pages/MyPage/signin_screen.dart';
 import 'package:the4thdayofmikkabozu/permission.dart';
-import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
+import 'package:the4thdayofmikkabozu/user_data.dart' as user_data;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +24,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: '三日坊主の四日目',
       home: MyHomePage(title: '三日坊主の四日目'),
@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  const MyHomePage({Key key, this.title}) : super(key: key);
 
   final String title;
 
@@ -43,10 +43,9 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  FirebaseUser _user = null;
+  FirebaseUser _user;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  String _message;
-  AudioPlayer _audioPlayer = AudioPlayer();
+  final AudioPlayer _audioPlayer = AudioPlayer();
   File _audioFile;
 
   @override
@@ -59,12 +58,10 @@ class MyHomePageState extends State<MyHomePage> {
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
-        setState(() {
-          _message = "onMessage: $message";
-        });
+        setState(() {});
         // 通知音を鳴らす
         await _audioPlayer.play(_audioFile.path, isLocal: true);
-        print("onMessage: $message");
+        print('onMessage: $message');
       },
     );
   }
@@ -73,21 +70,22 @@ class MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: FutureBuilder(
-      future: showButton(),
-      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-        if (snapshot.hasData && snapshot.data) {
-          return MyPageView();
-        } else if (snapshot.connectionState != ConnectionState.done) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasData && !snapshot.data) {
-          return SigninScreen();
-        }
-      },
-    ));
+            future: checkLoggedInPast(),
+            builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              } else {
+                if (snapshot.data) {
+                  return MyPageView();
+                } else {
+                  return SigninScreen();
+                }
+              }
+            }));
   }
 
   //ログインの有無によって表示を変える関数
-  Future<bool> showButton() async {
+  Future<bool> checkLoggedInPast() async {
     //端末のデータにアクセスするための変数
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -104,61 +102,59 @@ class MyHomePageState extends State<MyHomePage> {
       ))
           .user;
 
-      var snapshot = await Firestore.instance.collection('users').document(_user.email).get();
+      // todo これいるかな？ 各変更のタイミングでしっかり受け渡しできてるなら消したいので要確認
+      final userSnapshot = await Firestore.instance.collection('users').document(_user.email).get();
 
-      String userName = "Guest";
-      if (snapshot.data['name'] != null) {
-        userName = snapshot.data['name'].toString();
+      String userName = 'Guest';
+      if (userSnapshot.data['name'] != null) {
+        userName = userSnapshot.data['name'].toString();
       }
-      if (snapshot.data['icon_url'] != null) {
-        userData.iconUrl = snapshot.data['icon_url'].toString();
+      if (userSnapshot.data['icon_url'] != null) {
+        user_data.iconUrl = userSnapshot.data['icon_url'].toString();
+      }
+      // end
+
+      final userTeamsSnapshots =
+          await Firestore.instance.collection('users').document(_user.email).collection('teams').getDocuments();
+
+      for (final team in userTeamsSnapshots.documents) {
+        final Timestamp lastVisitedTS = team.data['last_visited'] as Timestamp;
+        final QuerySnapshot newChat = await Firestore.instance
+            .collection('teams')
+            .document(team.data['team_name'].toString())
+            .collection('chats')
+            .orderBy('timestamp', descending: true)
+            .limit(1)
+            .getDocuments();
+        if (newChat.documents.isEmpty) {
+          //チームにチャットがない場合(絶対に未読にならない)
+          user_data.hasNewChat[team.data['team_name'].toString()] = false;
+          print('チームのチャットはまだ利用されていません');
+        } else {
+          //チームにチャットがある場合
+          final Timestamp newChatTimeTS = newChat.documents[0].data['timestamp'] as Timestamp;
+          if (lastVisitedTS == null) {
+            //チームのチャットページを見たことがない場合(絶対に未読になる)
+            user_data.hasNewChat[team.data['team_name'].toString()] = true;
+            print('チームのチャットを見たことがありません');
+          } else {
+            final DateTime lastVisited = lastVisitedTS.toDate();
+            final DateTime newChatTime = newChatTimeTS.toDate();
+            //チャットページを最後に見た時間と最新のチャットの時間の比較
+            if (lastVisited.compareTo(newChatTime) < 0) {
+              print(team.data['team_name'].toString() + 'に未読のチャットがあります');
+              user_data.hasNewChat[team.data['team_name'].toString()] = true;
+            } else {
+              print(team.data['team_name'].toString() + 'に未読のチャットはありません');
+              user_data.hasNewChat[team.data['team_name'].toString()] = false;
+            }
+          }
+        }
       }
 
-      await Firestore.instance
-          .collection('users')
-          .document(_user.email)
-          .collection('teams')
-          .getDocuments()
-          .then((snapshots) => {
-                snapshots.documents.forEach((team) async {
-                  Timestamp lastVisitedTS = team.data['last_visited'] as Timestamp;
-                  QuerySnapshot newChat = await Firestore.instance
-                      .collection('teams')
-                      .document(team.data['team_name'].toString())
-                      .collection('chats')
-                      .orderBy("timestamp", descending: true)
-                      .limit(1)
-                      .getDocuments();
-                  if (newChat.documents.length <= 0) {
-                    //チームにチャットがない場合(絶対に未読にならない)
-                    userData.hasNewChat[team.data['team_name'].toString()] = false;
-                    print("チームのチャットはまだ利用されていません");
-                  } else {
-                    //チームにチャットがある場合
-                    Timestamp newChatTimeTS = newChat.documents[0].data['timestamp'] as Timestamp;
-                    if (lastVisitedTS == null) {
-                      //チームのチャットページを見たことがない場合(絶対に未読になる)
-                      userData.hasNewChat[team.data['team_name'].toString()] = true;
-                      print("チームのチャットを見たことがありません");
-                    } else {
-                      DateTime lastVisited = lastVisitedTS.toDate();
-                      DateTime newChatTime = newChatTimeTS.toDate();
-                      //チャットページを最後に見た時間と最新のチャットの時間の比較
-                      if (lastVisited.compareTo(newChatTime) < 0) {
-                        print(team.data['team_name'].toString() + "に未読のチャットがあります");
-                        userData.hasNewChat[team.data['team_name'].toString()] = true;
-                      } else {
-                        print(team.data['team_name'].toString() + "に未読のチャットはありません");
-                        userData.hasNewChat[team.data['team_name'].toString()] = false;
-                      }
-                    }
-                  }
-                })
-              });
-
-      userData.userName = userName;
-      userData.userEmail = _user.email;
-      userData.firebaseUser = _user;
+      user_data.userName = userName;
+      user_data.userEmail = _user.email;
+      user_data.firebaseUser = _user;
 
       setState(() {});
 
@@ -169,10 +165,10 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void initAudio() async {
+  Future<void> initAudio() async {
     final dir = await getApplicationDocumentsDirectory();
     // 通知音を保存するファイルの作成
-    _audioFile = new File('${dir.path}/notification.mp3');
+    _audioFile = File('${dir.path}/notification.mp3');
     // 作成したファイルに書き込む
     await _audioFile.writeAsBytes((await loadAsset()).buffer.asUint8List());
   }
