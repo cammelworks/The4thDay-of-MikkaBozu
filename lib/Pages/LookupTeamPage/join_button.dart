@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
+import 'package:flutter/material.dart';
+import 'package:the4thdayofmikkabozu/user_data.dart' as user_data;
 
 class JoinButton extends StatelessWidget {
-  String _teamName;
-  String _email = userData.userEmail;
+  final String _teamName;
+  final String _email = user_data.userEmail;
 
   JoinButton(this._teamName) : super();
 
@@ -23,14 +23,14 @@ class JoinButton extends StatelessWidget {
     );
   }
 
-  void _joinTeam() async {
+  Future<void> _joinTeam() async {
     //teamに自分の情報を追加
     Firestore.instance
         .collection('teams')
         .document(_teamName)
         .collection('users')
         .document(_email)
-        .setData(<String, dynamic>{'email': _email, 'name': userData.userName});
+        .setData(<String, dynamic>{'email': _email, 'name': user_data.userName});
 
     //自分の情報にチームの情報を追加
     Firestore.instance
@@ -39,18 +39,12 @@ class JoinButton extends StatelessWidget {
         .collection('teams')
         .document(_teamName)
         .setData(<String, dynamic>{'team_name': _teamName});
-    
+
     // チームの参加人数を取得
-    DocumentSnapshot snapshot = await Firestore.instance
-        .collection('teams')
-        .document(_teamName)
-        .get();
-    
+    final DocumentSnapshot snapshot = await Firestore.instance.collection('teams').document(_teamName).get();
+
     // チームの参加人数を1増やしてプッシュ
-    int userNum = (snapshot.data['user_num'] as int) + 1;
-    Firestore.instance
-      .collection('teams')
-      .document(_teamName)
-      .updateData(<String, num>{'user_num': userNum});
+    final int userNum = (snapshot.data['user_num'] as int) + 1;
+    Firestore.instance.collection('teams').document(_teamName).updateData(<String, num>{'user_num': userNum});
   }
 }
