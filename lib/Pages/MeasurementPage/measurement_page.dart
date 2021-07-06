@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:the4thdayofmikkabozu/Pages/MeasurementPage/measurement_button.dart';
 import 'package:the4thdayofmikkabozu/Pages/MeasurementPage/measurement_panel.dart';
+import 'package:the4thdayofmikkabozu/Pages/MeasurementPage/map_panel.dart';
 import 'package:the4thdayofmikkabozu/permission.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
@@ -47,6 +48,7 @@ class MeasurementPageState extends State<MeasurementPage> {
               child: Center(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
                   MeasurementPanel(_distance, _timeStr),
+                  MapPanel(),
                   Center(
                     child: MeasurementButton(_value, () async {
                       if (_value == 0) {

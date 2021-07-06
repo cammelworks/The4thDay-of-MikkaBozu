@@ -42,6 +42,7 @@ dependencies:
   image_cropper: ^1.1.0
   audioplayer: ^0.8.1
   path_provider: ^1.6.7
+  google_maps_flutter: ^0.5.27+1
 
 dev_dependencies:
   flutter_test:
