@@ -84,6 +84,8 @@ class TeamCreatePageState extends State<TeamCreatePage> {
                               if (await checkUniqueTeamName(_nameController.text)) {
                                 createTeam();
                                 updateDataUserData();
+                                // hasNewChatの辞書に登録する
+                                user_data.hasNewChat[_nameController.text] = false;
                                 // 2ページ前に戻る
                                 int count = 0;
                                 Navigator.of(context).popUntil((_) => count++ >= 2);
@@ -139,8 +141,9 @@ class TeamCreatePageState extends State<TeamCreatePage> {
         .collection('teams')
         .document(_nameController.text)
         .setData(<String, dynamic>{
-      'team_name': _nameController.text,
       'goal': int.parse(_goalController.text),
+      'last_visited': Timestamp.now(),
+      'team_name': _nameController.text,
       'team_overview': _overviewController.text,
     });
   }
