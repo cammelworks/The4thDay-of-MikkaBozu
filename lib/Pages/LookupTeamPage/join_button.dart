@@ -16,7 +16,7 @@ class JoinButton extends StatelessWidget {
           textColor: Theme.of(context).primaryColor,
           onPressed: () async {
             //チームに参加
-            _joinTeam();
+            await _joinTeam();
             //前のページに戻る
             Navigator.pop(context);
           }),
