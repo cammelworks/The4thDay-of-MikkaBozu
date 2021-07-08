@@ -15,7 +15,7 @@ class MembersRecord extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: getMembers(context),
+      child: Card(child: getMembers(context)),
     );
   }
 
