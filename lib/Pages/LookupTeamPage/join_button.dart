@@ -52,5 +52,9 @@ class JoinButton extends StatelessWidget {
       .collection('teams')
       .document(_teamName)
       .updateData(<String, num>{'user_num': userNum});
+
+    // チーム参加時にhasNewChatを初期化する
+    userData.hasNewChat[_teamName] = false;
+    print(userData.hasNewChat[_teamName]);
   }
 }
