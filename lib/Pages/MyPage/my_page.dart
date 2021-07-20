@@ -64,7 +64,8 @@ class MyPageState extends State<MyPage> {
         print(e);
       }
       time = _convertIntToTime(timeInt);
-      addEvent(getDate(date), roundedDistance, time, getColorCode(maxDistance, distance));
+      _markedDateMap.add(
+          getDate(date), createEvent(getDate(date), roundedDistance, time, getColorCode(maxDistance, distance)));
     }
     setState(() {});
   }
@@ -83,10 +84,6 @@ class MyPageState extends State<MyPage> {
         minute.toString().padLeft(2, '0') +
         ':' +
         second.toString().padLeft(2, '0');
-  }
-
-  void addEvent(DateTime date, double distance, String time, String colorCode) {
-    _markedDateMap.add(date, createEvent(date, distance, time, colorCode));
   }
 
   // 時間以下を切り捨てる
