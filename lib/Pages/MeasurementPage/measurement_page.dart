@@ -26,6 +26,8 @@ class MeasurementPageState extends State<MeasurementPage> {
   int _timeInt = 0;
   String _timeStr = "00:00:00";
   GoogleMapController mapController;
+  List<LatLng> polylineCoordinates = [];
+  Map<PolylineId, Polyline> polylines = {};
   static const platform = const MethodChannel("Java.Foreground");
 
   @override
@@ -70,6 +72,7 @@ class MeasurementPageState extends State<MeasurementPage> {
                             mapController = controller;
                           },
                           markers: _createMarker(),
+                          polylines: Set<Polyline>.of(polylines.values),
                           zoomGesturesEnabled: true,
                         ),
                       ),
@@ -147,6 +150,17 @@ class MeasurementPageState extends State<MeasurementPage> {
         .distanceBetween(prevPosition.latitude, prevPosition.longitude, position.latitude, position.longitude);
     //小数点2位以下を切り捨てて距離に加算する
     _distance += (distance * 10).round() / 10;
+    // 緯度経度の配列に現在地を追加
+    polylineCoordinates.add(LatLng(position.latitude, position.longitude));
+    PolylineId id = PolylineId('poly');
+    // polylineを更新
+    Polyline polyline = Polyline(
+      polylineId: id,
+      points: polylineCoordinates,
+      color: Colors.red,
+      width: 3,
+    );
+    polylines[id] = polyline;
     return position;
   }
 
