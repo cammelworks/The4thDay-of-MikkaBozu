@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:the4thdayofmikkabozu/Pages/MeasurementPage/measurement_button.dart';
 import 'package:the4thdayofmikkabozu/Pages/MeasurementPage/measurement_panel.dart';
-import 'package:the4thdayofmikkabozu/Pages/MeasurementPage/map_panel.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:the4thdayofmikkabozu/permission.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
@@ -25,10 +25,12 @@ class MeasurementPageState extends State<MeasurementPage> {
   double _distance = 0;
   int _timeInt = 0;
   String _timeStr = "00:00:00";
+  GoogleMapController mapController;
   static const platform = const MethodChannel("Java.Foreground");
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
     return FutureBuilder<GeolocationStatus>(
         future: Geolocator().checkGeolocationPermissionStatus(),
         builder: (BuildContext context, AsyncSnapshot<GeolocationStatus> snapshot) {
@@ -48,12 +50,29 @@ class MeasurementPageState extends State<MeasurementPage> {
                 if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
                 }
+                _updateCamera();
                 return Container(
                   decoration: BoxDecoration(color: Colors.blue),
                   child: Center(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
                       MeasurementPanel(_distance, _timeStr),
-                      MapPanel(snapshot.data),
+                      // mapの表示
+                      Container(
+                        height: size.height / 3,
+                        padding: EdgeInsets.fromLTRB(0, 0, 0, size.height / 20),
+                        child: GoogleMap(
+                          mapType: MapType.normal,
+                          initialCameraPosition: CameraPosition(
+                            target: LatLng(snapshot.data.latitude, snapshot.data.longitude),
+                            zoom: 15,
+                          ),
+                          onMapCreated: (GoogleMapController controller) {
+                            mapController = controller;
+                          },
+                          markers: _createMarker(),
+                          zoomGesturesEnabled: true,
+                        ),
+                      ),
                       Center(
                         child: MeasurementButton(_value, () async {
                           if (_value == 0) {
@@ -90,7 +109,10 @@ class MeasurementPageState extends State<MeasurementPage> {
   }
 
   void countTime(Timer timer) {
-    _getLocation();
+    // 画面の更新
+    if (this.mounted) {
+      setState(() {});
+    }
     _timeInt++;
     _convertIntToTime();
   }
@@ -125,10 +147,6 @@ class MeasurementPageState extends State<MeasurementPage> {
         .distanceBetween(prevPosition.latitude, prevPosition.longitude, position.latitude, position.longitude);
     //小数点2位以下を切り捨てて距離に加算する
     _distance += (distance * 10).round() / 10;
-    // 画面の更新
-    if (this.mounted) {
-      setState(() {});
-    }
     return position;
   }
 
@@ -199,6 +217,29 @@ class MeasurementPageState extends State<MeasurementPage> {
           .collection('chats')
           .document()
           .setData(<String, dynamic>{'message': message, "sender": 'bot@gmail.com', "timestamp": Timestamp.now()});
+    }
+  }
+
+  Set<Marker> _createMarker() {
+    return {
+      Marker(
+        markerId: MarkerId("marker_1"),
+        position: LatLng(position.latitude, position.longitude),
+      ),
+    };
+  }
+
+  void _updateCamera() {
+    if (mapController != null) {
+      mapController.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target:
+            LatLng(position.latitude, position.longitude),
+            zoom: 15,
+          ),
+        ),
+      );
     }
   }
 }
