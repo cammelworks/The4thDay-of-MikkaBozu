@@ -22,8 +22,8 @@ class SignoutButton extends StatelessWidget {
               // shape: OutlineInputBorder(
               //   borderRadius: BorderRadius.all(Radius.circular(10.0)),
               // ),
-              shape: const StadiumBorder(
-                side: BorderSide(color: Colors.blue),
+              shape: StadiumBorder(
+                side: BorderSide(color: Theme.of(context).primaryColor),
               ),
               onPressed: () async {
                 await signOut();

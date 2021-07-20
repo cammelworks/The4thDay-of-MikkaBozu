@@ -24,10 +24,11 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: '三日坊主の四日目',
-      home: MyHomePage(title: '三日坊主の四日目'),
+      home: const MyHomePage(title: '三日坊主の四日目'),
+      theme: ThemeData(primaryColor: const Color(0xff21426a)),
     );
   }
 }

@@ -142,7 +142,7 @@ class MyPageState extends State<MyPage> {
                     markedDateIconMargin: 0,
                     locale: "ja",
                     todayTextStyle: TextStyle(
-                      color: Colors.blue,
+                      color: Theme.of(context).primaryColor,
                     ),
                     markedDateIconBuilder: (event) {
                       return event.icon;
@@ -155,7 +155,8 @@ class MyPageState extends State<MyPage> {
               Visibility(
                 visible: _shouldShowRecord,
                 child: Container(
-                  decoration: BoxDecoration(color: Colors.white, border: Border.all(color: Colors.blue, width: 1.0)),
+                  decoration: BoxDecoration(
+                      color: Colors.white, border: Border.all(color: Theme.of(context).primaryColor, width: 1.0)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [

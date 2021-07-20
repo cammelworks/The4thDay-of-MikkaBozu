@@ -43,7 +43,7 @@ class MeasurementPageState extends State<MeasurementPage> {
               elevation: 0,
             ),
             body: Container(
-              decoration: BoxDecoration(color: Colors.blue),
+              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
               child: Center(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
                   MeasurementPanel(_distance, _timeStr),

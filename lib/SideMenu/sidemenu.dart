@@ -27,10 +27,10 @@ class SidemenuState extends State<Sidemenu> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           Container(
-            color: Colors.blue,
+            color: Theme.of(context).primaryColor,
             child: SafeArea(
               child: Container(
-                color: Colors.blue,
+                color: Theme.of(context).primaryColor,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
                   child: Center(
@@ -264,9 +264,9 @@ class ImageUpload {
         ],
         androidUiSettings: AndroidUiSettings(
             toolbarTitle: '切り抜き',
-            toolbarColor: Colors.blue,
+            toolbarColor: const Color(0xff21426a),
             toolbarWidgetColor: Colors.white,
-            activeControlsWidgetColor: Colors.blue,
+            activeControlsWidgetColor: const Color(0xff21426a),
             initAspectRatio: CropAspectRatioPreset.original),
         iosUiSettings: IOSUiSettings(
           minimumAspectRatio: 1.0,

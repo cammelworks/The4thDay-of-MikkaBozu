@@ -186,7 +186,7 @@ class AchievementCard extends StatelessWidget {
         ]),
         hideHeader: true,
         title: const Text('チーム目標を設定してください'),
-        selectedTextStyle: TextStyle(color: Colors.blue),
+        selectedTextStyle: TextStyle(color: Theme.of(context).primaryColor),
         confirmText: '決定',
         cancelText: 'キャンセル',
         onConfirm: (Picker picker, List values) {

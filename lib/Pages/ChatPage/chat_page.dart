@@ -63,13 +63,13 @@ class ChatPageState extends State<ChatPage> {
             ),
             SafeArea(
               child: Container(
-                color: Colors.primaries[5],
+                color: Theme.of(context).primaryColor,
                 child: Container(
                   margin: EdgeInsets.fromLTRB(3, 3, 3, 3),
                   padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
                   decoration: BoxDecoration(
                       border: Border.all(
-                        color: Colors.primaries[5],
+                        color: Theme.of(context).primaryColor,
                         width: 2,
                       ),
                       borderRadius: BorderRadius.circular(12),
@@ -188,8 +188,12 @@ class ChatPageState extends State<ChatPage> {
   }
 
   void pushMessage() {
-    Firestore.instance.collection('teams').document(_teamName).collection('chats').document().setData(
-        <String, dynamic>{'message': _chatField.text, "sender": userData.userEmail, "senderName": userData.userName, "timestamp": Timestamp.now()});
+    Firestore.instance.collection('teams').document(_teamName).collection('chats').document().setData(<String, dynamic>{
+      'message': _chatField.text,
+      "sender": userData.userEmail,
+      "senderName": userData.userName,
+      "timestamp": Timestamp.now()
+    });
     _chatField.text = "";
     updateLastVisited();
   }

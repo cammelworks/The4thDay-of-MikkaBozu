@@ -170,7 +170,7 @@ class TeamPageState extends State<TeamPage> {
                 ),
               )
             ]),
-            backgroundColor: Colors.blue,
+            backgroundColor: Theme.of(context).primaryColor,
           ),
         );
       },
