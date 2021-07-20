@@ -14,9 +14,12 @@ class JoinButton extends StatelessWidget {
       child: FlatButton(
           child: const Text('参加'),
           textColor: Theme.of(context).primaryColor,
-          onPressed: () async {
+          onPressed: () {
             //チームに参加
-            await _joinTeam();
+            _joinTeam();
+            // hasNewChatの辞書に追加
+            // 入った最初からChatの赤ぽちあるのも変な話なので初期値はFalseにしておく
+            user_data.hasNewChat[_teamName] = false;
             //前のページに戻る
             Navigator.pop(context);
           }),
@@ -50,9 +53,5 @@ class JoinButton extends StatelessWidget {
     // チームの参加人数を1増やしてプッシュ
     final int userNum = (snapshot.data['user_num'] as int) + 1;
     Firestore.instance.collection('teams').document(_teamName).updateData(<String, num>{'user_num': userNum});
-
-    // hasNewChatの辞書に追加
-    // 入った最初からChatの赤ぽちあるのも変な話なので初期値はFalseにしておく
-    user_data.hasNewChat[_teamName] = false;
   }
 }
