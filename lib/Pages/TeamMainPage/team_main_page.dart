@@ -6,12 +6,22 @@ import 'package:the4thdayofmikkabozu/SideMenu/sidemenu.dart';
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
 class TeamMainPage extends StatefulWidget {
+  Function _callback;
+  TeamMainPage(this._callback);
   @override
   TeamMainPageState createState() => TeamMainPageState();
 }
 
 class TeamMainPageState extends State<TeamMainPage> {
   String _email = userData.userEmail;
+  Function _callback;
+
+  @override
+  void initState() {
+    _callback = widget._callback;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -74,20 +84,36 @@ class TeamMainPageState extends State<TeamMainPage> {
         minWidth: 200.0,
         height: 50.0,
         buttonColor: Colors.white,
-        child: RaisedButton(
-          child: Text(
-            teamName,
-            style: TextStyle(fontSize: 18),
+        child: Stack(overflow: Overflow.visible, children: [
+          RaisedButton(
+            child: Text(
+              teamName,
+              style: TextStyle(fontSize: 18),
+            ),
+            shape: OutlineInputBorder(),
+            onPressed: () async {
+              await Navigator.push<dynamic>(
+                  context,
+                  MaterialPageRoute<dynamic>(
+                    builder: (context) => TeamPage(teamName),
+                  ));
+              setState(() {});
+              _callback();
+            },
           ),
-          shape: OutlineInputBorder(),
-          onPressed: () async {
-            await Navigator.push<dynamic>(
-                context,
-                MaterialPageRoute<dynamic>(
-                  builder: (context) => TeamPage(teamName),
-                ));
-          },
-        ),
+          Positioned(
+            top: -8,
+            right: 40,
+            child: Visibility(
+              visible: userData.hasNewChat[teamName],
+              child: Icon(
+                Icons.brightness_1,
+                color: Colors.red,
+                size: 20,
+              ),
+            ),
+          )
+        ]),
       ),
     );
   }
