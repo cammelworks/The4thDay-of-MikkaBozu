@@ -126,7 +126,9 @@ class MeasurementPageState extends State<MeasurementPage> {
     //小数点2位以下を切り捨てて距離に加算する
     _distance += (distance * 10).round() / 10;
     // 画面の更新
-    setState(() {});
+    if (this.mounted) {
+      setState(() {});
+    }
     return position;
   }
 
