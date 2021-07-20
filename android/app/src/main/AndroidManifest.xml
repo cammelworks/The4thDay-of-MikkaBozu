@@ -11,6 +11,10 @@
         android:label="the4thdayofmikkabozu"
         android:icon="@mipmap/ic_launcher">
         <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
@@ -28,5 +32,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/mikkabozu_logo" />
     </application>
 </manifest>

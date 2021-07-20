@@ -10,16 +10,24 @@ class ChatPage extends StatefulWidget {
   ChatPage(this._teamName);
 
   @override
-  State<StatefulWidget> createState() => ChatPageState(_teamName);
+  State<StatefulWidget> createState() => ChatPageState();
 }
 
 class ChatPageState extends State<ChatPage> {
   String _teamName;
-  //コンストラクタ
-  ChatPageState(this._teamName);
+  String _email = userData.userEmail;
+  ScrollController _scrollController;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _chatField = TextEditingController();
+
+  @override
+  void initState() {
+    _teamName = widget._teamName;
+    Future.delayed(Duration.zero, () {});
+    updateLastVisited();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,26 +38,26 @@ class ChatPageState extends State<ChatPage> {
         body: Column(
           children: <Widget>[
             Expanded(
-              child: SingleChildScrollView(
+              child: Container(
                 child: StreamBuilder<QuerySnapshot>(
                     //表示したいFirestoreの保存先を指定
                     stream: Firestore.instance
                         .collection('teams')
                         .document(_teamName)
                         .collection('chats')
-                        .orderBy("timestamp", descending: false)
+                        .orderBy("timestamp", descending: true)
                         .snapshots(),
                     //streamが更新されるたびに呼ばれる
                     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       //データが取れていない時の処理
                       if (!snapshot.hasData) return const Text('Loading...');
-                      return Scrollbar(
-                        child: ListView.builder(
-                            padding: EdgeInsets.zero,
-                            shrinkWrap: true,
-                            itemCount: snapshot.data.documents.length,
-                            itemBuilder: (context, index) => _buildListItem(context, snapshot.data.documents[index])),
-                      );
+                      return ListView.builder(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          reverse: true,
+                          controller: _scrollController,
+                          itemCount: snapshot.data.documents.length,
+                          itemBuilder: (context, index) => _buildListItem(context, snapshot.data.documents[index]));
                     }),
               ),
             ),
@@ -95,6 +103,19 @@ class ChatPageState extends State<ChatPage> {
             ),
           ],
         ));
+  }
+
+  void updateLastVisited() {
+    Firestore.instance
+        .collection('users')
+        .document(_email)
+        .collection('teams')
+        .document(_teamName)
+        .updateData(<String, dynamic>{
+      "last_visited": Timestamp.now(),
+    });
+
+    userData.hasNewChat[_teamName] = false;
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot documentSnapshot) {
@@ -168,8 +189,9 @@ class ChatPageState extends State<ChatPage> {
 
   void pushMessage() {
     Firestore.instance.collection('teams').document(_teamName).collection('chats').document().setData(
-        <String, dynamic>{'message': _chatField.text, "sender": userData.userEmail, "timestamp": Timestamp.now()});
+        <String, dynamic>{'message': _chatField.text, "sender": userData.userEmail, "senderName": userData.userName, "timestamp": Timestamp.now()});
     _chatField.text = "";
+    updateLastVisited();
   }
 
   String convertDate(Timestamp timestamp) {

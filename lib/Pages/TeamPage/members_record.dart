@@ -1,23 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 import 'package:the4thdayofmikkabozu/Pages/MemberPage/member_page.dart';
-import 'package:the4thdayofmikkabozu/hex_color.dart' as hex;
 import 'package:the4thdayofmikkabozu/user_data.dart' as userData;
 
 class MembersRecord extends StatelessWidget {
   String _teamName;
   String _adminEmail;
   // ポップアップメニューボタンの選択肢リスト
-  var _States = ['管理者の譲渡'];
+  var _States = ['管理者の譲渡', 'メンバーを追放'];
 
   MembersRecord(this._teamName, this._adminEmail);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: getMembers(context),
+      child: Card(child: getMembers(context)),
     );
   }
 
@@ -55,118 +53,93 @@ class MembersRecord extends StatelessWidget {
                         });
                         return Column(
                           children: [
-                            Text(
-                              '到達人数',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                            ),
-                            Text(
-                              achievementNum.toString() + "/" + snapshot.data.documents.length.toString(),
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 30,
-                              ),
-                            ),
                             Row(
-                              children: [
+                              children: <Widget>[
                                 Padding(
-                                  padding: EdgeInsets.all(5.0),
-                                  child: new LinearPercentIndicator(
-                                    width: MediaQuery.of(context).size.width - 50,
-                                    animation: true,
-                                    lineHeight: 20.0,
-                                    animationDuration: 2000,
-                                    percent: achievementNum / snapshot.data.documents.length,
-                                    linearStrokeCap: LinearStrokeCap.roundAll,
-                                    progressColor: hex.HexColor("f17300"),
-                                    trailing: Image.asset(
-                                      'images/flag-icon.png',
-                                      height: 30.0,
-                                      width: 30.0,
+                                  padding: const EdgeInsets.fromLTRB(20.0, 0, 0, 0),
+                                  child: Text(
+                                    'メンバー',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                      color: Theme.of(context).primaryColor,
                                     ),
                                   ),
                                 ),
                               ],
                             ),
-                            Text(
-                              'メンバー',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                            ),
                             Container(
-                              height: size.height * (1 / 3),
-                              child: Scrollbar(
-                                child: ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: snapshot.data.documents.length,
-                                  itemBuilder: (context, int index) {
-                                    String userEmail = snapshot.data.documents[index].documentID.toString();
-                                    String userName = "Guest";
-                                    if (memberSnapshot.data[userEmail][1] != "null") {
-                                      userName = memberSnapshot.data[userEmail][1] as String;
-                                    }
-                                    return ListTile(
-                                      leading: memberSnapshot.data[userEmail][2] as Widget,
-                                      trailing: Visibility(
-                                        visible: memberSnapshot.data[userEmail][0] as bool,
-                                        child: Image.asset(
-                                          'images/flag-icon.png',
-                                          height: 30.0,
-                                          width: 30.0,
-                                        ),
+                              child: ListView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: snapshot.data.documents.length,
+                                itemBuilder: (context, int index) {
+                                  String userEmail = snapshot.data.documents[index].documentID.toString();
+                                  String userName = "Guest";
+                                  if (memberSnapshot.data[userEmail][1] != "null") {
+                                    userName = memberSnapshot.data[userEmail][1] as String;
+                                  }
+                                  return ListTile(
+                                    leading: memberSnapshot.data[userEmail][2] as Widget,
+                                    trailing: Visibility(
+                                      visible: memberSnapshot.data[userEmail][0] as bool,
+                                      child: Image.asset(
+                                        'images/flag-icon.png',
+                                        height: 30.0,
+                                        width: 30.0,
                                       ),
-                                      title: Row(
-                                        children: <Widget>[
-                                          Text(userName),
-                                          Spacer(),
-                                          // 管理者に星アイコンを表示する
-                                          Visibility(
-                                            visible: userEmail == _adminEmail,
-                                            child: Icon(
-                                              Icons.star,
-                                              color: Colors.amber,
-                                            ),
+                                    ),
+                                    title: Row(
+                                      children: <Widget>[
+                                        Text(userName),
+                                        Spacer(),
+                                        // 管理者に星アイコンを表示する
+                                        Visibility(
+                                          visible: userEmail == _adminEmail,
+                                          child: Icon(
+                                            Icons.star,
+                                            color: Colors.amber,
                                           ),
-                                          // 自分以外のメンバーにポップアップメニューを表示する
-                                          Visibility(
-                                              visible: userEmail != _adminEmail && userData.userEmail == _adminEmail,
-                                              child: PopupMenuButton<String>(
-                                                icon: Icon(Icons.more_horiz),
-                                                onSelected: (String s) {
-                                                  // ダイアログを表示する
-                                                  showDialog<dynamic>(
-                                                    context: context,
-                                                    builder: (context) {
+                                        ),
+                                        // 自分以外のメンバーにポップアップメニューを表示する
+                                        Visibility(
+                                            visible: userEmail != _adminEmail && userData.userEmail == _adminEmail,
+                                            child: PopupMenuButton<String>(
+                                              icon: Icon(Icons.more_horiz),
+                                              onSelected: (String s) {
+                                                // ダイアログを表示する
+                                                showDialog<dynamic>(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    if (s == '管理者の譲渡') {
                                                       return showChangeAdminDialog(context, userEmail, userName);
-                                                    },
+                                                    } else if (s == 'メンバーを追放') {
+                                                      return showBanDialog(context, userEmail, userName);
+                                                    } else {
+                                                      return null;
+                                                    }
+                                                  },
+                                                );
+                                                print(userEmail);
+                                              },
+                                              itemBuilder: (BuildContext context) {
+                                                return _States.map((String s) {
+                                                  return PopupMenuItem(
+                                                    child: Text(s),
+                                                    value: s,
                                                   );
-                                                  print(userEmail);
-                                                },
-                                                itemBuilder: (BuildContext context) {
-                                                  return _States.map((String s) {
-                                                    return PopupMenuItem(
-                                                      child: Text(s),
-                                                      value: s,
-                                                    );
-                                                  }).toList();
-                                                },
-                                              )),
-                                        ],
-                                      ),
-                                      onTap: () => Navigator.push<dynamic>(
-                                          context,
-                                          MaterialPageRoute<dynamic>(
-                                            builder: (context) => MemberPage(userEmail, userName),
-                                          )),
-                                    );
-                                  },
-                                ),
+                                                }).toList();
+                                              },
+                                            )),
+                                      ],
+                                    ),
+                                    onTap: () => Navigator.push<dynamic>(
+                                        context,
+                                        MaterialPageRoute<dynamic>(
+                                          builder: (context) => MemberPage(userEmail, userName),
+                                        )),
+                                  );
+                                },
                               ),
                             ),
                           ],
@@ -275,7 +248,32 @@ class MembersRecord extends StatelessWidget {
     );
   }
 
-  void changeAdmin(String userEmail) async {
+  Widget showBanDialog(BuildContext context, String userEmail, String userName) {
+    return AlertDialog(
+      content: Text(userName + 'を追放しますか？'),
+      actions: <Widget>[
+        FlatButton(
+            child: Text("はい"),
+            onPressed: () {
+              banMember(userEmail);
+              Navigator.pop(context);
+            }),
+        FlatButton(
+          child: Text("キャンセル"),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ],
+    );
+  }
+
+  void changeAdmin(String userEmail) {
     Firestore.instance.collection('teams').document(_teamName).updateData(<String, String>{'admin': userEmail});
+  }
+
+  void banMember(String userEmail) {
+    // teamNameの中のUsersからuserEmailを削除
+    Firestore.instance.collection('teams').document(_teamName).collection('users').document(userEmail).delete();
+    // userEmailの中のTeamsからteamNameを削除
+    Firestore.instance.collection('users').document(userEmail).collection('teams').document(_teamName).delete();
   }
 }

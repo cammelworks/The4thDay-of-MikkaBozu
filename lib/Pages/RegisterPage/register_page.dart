@@ -1,9 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:the4thdayofmikkabozu/main.dart';
 
@@ -22,11 +22,12 @@ class RegisterPageState extends State<RegisterPage> {
   final TextEditingController _userNameController = TextEditingController();
   bool _isHidden = true;
 
-  void _toggleVisibility(){
+  void _toggleVisibility() {
     setState(() {
       _isHidden = !_isHidden;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,14 +63,15 @@ class RegisterPageState extends State<RegisterPage> {
               controller: _passwordController,
               decoration: InputDecoration(
                   labelText: 'パスワードを入力してください',
-                  suffixIcon: _isHidden ? IconButton(
-                    onPressed: _toggleVisibility,
-                    icon: Icon(Icons.visibility),
-                  ) : IconButton(
-                    onPressed: _toggleVisibility,
-                    icon: Icon(Icons.visibility_off),
-                  )
-              ),
+                  suffixIcon: _isHidden
+                      ? IconButton(
+                          onPressed: _toggleVisibility,
+                          icon: Icon(Icons.visibility),
+                        )
+                      : IconButton(
+                          onPressed: _toggleVisibility,
+                          icon: Icon(Icons.visibility_off),
+                        )),
               validator: (String value) {
                 if (value.isEmpty) {
                   return 'パスワードが入力されていません';
@@ -147,19 +149,18 @@ class RegisterPageState extends State<RegisterPage> {
 
       setState(() {
         //Firestoreにemailをpush
-        Firestore.instance
-            .collection('users')
-            .document(user.email)
-            .setData(<String, dynamic>{'email': user.email, 'name': _userNameController.text});
+        Firestore.instance.collection('users').document(user.email).setData(<String, dynamic>{
+          'email': user.email,
+          'name': _userNameController.text,
+        });
       });
       await Navigator.pushAndRemoveUntil<dynamic>(
           context,
           MaterialPageRoute<dynamic>(
             builder: (context) => MyHomePage(),
           ),
-          (_) => false
-      );
-    } else{
+          (_) => false);
+    } else {
       print("can't register");
     }
   }
