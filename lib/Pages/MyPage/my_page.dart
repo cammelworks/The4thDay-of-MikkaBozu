@@ -136,51 +136,59 @@ class MyPageState extends State<MyPage> {
         ),
         body: TabBarView(
           children: <Widget>[
-            const Text('unko'),
-            const Text('unko'),
-            Column(
-              children: <Widget>[
-                Expanded(
-                  child: CalendarCarousel<Event>(
-                    isScrollable: false,
-                    onDayPressed: onDayPressed,
-                    weekdayTextStyle: TextStyle(color: Colors.black87),
-                    daysTextStyle: TextStyle(color: Colors.black),
-                    weekendTextStyle: TextStyle(color: Colors.black),
-                    todayButtonColor: Colors.blue,
-                    selectedDateTime: _currentDate,
-                    selectedDayButtonColor: Colors.black26,
-                    selectedDayBorderColor: Colors.transparent,
-                    daysHaveCircularBorder: true,
-                    customGridViewPhysics: const NeverScrollableScrollPhysics(),
-                    markedDatesMap: _markedDateMap,
-                    markedDateWidget: Container(
-                      height: 10.0,
-                      width: 10.0,
-                      decoration: const BoxDecoration(color: Colors.greenAccent, shape: BoxShape.circle),
-                    ),
-                    // showIconBehindDayText: true,
-                    locale: 'ja',
-                    todayBorderColor: Colors.transparent,
-                  ),
-                ),
-                Visibility(
-                  visible: _shouldShowRecord,
-                  child: Card(
-                      child: ListTile(
-                          leading: Icon(
-                            Icons.directions_run,
-                            size: 40,
-                          ),
-                          title: Text(_selectedRecordDistance + '  ' + _selectedRecordTime),
-                          subtitle: Text(_currentDate.month.toString() + '月' + _currentDate.day.toString() + '日'))),
-                ),
-              ],
-            ),
+            dayView(),
+            weekView(),
+            monthView(),
           ],
         ),
         drawer: Sidemenu(),
       ),
+    );
+  }
+
+  Widget dayView() => const Text('unko');
+
+  Widget weekView() => const Text('unko');
+
+  Widget monthView() {
+    return Column(
+      children: <Widget>[
+        Expanded(
+          child: CalendarCarousel<Event>(
+            isScrollable: false,
+            onDayPressed: onDayPressed,
+            weekdayTextStyle: TextStyle(color: Colors.black87),
+            daysTextStyle: TextStyle(color: Colors.black),
+            weekendTextStyle: TextStyle(color: Colors.black),
+            todayButtonColor: Colors.blue,
+            selectedDateTime: _currentDate,
+            selectedDayButtonColor: Colors.black26,
+            selectedDayBorderColor: Colors.transparent,
+            daysHaveCircularBorder: true,
+            customGridViewPhysics: const NeverScrollableScrollPhysics(),
+            markedDatesMap: _markedDateMap,
+            markedDateWidget: Container(
+              height: 4,
+              width: 4,
+              decoration: const BoxDecoration(color: Colors.greenAccent, shape: BoxShape.circle),
+            ),
+            // showIconBehindDayText: true,
+            locale: 'ja',
+            todayBorderColor: Colors.transparent,
+          ),
+        ),
+        Visibility(
+          visible: _shouldShowRecord,
+          child: Card(
+              child: ListTile(
+                  leading: Icon(
+                    Icons.directions_run,
+                    size: 40,
+                  ),
+                  title: Text(_selectedRecordDistance + '  ' + _selectedRecordTime),
+                  subtitle: Text(_currentDate.month.toString() + '月' + _currentDate.day.toString() + '日'))),
+        ),
+      ],
     );
   }
 
