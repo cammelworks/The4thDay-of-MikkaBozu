@@ -47,7 +47,7 @@ class SidemenuState extends State<Sidemenu> {
                           },
                           child: Icon(
                             Icons.add,
-                            color: Colors.white,
+                            color: Theme.of(context).scaffoldBackgroundColor,
                           ),
                         ),
                       ),
@@ -145,13 +145,13 @@ class SidemenuState extends State<Sidemenu> {
     if (userData.iconUrl != null) {
       return CircleAvatar(
         radius: 60,
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         backgroundImage: NetworkImage(userData.iconUrl),
       );
     } else {
       return CircleAvatar(
         radius: 60,
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         backgroundImage: AssetImage('images/account_circle.png'),
       );
     }
@@ -198,9 +198,9 @@ class SidemenuState extends State<Sidemenu> {
     final result = await showCupertinoBottomBar();
     File imageFile;
     if (result == 0) {
-      imageFile = await ImageUpload(ImageSource.camera).getImageFromDevice();
+      imageFile = await ImageUpload(ImageSource.camera).getImageFromDevice(context);
     } else if (result == 1) {
-      imageFile = await ImageUpload(ImageSource.gallery).getImageFromDevice();
+      imageFile = await ImageUpload(ImageSource.gallery).getImageFromDevice(context);
     }
     registerIcon(await upload(imageFile));
   }
@@ -242,7 +242,7 @@ class ImageUpload {
   final ImageSource source;
   final int quality;
 
-  Future<File> getImageFromDevice() async {
+  Future<File> getImageFromDevice(BuildContext context) async {
     // 撮影/選択したFileが返ってくる
     var imageFile = await ImagePicker().getImage(source: source);
     // Androidで撮影せずに閉じた場合はnullになる
@@ -252,10 +252,10 @@ class ImageUpload {
     //画像を圧縮
     final File compressedFile = await FlutterNativeImage.compressImage(imageFile.path, quality: quality);
 
-    return _handleImageCrop(compressedFile);
+    return _handleImageCrop(compressedFile, context);
   }
 
-  Future<File> _handleImageCrop(File file) async {
+  Future<File> _handleImageCrop(File file, BuildContext context) async {
     var croppedFile = await ImageCropper.cropImage(
         sourcePath: file.path,
         cropStyle: CropStyle.circle,
@@ -264,9 +264,9 @@ class ImageUpload {
         ],
         androidUiSettings: AndroidUiSettings(
             toolbarTitle: '切り抜き',
-            toolbarColor: const Color(0xff21426a),
-            toolbarWidgetColor: Colors.white,
-            activeControlsWidgetColor: const Color(0xff21426a),
+            toolbarColor: Theme.of(context).primaryColor,
+            toolbarWidgetColor: Theme.of(context).scaffoldBackgroundColor,
+            activeControlsWidgetColor: Theme.of(context).primaryColor,
             initAspectRatio: CropAspectRatioPreset.original),
         iosUiSettings: IOSUiSettings(
           minimumAspectRatio: 1.0,
