@@ -121,7 +121,6 @@ class MyPageState extends State<MyPage> {
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
     return DefaultTabController(
       length: _tab.length,
       child: Scaffold(
@@ -152,24 +151,27 @@ class MyPageState extends State<MyPage> {
       children: <Widget>[
         Expanded(
           child: CalendarCarousel<Event>(
+            markedDateShowIcon: true,
+            markedDateIconMargin: 0,
+            markedDateIconBuilder: (event) {
+              return event.icon;
+            },
             isScrollable: false,
             onDayPressed: onDayPressed,
-            weekdayTextStyle: TextStyle(color: Colors.black87),
             daysTextStyle: TextStyle(color: Colors.black),
             weekendTextStyle: TextStyle(color: Colors.black),
-            todayButtonColor: Colors.blue,
+            todayButtonColor: Theme.of(context).primaryColor,
             selectedDateTime: _currentDate,
             selectedDayButtonColor: Colors.black26,
             selectedDayBorderColor: Colors.transparent,
-            daysHaveCircularBorder: true,
+            daysHaveCircularBorder: false,
             customGridViewPhysics: const NeverScrollableScrollPhysics(),
             markedDatesMap: _markedDateMap,
-            markedDateWidget: Container(
-              height: 4,
-              width: 4,
-              decoration: const BoxDecoration(color: Colors.greenAccent, shape: BoxShape.circle),
-            ),
-            // showIconBehindDayText: true,
+            // markedDateWidget: Container(
+            //   height: 4,
+            //   width: 4,
+            //   decoration: const BoxDecoration(color: Colors.greenAccent, shape: BoxShape.circle),
+            // ),
             locale: 'ja',
             todayBorderColor: Colors.transparent,
           ),
@@ -190,43 +192,20 @@ class MyPageState extends State<MyPage> {
   }
 
   Event createEvent(DateTime date, double distance, String time, String colorCode) {
-    if (colorCode == '9BD1E8') {
-      return Event(
-        date: date,
-        title: distance.toString() + ',' + time,
-        icon: Container(
-          color: hex.HexColor(colorCode),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(date.day.toString()),
-              Text(distance.toString() + 'km'),
-            ],
+    return Event(
+      date: date,
+      title: distance.toString() + ',' + time,
+      icon: Container(
+        height: double.infinity,
+        color: hex.HexColor(colorCode),
+        child: Center(
+          child: Text(
+            date.day.toString(),
+            textAlign: TextAlign.center,
           ),
         ),
-      );
-    } else {
-      return Event(
-        date: date,
-        title: distance.toString() + ',' + time,
-        icon: Container(
-          color: hex.HexColor(colorCode),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(
-                date.day.toString(),
-                style: TextStyle(color: Colors.white),
-              ),
-              Text(
-                distance.toString() + 'km',
-                style: TextStyle(color: Colors.white),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
+      ),
+    );
   }
 
   void onDayPressed(DateTime date, List<Event> events) {
