@@ -113,7 +113,7 @@ class AchievementCard extends StatelessWidget {
                           // 個人の記録の取得
                           return FutureBuilder(
                               future: MembersRecord(_teamName, _adminEmail)
-                                  .getMemberRecord(snapshot.data, goalSnapshot.data),
+                                  .getMemberRecord(snapshot.data, goalSnapshot.data, context),
                               builder: (BuildContext context, AsyncSnapshot<Map> memberSnapshot) {
                                 if (memberSnapshot.hasData) {
                                   int achievementNum = 0;

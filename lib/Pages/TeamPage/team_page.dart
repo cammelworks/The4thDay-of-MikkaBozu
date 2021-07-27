@@ -45,7 +45,7 @@ class TeamPageState extends State<TeamPage> {
                 child: IconButton(
                   icon: Icon(
                     Icons.delete_forever,
-                    color: Colors.white,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                   ),
                   onPressed: () async {
                     showDialog<dynamic>(
@@ -75,7 +75,7 @@ class TeamPageState extends State<TeamPage> {
               IconButton(
                 icon: Icon(
                   Icons.exit_to_app,
-                  color: Colors.white,
+                  color: Theme.of(context).scaffoldBackgroundColor,
                 ),
                 onPressed: () async {
                   showDialog<dynamic>(

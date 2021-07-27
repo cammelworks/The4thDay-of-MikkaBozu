@@ -42,7 +42,7 @@ class MembersRecord extends StatelessWidget {
               if (goalSnapshot.hasData) {
                 // 個人の記録の取得
                 return FutureBuilder(
-                    future: getMemberRecord(snapshot.data, goalSnapshot.data),
+                    future: getMemberRecord(snapshot.data, goalSnapshot.data, context),
                     builder: (BuildContext context, AsyncSnapshot<Map> memberSnapshot) {
                       if (memberSnapshot.hasData) {
                         int achievementNum = 0;
@@ -167,7 +167,7 @@ class MembersRecord extends StatelessWidget {
     return snapshot.data['goal'] as int;
   }
 
-  Future<Map> getMemberRecord(QuerySnapshot data, int goal) async {
+  Future<Map> getMemberRecord(QuerySnapshot data, int goal, BuildContext context) async {
     // マップの初期化
     Map<String, List> userMap = {};
     for (int i = 0; i < data.documents.length; i++) {
@@ -194,13 +194,13 @@ class MembersRecord extends StatelessWidget {
       if (userSnapshot.data['icon_url'].toString() != 'null') {
         hasMemberAchieved.add(CircleAvatar(
           radius: 25,
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           backgroundImage: NetworkImage(userSnapshot.data['icon_url'].toString()),
         ));
       } else {
         hasMemberAchieved.add(CircleAvatar(
           radius: 25,
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           backgroundImage: AssetImage('images/account_circle.png'),
         ));
       }

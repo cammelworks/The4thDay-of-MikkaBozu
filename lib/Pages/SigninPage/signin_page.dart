@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -43,8 +43,7 @@ class SignInPageState extends State<SignInPage> {
                 children: <Widget>[
                   TextFormField(
                     controller: _emailController,
-                    decoration:
-                        const InputDecoration(labelText: 'アドレスを入力してください'),
+                    decoration: const InputDecoration(labelText: 'アドレスを入力してください'),
                     validator: (String value) {
                       if (value.isEmpty) {
                         return 'アドレスが入力されていません';
@@ -79,12 +78,11 @@ class SignInPageState extends State<SignInPage> {
                       child: ButtonTheme(
                         minWidth: 200.0,
                         height: 50.0,
-                        buttonColor: Colors.white,
+                        buttonColor: Theme.of(context).scaffoldBackgroundColor,
                         child: RaisedButton(
                           child: const Text('サインイン'),
                           shape: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10.0)),
+                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
                           ),
                           onPressed: () async {
                             if (_formKey.currentState.validate()) {
@@ -141,8 +139,7 @@ class SignInPageState extends State<SignInPage> {
           MaterialPageRoute<dynamic>(
             builder: (context) => MyHomePage(),
           ),
-          (_) => false
-      );
+          (_) => false);
     }
   }
 }

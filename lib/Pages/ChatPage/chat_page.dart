@@ -68,12 +68,13 @@ class ChatPageState extends State<ChatPage> {
                   margin: EdgeInsets.fromLTRB(3, 3, 3, 3),
                   padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
                   decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Theme.of(context).primaryColor,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                      color: Colors.white),
+                    border: Border.all(
+                      color: Theme.of(context).primaryColor,
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                  ),
                   child: Form(
                     key: _formKey,
                     child: Column(
@@ -142,13 +143,11 @@ class ChatPageState extends State<ChatPage> {
             if (snapshot.data['icon_url'].toString() != 'null') {
               icon = CircleAvatar(
                 radius: 25,
-                backgroundColor: Colors.white,
                 backgroundImage: NetworkImage(snapshot.data['icon_url'].toString()),
               );
             } else {
               icon = CircleAvatar(
                 radius: 25,
-                backgroundColor: Colors.white,
                 backgroundImage: AssetImage('images/account_circle.png'),
               );
             }

@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:the4thdayofmikkabozu/Pages/RegisterPage/register_page.dart';
 import 'package:the4thdayofmikkabozu/Pages/SigninPage/signin_page.dart';
 
-class SigninScreen extends StatefulWidget{
+class SigninScreen extends StatefulWidget {
   final String title = '三日坊主の四日目';
   @override
   State<StatefulWidget> createState() => SigninScreenState();
 }
 
 class SigninScreenState extends State<SigninScreen> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +24,7 @@ class SigninScreenState extends State<SigninScreen> {
               child: ButtonTheme(
                 minWidth: 200.0,
                 height: 50.0,
-                buttonColor: Colors.white,
+                buttonColor: Theme.of(context).scaffoldBackgroundColor,
                 child: RaisedButton(
                     child: const Text('登録'),
                     shape: OutlineInputBorder(
@@ -48,7 +47,7 @@ class SigninScreenState extends State<SigninScreen> {
               child: ButtonTheme(
                 minWidth: 200.0,
                 height: 50.0,
-                buttonColor: Colors.white,
+                buttonColor: Theme.of(context).scaffoldBackgroundColor,
                 child: RaisedButton(
                     child: const Text('サインイン'),
                     shape: OutlineInputBorder(

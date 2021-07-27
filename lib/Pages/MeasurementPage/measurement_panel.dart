@@ -15,14 +15,16 @@ class MeasurementPanel extends StatelessWidget {
           Center(
             child: Text(
               _time,
-              style: TextStyle(fontSize: 100, fontFamily: 'BebasNeue', color: Colors.white),
+              style:
+                  TextStyle(fontSize: 100, fontFamily: 'BebasNeue', color: Theme.of(context).scaffoldBackgroundColor),
             ),
           ),
           //距離表示のボックス
           Center(
             child: Text(
               _convertUnit(),
-              style: TextStyle(fontSize: 100, fontFamily: 'BebasNeue', color: Colors.white),
+              style:
+                  TextStyle(fontSize: 100, fontFamily: 'BebasNeue', color: Theme.of(context).scaffoldBackgroundColor),
             ),
           ),
         ],
