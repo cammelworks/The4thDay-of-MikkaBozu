@@ -85,7 +85,7 @@ class LookupTeamPageState extends State<LookupTeamPage> {
               child: ButtonTheme(
                 minWidth: 200.0,
                 height: 50.0,
-                buttonColor: Colors.white,
+                buttonColor: Theme.of(context).scaffoldBackgroundColor,
                 child: RaisedButton(
                   child: const Text('新規作成'),
                   shape: OutlineInputBorder(

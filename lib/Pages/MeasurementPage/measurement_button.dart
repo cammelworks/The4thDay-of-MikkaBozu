@@ -30,10 +30,10 @@ class MeasurementButton extends StatelessWidget {
       height: 100,
       child: RaisedButton(
         child: buttonStateList[_value],
-        color: Colors.white,
+        color: Theme.of(context).scaffoldBackgroundColor,
         shape: CircleBorder(
           side: BorderSide(
-            color: Colors.white,
+            color: Theme.of(context).scaffoldBackgroundColor,
             style: BorderStyle.solid,
           ),
         ),

@@ -10,22 +10,21 @@ class ToMeasurementPageButton extends StatelessWidget {
         child: ButtonTheme(
           minWidth: 200.0,
           height: 50.0,
-          buttonColor: Colors.white,
+          buttonColor: Theme.of(context).scaffoldBackgroundColor,
           child: RaisedButton(
-              child: const Text('走る',
-                style: TextStyle(
-                  fontSize: 18
-                ),
+              child: const Text(
+                '走る',
+                style: TextStyle(fontSize: 18),
               ),
               shape: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
               ),
               onPressed: () async {
-                  await Navigator.push<dynamic>(
-                      context,
-                      MaterialPageRoute<dynamic>(
-                        builder: (context) => MeasurementPage(),
-                      ));
+                await Navigator.push<dynamic>(
+                    context,
+                    MaterialPageRoute<dynamic>(
+                      builder: (context) => MeasurementPage(),
+                    ));
               }),
         ),
       ),

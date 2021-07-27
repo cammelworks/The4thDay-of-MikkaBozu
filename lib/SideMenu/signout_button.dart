@@ -16,14 +16,14 @@ class SignoutButton extends StatelessWidget {
         child: ButtonTheme(
           minWidth: 200.0,
           height: 50.0,
-          buttonColor: Colors.white,
+          buttonColor: Theme.of(context).scaffoldBackgroundColor,
           child: RaisedButton(
               child: const Text('サインアウト'),
               // shape: OutlineInputBorder(
               //   borderRadius: BorderRadius.all(Radius.circular(10.0)),
               // ),
-              shape: const StadiumBorder(
-                side: BorderSide(color: Colors.blue),
+              shape: StadiumBorder(
+                side: BorderSide(color: Theme.of(context).primaryColor),
               ),
               onPressed: () async {
                 await signOut();

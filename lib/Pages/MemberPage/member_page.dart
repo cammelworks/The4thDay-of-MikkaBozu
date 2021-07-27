@@ -1,7 +1,6 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:the4thdayofmikkabozu/hex_color.dart' as hex;
@@ -46,12 +45,10 @@ class MemberPageState extends State<MemberPage> {
       if (i == 0) {
         max_distance = snapshots.documents[i].data['distance'] as double;
       }
-      DateTime date =
-      (snapshots.documents[i].data['timestamp'] as Timestamp).toDate();
+      DateTime date = (snapshots.documents[i].data['timestamp'] as Timestamp).toDate();
       double distance = snapshots.documents[i].data['distance'] as double;
       double roundedDistance = (distance / 100).round() / 10;
-      addEvent(
-          getDate(date), roundedDistance, getColorCode(max_distance, distance));
+      addEvent(getDate(date), roundedDistance, getColorCode(max_distance, distance));
     }
     this.setState(() {});
   }
@@ -66,11 +63,11 @@ class MemberPageState extends State<MemberPage> {
 
   String getColorCode(double max, double distance) {
     double distanceRatio = distance / max;
-    if(distanceRatio >= 0.75){
+    if (distanceRatio >= 0.75) {
       return '21576E';
-    } else if(distanceRatio >= 0.5){
+    } else if (distanceRatio >= 0.5) {
       return '307FA1';
-    } else if(distanceRatio >= 0.25){
+    } else if (distanceRatio >= 0.25) {
       return '419DC4';
     } else {
       return '9BD1E8';
@@ -114,7 +111,7 @@ class MemberPageState extends State<MemberPage> {
                     markedDateIconMargin: 0,
                     locale: "ja",
                     todayTextStyle: TextStyle(
-                      color: Colors.blue,
+                      color: Theme.of(context).primaryColor,
                     ),
                     markedDateIconBuilder: (event) {
                       return event.icon;
@@ -128,26 +125,20 @@ class MemberPageState extends State<MemberPage> {
                 visible: _shouldShowRecord,
                 child: Container(
                   decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.blue, width: 1.0)),
+                      color: Colors.white, border: Border.all(color: Theme.of(context).primaryColor, width: 1.0)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                          padding:
-                          EdgeInsets.fromLTRB(size.width / 10, 20, 10, 20),
+                          padding: EdgeInsets.fromLTRB(size.width / 10, 20, 10, 20),
                           child: Text(
-                            _currentDate.month.toString() +
-                                '月' +
-                                _currentDate.day.toString() +
-                                '日',
+                            _currentDate.month.toString() + '月' + _currentDate.day.toString() + '日',
                             style: TextStyle(
                               fontSize: 20,
                             ),
                           )),
                       Container(
-                          padding:
-                          EdgeInsets.fromLTRB(10, 6, size.width / 10, 6),
+                          padding: EdgeInsets.fromLTRB(10, 6, size.width / 10, 6),
                           child: Text(
                             _selectedRecord,
                             style: TextStyle(
@@ -170,7 +161,7 @@ class MemberPageState extends State<MemberPage> {
   }
 
   Event createEvent(DateTime date, double distance, String colorCode) {
-    if(colorCode == '9BD1E8'){
+    if (colorCode == '9BD1E8') {
       return Event(
         date: date,
         title: distance.toString(),
@@ -194,15 +185,13 @@ class MemberPageState extends State<MemberPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Text(date.day.toString(),
-                style: TextStyle(
-                    color: Colors.white
-                ),
+              Text(
+                date.day.toString(),
+                style: TextStyle(color: Colors.white),
               ),
-              Text(distance.toString() + "km",
-                style: TextStyle(
-                    color: Colors.white
-                ),
+              Text(
+                distance.toString() + "km",
+                style: TextStyle(color: Colors.white),
               ),
             ],
           ),
