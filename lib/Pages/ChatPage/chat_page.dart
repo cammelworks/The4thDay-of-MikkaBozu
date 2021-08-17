@@ -198,8 +198,8 @@ class ChatPageState extends State<ChatPage> {
     DateTime dateTime = timestamp.toDate();
     String month = dateTime.month.toString();
     String day = dateTime.day.toString();
-    String hour = dateTime.hour.toString();
-    String minute = dateTime.minute.toString();
+    String hour = dateTime.hour.toString().padLeft(2, "0");
+    String minute = dateTime.minute.toString().padLeft(2, "0");
 
     return month + "/" + day + " " + hour + ":" + minute;
   }
